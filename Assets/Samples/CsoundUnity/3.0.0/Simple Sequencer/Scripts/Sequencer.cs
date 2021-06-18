@@ -89,6 +89,7 @@ public class Sequencer : MonoBehaviour
     {
         if (!isInitialized || !csoundUnity.IsInitialized) return;
 
+        /* RANDOMIZE + DELETE KEY INPUT CODE
         if (Input.GetKeyDown("1"))
         {
             csoundUnity.SendScoreEvent("i\"ClearSequencer\" 0 0 ");
@@ -100,7 +101,7 @@ public class Sequencer : MonoBehaviour
             csoundUnity.SendScoreEvent("i\"RandomSequencer\" 0 0 ");
             Invoke("updateSequencerGUI", .1f);
         }
-
+        */
 
         if (csoundUnity)
             csoundUnity.SetChannel("BPM", BPM);

@@ -21,7 +21,6 @@ giTable6 ftgen 6, 0, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 giTable7 ftgen 7, 0, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 giTable8 ftgen 8, 0, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-gSSamples[] init 8
 giTable[] init 8
   
 instr SEQUENCER

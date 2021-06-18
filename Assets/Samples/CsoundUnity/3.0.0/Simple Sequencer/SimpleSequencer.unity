@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +118,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -173,6 +175,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -209,7 +213,7 @@ GameObject:
   - component: {fileID: 1232899650}
   - component: {fileID: 1232899649}
   - component: {fileID: 1232899648}
-  - component: {fileID: 1232899647}
+  - component: {fileID: 1232899651}
   m_Layer: 0
   m_Name: CsoundUnity
   m_TagString: Untagged
@@ -217,31 +221,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1232899647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1232899646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a074afbd3ea65641b3d7045e59f31c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfVoices: 8
-  numberOfBeats: 16
-  clips:
-  - {fileID: 8300000, guid: 7a6ac3abd3209a74ea5fb82bd82f8e97, type: 3}
-  - {fileID: 8300000, guid: 8e34370472097ee4ca249e04983a8b34, type: 3}
-  - {fileID: 8300000, guid: 262eb2e9f7fdc384fa306dcb93f1e3b6, type: 3}
-  - {fileID: 8300000, guid: 3c403f90dfcd1b342bf4f8176c8bcdee, type: 3}
-  - {fileID: 8300000, guid: a5fbed20e24c7584db01be0b9e90f92e, type: 3}
-  - {fileID: 8300000, guid: 8219b9093838e454aa9c33a68ff7ae3c, type: 3}
-  - {fileID: 8300000, guid: 192d55c4502748d44ad4a5703a003f1d, type: 3}
-  - {fileID: 8300000, guid: bc049fde51383a649acb3e4b26232fe1, type: 3}
-  showSequencerGUI: 1
-  BPM: 120
 --- !u!114 &1232899648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,63 +236,90 @@ MonoBehaviour:
   logCsoundOutput: 0
   mute: 0
   processClipAudio: 0
+  loudVolumeWarning: 1
+  loudWarningThreshold: 10
   csoundScore: 
-  _csoundFileGUID: b0953dd90827ba24896232107c3e0fc4
-  _csoundString: "<Cabbage>\r\nform caption(\"Sequencer\"), size(300, 200)\r\n</Cabbage>\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
-    -d -m0d\r\n</CsOptions>\r\n<CsInstruments>\r\nsr \t= \t44100 \r\nksmps \t= \t32\r\nnchnls
-    \t= \t2\r\n0dbfs\t=\t1 \r\n\r\n//sequences - right now they just indicate hits,
-    but they could alsohold MIDI note numbers\r\ngiTable1 ftgen 1, 0, 16, 2, 1, 0,
-    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0\r\ngiTable2 ftgen 2, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0\r\ngiTable3 ftgen 3, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\ngiTable4 ftgen 4, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\ngiTable5 ftgen 5, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\ngiTable6 ftgen 6, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\ngiTable7 ftgen 7, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\ngiTable8 ftgen 8, 0, 16, 2, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\r\n\r\ngSSamples[] init 8\r\ngiTable[]
-    init 8\r\n  \r\ninstr SEQUENCER\r\n    kBeat init 0\r\n    kVoice = 0\r\n   
-    kBPM = abs(chnget:k(\"BPM\"))\r\n    \r\n    if metro(kBPM/60) == 1 then\r\n       
-    chnset kBeat, \"beatNumber\"\r\n        printk2 kBeat\r\n        while kVoice
-    < 8 do\r\n            kValue tablekt kBeat, kVoice+1\r\n            if(kValue
-    == 1) then\r\n                event \"i\", \"PlaySample\", 0, 2, kVoice\r\n               
-    prints \"event i %d\", kVoice\r\n            endif\r\n            kVoice += 1\r\n       
-    od\r\n        kBeat = (kBeat < 15 ? kBeat+1 : 0)\r\n    endif\r\nendin\r\n\r\ninstr
-    PlaySample\r\n        \r\n    giTable[0] chnget \"sampletable900\"\r\n    giTable[1]
-    chnget \"sampletable901\"\r\n    giTable[2] chnget \"sampletable902\"\r\n   
-    giTable[3] chnget \"sampletable903\"\r\n    giTable[4] chnget \"sampletable904\"\r\n   
-    giTable[5] chnget \"sampletable905\"\r\n    giTable[6] chnget \"sampletable906\"\r\n   
-    giTable[7] chnget \"sampletable907\"\r\n    \r\n    ifn   = giTable[p4]\r\n   
-    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n   
-    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
-    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
-    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
-    playback at index 0 samples\r\n    ; lphasor provides index into f1 \r\n    alphs
-    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n   
-    outs atab *.1, atab*.1\r\nendin\r\n\r\ninstr UpdateSequencer\r\nprint p4, p5\r\n   
-    iColumn = p4\r\n    iRow = p5\r\n    iCurrentValue = table:i(iColumn, iRow)\r\n   
-    if iCurrentValue == 1 then\r\n        tabw_i 0, iColumn, iRow\r\n    else\r\n       
-    tabw_i 1, iColumn, iRow\r\n    endif\r\nendin\r\n\r\n\r\ninstr ClearSequencer\r\n   
-    iTable init 1\r\n    iBeat init 0\r\n    while iTable <= 8 do\r\n        iBeat
-    = 0\r\n        while iBeat < 16 do\r\n            tabw_i 0, iBeat, iTable\r\n       
-    iBeat += 1\r\n        od\r\n    iTable += 1\r\n    od\r\nendin\r\n\r\n\r\ninstr
-    RandomSequencer\r\n    iTable init 1\r\n    iBeat init 0\r\n    while iTable
-    <= 8 do\r\n        iBeat = 0\r\n        while iBeat < 16 do\r\n            tabw_i
-    birnd(1) > .5 ? 1 : 0, iBeat, iTable\r\n        iBeat += 1\r\n        od\r\n   
-    iTable += 1\r\n    od\r\nendin\r\n\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf0
-    z\r\ni\"SEQUENCER\" 0 z\r\n;i\"RandomSequencer\" 1 0\r\n</CsScore>\r\n</CsoundSynthesizer>"
-  _csoundFileName: Sequencer.csd
-  _csoundAsset: {fileID: 102900000, guid: b0953dd90827ba24896232107c3e0fc4, type: 3}
-  _channels:
-  - type: form
-    channel: 
-    text: 
-    caption: Sequencer
-    min: 0
-    max: 0
-    value: 0
-    skew: 0
-    increment: 0
+  _csoundFileGUID: 2c354fc75e3af46ba9fdaf755c10c0c9
+  _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
+    -d \r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.
+    \r\nksmps = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\n//Generates a global clock signal
+    (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    kbpm = 120  ;beats per
+    minute\r\n    kpulses = 4 ;pulses per beat\r\n    \r\n    gktrig metro kbpm*kpulses/60\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST
+    SIMPLE OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr
+    .01,0.1,0,0\r\n    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc,aOsc\r\nendin\r\n\r\ninstr
+    SMPLR_LOAD\r\n//SAMPLER\r\n; file operations/setup\r\n\r\nipcnt = 0 ;counter
+    for iterating through the following arrays\r\n\r\n//Set file locations / THIS
+    SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY\r\ngSSoundFileLocs[]
+    init 4\r\ngSSoundFileLocs[0] = \"samples/HIHAT1.wav\"\r\ngSSoundFileLocs[1] =
+    \"samples/TOM1.wav\"\r\ngSSoundFileLocs[2] = \"samples/CLAV1.wav\"\r\ngSSoundFileLocs[3]
+    = \"samples/CONGA1.wav\"\r\n\r\n\r\n//Generate ftables from files\r\ngiSoundFiles[]
+    init 4\r\n\r\n\r\n\r\nipcnt = 0\r\nwhile ipcnt < lenarray(gSSoundFileLocs,1)
+    do\r\ngiSoundFiles[ipcnt] ftgen 0, 0, 0, 1, gSSoundFileLocs[ipcnt], 0, 0, 0\r\nipcnt
+    += 1\r\nod\r\n\r\n//Get file sample rates\r\ngiSoundFileSrs[] init 4\r\n\r\nipcnt
+    = 0\r\nwhile ipcnt < lenarray(gSSoundFileLocs,1) do\r\ngiSoundFileSrs[ipcnt]
+    filesr gSSoundFileLocs[ipcnt]\r\nipcnt += 1\r\nod\r\n\r\n//Get file channels
+    (mono/stereo)\r\ngiSoundFileChnls[] init 4\r\n\r\nipcnt = 0\r\nwhile ipcnt <
+    lenarray(gSSoundFileLocs,1) do\r\ngiSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]\r\nipcnt
+    += 1\r\nod\r\n\r\n//Get file lengths\r\ngiSoundFileLgts[] init 4\r\n\r\nipcnt
+    = 0\r\nwhile ipcnt < lenarray(gSSoundFileLocs,1) do\r\ngiSoundFileLgts[ipcnt]
+    filelen gSSoundFileLocs[ipcnt]\r\nipcnt += 1\r\nod\r\nendin\r\n\r\n//Sampler
+    instrument\r\n//i, start, dur, pitch, file_index\r\ninstr SMPLR ; play audio
+    from function table using flooper2 opcode\r\n    kAmp adsr 0.01,0.2,0,0     ;
+    volume envelope\r\n    kPitch       =         p4  ; pitch/speed\r\n    kLoopStart  
+    =         0   ; point where looping begins (in seconds)\r\n    kLoopEnd     =        
+    giSoundFileLgts[p5]; loop end (end of file)\r\n    kCrossFade   =         0  
+    ; cross-fade time\r\n    ; read audio from the function table using the flooper2
+    opcode\r\n    aSigL,aSigR         flooper2  kAmp,kPitch,kLoopStart,kLoopEnd,kCrossFade,giSoundFiles[p5]\r\n                
+    out       aSigL, aSigR ; send audio to output\r\nendin\r\n\r\n//Sampler instrument
+    for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
+    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n    giSoundFiles[0]
+    chnget \"sampletable900\"\r\n    giSoundFiles[1] chnget \"sampletable901\"\r\n   
+    giSoundFiles[2] chnget \"sampletable902\"\r\n    giSoundFiles[3] chnget \"sampletable903\"\r\n\r\n   
+    ifn   = giSoundFiles[p4]\r\n    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4,
+    ifn\r\n    ilen  =  nsamp(ifn)\r\n    ;prints \"actual numbers of samples = %d\\n\",
+    ilen\r\n    itrns =  1\t; no transposition\r\n    ilps  =  0\t; loop starts at
+    index 0\r\n    ilpe  =  ilen\t; ends at value returned by nsamp above\r\n   
+    imode =  1\t; loops forward\r\n    istrt =  0\t; commence playback at index 0
+    samples\r\n    ; lphasor provides index into f1 \r\n    alphs lphasor itrns,
+    ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n    outs atab *.1,
+    atab*.1\r\nendin\r\n\r\n//EUCLIDEAN RHYTHMS\r\n\r\ngilayers init 4 ;number of
+    layers may be changed, however, only up to 4 files are supported as of writing\r\ngitotalsteps
+    init 16\r\n\r\ngkgrid[][] init gilayers,gitotalsteps\r\n\r\ngkpulses[] init gilayers\r\n\r\n//Fills
+    the grid\r\ninstr EUC_FILL\r\n//\r\n    kbucket[] init gilayers\r\n    kstep
+    init 0\r\n    klayer init 0\r\n//\r\n    //Set pulse and rotation values from
+    sliders for each layer\r\n    while klayer < lenarray(gkgrid,1) do\r\n       
+    gkpulses[klayer] = klayer+3 ;test value, change to: chnget sprintfk(\"layer%d_pulses\",ilayer)\r\n       
+    \r\n        //krotation[klayer] chnget sprintfk(\"layer%d_rotation\",klayer)\r\n       
+    klayer+=1\r\n    od\r\n    \r\n    klayer = 0\r\n    //Fill sequence\r\n    while
+    klayer < lenarray(gkgrid,1) do\r\n        kstep = 0\r\n        while kstep <
+    lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation
+    support)\r\n    \r\n            kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n   
+    \r\n            if kbucket[klayer] >= lenarray(gkgrid,2) then\r\n               
+    kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep]
+    = 1\r\n            else\r\n                gkgrid[klayer][kstep] = 0\r\n           
+    endif\r\n            \r\n            //gkgrid[ilayer][istep+ lenarray(gkgrid,2)]
+    = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation
+    support)\r\n    \r\n            kstep += 1\r\n        od\r\n        klayer +=
+    1\r\n    od\r\nendin\r\n\r\n//Steps through the grid and triggers sounds accordingly\r\ninstr
+    EUC_STEP\r\n//\r\n    krot init 0 ;rotation, i.e., grid offset\r\n    kstep init
+    0 ;current sequencer step\r\n//\r\n\r\n    if gktrig == 1 then\r\n        //Fill
+    grid if kstep = 0\r\n        if kstep == 0 then\r\n            event \"i\", \"EUC_FILL\",
+    0, 1\r\n        endif\r\n    \r\n        //Check grid for all layers at current
+    step and trigger samples accordingly\r\n        klayer = 0\r\n        \r\n       
+    while klayer < lenarray(gkgrid,1) do\r\n            if gkgrid[klayer][kstep]
+    == 1 then\r\n                event \"i\", \"SMPLR_UNITY\", 0, 2, klayer\r\n           
+    endif\r\n            klayer += 1\r\n        od\r\n    \r\n        kstep = (kstep
+    + 1) % gitotalsteps  ;perform modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
+    0 z\r\ni \"CLOCK\" 0 -1\r\ni \"SMPLR_LOAD\" 0 1\r\ni \"EUC_STEP\" 0 -1\r\n</CsScore>\r\n</CsoundSynthesizer>"
+  _csoundFileName: eucrth_unity.csd
+  _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
+  _channels: []
   _availableAudioChannels: []
+  _drawCsoundString: 0
+  _drawTestScore: 0
+  _drawSettings: 1
+  _drawChannels: 0
+  _drawAudioChannels: 0
 --- !u!82 &1232899649
 AudioSource:
   m_ObjectHideFlags: 0
@@ -424,6 +430,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1232899651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232899646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808ea5eec994c45649c7cb10c01d8084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: e603af93d0bb14c4380b8381fd6dd34a, type: 3}
+  - {fileID: 8300000, guid: ee9cf33c2b4724ebd8307e563b35cd2e, type: 3}
+  - {fileID: 8300000, guid: 12da252042ae34ae19f1e79109f1fdf5, type: 3}
+  - {fileID: 8300000, guid: a9f595128ef004f9f85b403fdab61fea, type: 3}
 --- !u!1 &1376057538
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,16 +557,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1682405788}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: 1054132383583890850, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: 3710738434707379630, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 2064916234097673511, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: -1967631576421560919, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 8056856818456041789, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: 3279352641294131588, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: 3837173908680883260, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 4502412055082496612, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 4754684134866288074, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!114 &1682405790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +662,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1790104316
 Canvas:
   m_ObjectHideFlags: 0
@@ -748,6 +780,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &1863112708
