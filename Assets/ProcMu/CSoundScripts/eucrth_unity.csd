@@ -11,9 +11,13 @@ ksmps = 32
 nchnls = 2
 0dbfs = 1
 
+
+
+
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
-    kbpm = 120  ;beats per minute
+    kbpm init 120
+    ;kbpm = chnget("gBpm")  ;beats per minute
     kpulses = 4 ;pulses per beat
     
     gktrig metro kbpm*kpulses/60
@@ -30,62 +34,63 @@ instr SYNTH
     out aOsc,aOsc
 endin
 
-instr SMPLR_LOAD
 //SAMPLER
-; file operations/setup
+instr SMPLR_LOAD
+    ; file operations/setup
+    giSoundFiles[] init 4   //Allocating space to load samples from Unity
 
-ipcnt = 0 ;counter for iterating through the following arrays
+    ipcnt = 0 ;counter for iterating through the following arrays
 
-//Set file locations / THIS SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY
-gSSoundFileLocs[] init 4
-gSSoundFileLocs[0] = "samples/HIHAT1.wav"
-gSSoundFileLocs[1] = "samples/TOM1.wav"
-gSSoundFileLocs[2] = "samples/CLAV1.wav"
-gSSoundFileLocs[3] = "samples/CONGA1.wav"
-
-
-//Generate ftables from files
-giSoundFiles[] init 4
+    //Set file locations / THIS SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY
+    gSSoundFileLocs[] init 4
+    gSSoundFileLocs[0] = "samples/HIHAT1.wav"
+    gSSoundFileLocs[1] = "samples/TOM1.wav"
+    gSSoundFileLocs[2] = "samples/CLAV1.wav"
+    gSSoundFileLocs[3] = "samples/CONGA1.wav"
 
 
+    //Generate ftables from files
+    ;giSoundFiles[] init 4 ;we only allocate space here. Initialization with values
+/*
+    ipcnt = 0
+    while ipcnt < lenarray(gSSoundFileLocs,1) do
+    giSoundFiles[ipcnt] ftgen 0, 0, 0, 1, gSSoundFileLocs[ipcnt], 0, 0, 0
+    ipcnt += 1
+    od
+*/
+    //Get file sample rates
+    giSoundFileSrs[] init 4
 
-ipcnt = 0
-while ipcnt < lenarray(gSSoundFileLocs,1) do
-giSoundFiles[ipcnt] ftgen 0, 0, 0, 1, gSSoundFileLocs[ipcnt], 0, 0, 0
-ipcnt += 1
-od
+    ipcnt = 0
+    while ipcnt < lenarray(gSSoundFileLocs,1) do
+    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]
+    ipcnt += 1
+    od
 
-//Get file sample rates
-giSoundFileSrs[] init 4
+    //Get file channels (mono/stereo)
+    giSoundFileChnls[] init 4
 
-ipcnt = 0
-while ipcnt < lenarray(gSSoundFileLocs,1) do
-giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]
-ipcnt += 1
-od
+    ipcnt = 0
+    while ipcnt < lenarray(gSSoundFileLocs,1) do
+    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]
+    ipcnt += 1
+    od
 
-//Get file channels (mono/stereo)
-giSoundFileChnls[] init 4
+    //Get file lengths
+    giSoundFileLgts[] init 4
 
-ipcnt = 0
-while ipcnt < lenarray(gSSoundFileLocs,1) do
-giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]
-ipcnt += 1
-od
-
-//Get file lengths
-giSoundFileLgts[] init 4
-
-ipcnt = 0
-while ipcnt < lenarray(gSSoundFileLocs,1) do
-giSoundFileLgts[ipcnt] filelen gSSoundFileLocs[ipcnt]
-ipcnt += 1
-od
+    ipcnt = 0
+    while ipcnt < lenarray(gSSoundFileLocs,1) do
+    giSoundFileLgts[ipcnt] filelen gSSoundFileLocs[ipcnt]
+    ipcnt += 1
+    od
 endin
 
 //Sampler instrument
 //i, start, dur, pitch, file_index
 instr SMPLR ; play audio from function table using flooper2 opcode
+    giSoundFiles[p5] chnget sprintf("sampletable%d", 900+p5)
+
     kAmp adsr 0.01,0.2,0,0     ; volume envelope
     kPitch       =         p4  ; pitch/speed
     kLoopStart   =         0   ; point where looping begins (in seconds)
@@ -99,10 +104,7 @@ endin
 //Sampler instrument for use with audioclips from Unity
 //i, start, dur, pitch, file_index
 instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
-    giSoundFiles[0] chnget "sampletable900"
-    giSoundFiles[1] chnget "sampletable901"
-    giSoundFiles[2] chnget "sampletable902"
-    giSoundFiles[3] chnget "sampletable903"
+    giSoundFiles[p4] chnget sprintf("sampletable%d", 900+p4)
 
     ifn   = giSoundFiles[p4]
     ;prints "giTable p4 = %d, ifn = %d\n", p4, ifn
@@ -128,7 +130,7 @@ gkgrid[][] init gilayers,gitotalsteps
 
 gkpulses[] init gilayers
 
-//Fills the grid
+//Fills the grid. Triggered at the start of a new bar.
 instr EUC_FILL
 //
     kbucket[] init gilayers
@@ -137,7 +139,7 @@ instr EUC_FILL
 //
     //Set pulse and rotation values from sliders for each layer
     while klayer < lenarray(gkgrid,1) do
-        gkpulses[klayer] = klayer+3 ;test value, change to: chnget sprintfk("layer%d_pulses",ilayer)
+        gkpulses[klayer] = klayer + chnget("gIntensity") ;test value, change to: chnget sprintfk("layer%d_pulses",ilayer)
         
         //krotation[klayer] chnget sprintfk("layer%d_rotation",klayer)
         klayer+=1
@@ -174,7 +176,7 @@ instr EUC_STEP
 //
 
     if gktrig == 1 then
-        //Fill grid if kstep = 0
+        //Fill grid on start of a new bar
         if kstep == 0 then
             event "i", "EUC_FILL", 0, 1
         endif
@@ -196,8 +198,8 @@ endin
 </CsInstruments>
 <CsScore>
 f 0 z
-i "CLOCK" 0 -1
 i "SMPLR_LOAD" 0 1
+i "CLOCK" 0 -1
 i "EUC_STEP" 0 -1
 </CsScore>
 </CsoundSynthesizer>
