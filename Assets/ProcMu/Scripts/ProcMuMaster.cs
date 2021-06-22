@@ -14,13 +14,14 @@ public class ProcMuMaster : MonoBehaviour
     [SerializeField] private double bpm = 120;
     [SerializeField] private double intensity = 1;
 
+    [SerializeField] private MuConfig mc;
+
     private void Awake()
     {
         //Assign CsoundUnity component
         if (!csoundUnity) Debug.LogError("Can't find CsoundUnity component!");
     }
 
-    [SerializeField] private MuConfig mc;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -53,8 +54,9 @@ public class ProcMuMaster : MonoBehaviour
 
             if (samples.Length > 0)
             {
-                int nChan = clip.channels;
                 int tableNum = 900 + count;
+
+                int nChan = clip.channels;
                 int res = csoundUnity.CreateTable(tableNum, samples);
 
                 csoundUnity.SetChannel($"sampletable{tableNum}", tableNum);
@@ -80,6 +82,11 @@ public class ProcMuMaster : MonoBehaviour
         //Global variables
         csoundUnity.SetChannel("gBpm", bpm);
         csoundUnity.SetChannel("gIntensity", intensity);
+
+
+        //Set scale table / TODO Only execute when scale has changed
+        csoundUnity.CopyTableIn(800, ProcMuUtils.ConvertScale(mc.Scale.Scale));
+        //csoundUnity.SetChannel("gScale", 800);
 
         //Eucrth variables
     }

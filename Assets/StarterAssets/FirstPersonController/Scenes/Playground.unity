@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logCsoundOutput: 1
+  logCsoundOutput: 0
   mute: 0
   processClipAudio: 0
   loudVolumeWarning: 1
@@ -161,87 +161,83 @@ MonoBehaviour:
   csoundScore: 
   _csoundFileGUID: 2c354fc75e3af46ba9fdaf755c10c0c9
   _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
-    -d \r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.
-    \r\nksmps = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\n\r\ngiSoundFiles[] init 4 ;we
-    only allocate space here. Initialization with values\r\n\r\n//Generates a global
-    clock signal (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    kbpm init
-    120\r\n    ;kbpm = chnget(\"gBpm\")  ;beats per minute\r\n    kpulses = 4 ;pulses
-    per beat\r\n    \r\n    gktrig metro kbpm*kpulses/60\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST
-    SIMPLE OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr
-    .01,0.1,0,0\r\n    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc,aOsc\r\nendin\r\n\r\n//SAMPLER\r\ninstr
-    SMPLR_LOAD\r\n    ; file operations/setup\r\n\r\n    ipcnt = 0 ;counter for iterating
-    through the following arrays\r\n\r\n    //Set file locations / THIS SHOULD BECOME
-    DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY\r\n    gSSoundFileLocs[]
-    init 4\r\n    gSSoundFileLocs[0] = \"samples/HIHAT1.wav\"\r\n    gSSoundFileLocs[1]
-    = \"samples/TOM1.wav\"\r\n    gSSoundFileLocs[2] = \"samples/CLAV1.wav\"\r\n   
-    gSSoundFileLocs[3] = \"samples/CONGA1.wav\"\r\n\r\n\r\n    //Generate ftables
-    from files\r\n    ;giSoundFiles[] init 4 ;we only allocate space here. Initialization
-    with values\r\n/*\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
-    do\r\n    giSoundFiles[ipcnt] ftgen 0, 0, 0, 1, gSSoundFileLocs[ipcnt], 0, 0,
-    0\r\n    ipcnt += 1\r\n    od\r\n*/\r\n    //Get file sample rates\r\n    giSoundFileSrs[]
-    init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
-    do\r\n    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]\r\n    ipcnt +=
-    1\r\n    od\r\n\r\n    //Get file channels (mono/stereo)\r\n    giSoundFileChnls[]
+    -d\r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.\r\nksmps
+    = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\nseed 0  //Sets a new seed for randomization
+    on every init\r\n\r\n//TABLES\r\n;system\r\ngiScale ftgen 800, 0, 128, 2, -1\r\n\r\ngiSoundFiles[]
+    init 4   //Allocating space to load samples from Unity\r\n\r\n//SYSTEM INSTRUMENTS\r\ninstr
+    UPD\r\n\r\n  gktest table 0, 800\r\nendin\r\n\r\n//Generates a global clock signal
+    (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    gkbpm init 120 ;beats
+    per minute\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n   
+    ;gkbpm = chnget(\"gkbpm\")\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST SIMPLE
+    OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr .01,0.1,0,0\r\n   
+    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc*0.5,aOsc*0.5\r\nendin\r\n\r\n//SAMPLER\r\ninstr
+    SMPLR_LOAD\r\n    ; file operations/setup\r\n\r\n\r\n    ipcnt = 0 ;counter for
+    iterating through the following arrays\r\n\r\n    //Set file locations / THIS
+    SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY\r\n   
+    gSSoundFileLocs[] init 4\r\n    gSSoundFileLocs[0] = \"samples/HIHAT1.wav\"\r\n   
+    gSSoundFileLocs[1] = \"samples/TOM1.wav\"\r\n    gSSoundFileLocs[2] = \"samples/CLAV1.wav\"\r\n   
+    gSSoundFileLocs[3] = \"samples/CONGA1.wav\"\r\n\r\n\r\n    //Get file sample
+    rates\r\n    giSoundFileSrs[] init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt
+    < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]\r\n   
+    ipcnt += 1\r\n    od\r\n\r\n    //Get file channels (mono/stereo)\r\n    giSoundFileChnls[]
     init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
     do\r\n    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]\r\n    ipcnt
     += 1\r\n    od\r\n\r\n    //Get file lengths\r\n    giSoundFileLgts[] init 4\r\n\r\n   
     ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileLgts[ipcnt]
     filelen gSSoundFileLocs[ipcnt]\r\n    ipcnt += 1\r\n    od\r\nendin\r\n\r\n//Sampler
-    instrument\r\n//i, start, dur, pitch, file_index\r\ninstr SMPLR ; play audio
-    from function table using flooper2 opcode\r\n    giSoundFiles[p5] chnget sprintf(\"sampletable%d\",
-    900+p5)\r\n\r\n    kAmp adsr 0.01,0.2,0,0     ; volume envelope\r\n    kPitch      
-    =         p4  ; pitch/speed\r\n    kLoopStart   =         0   ; point where looping
-    begins (in seconds)\r\n    kLoopEnd     =         giSoundFileLgts[p5]; loop end
-    (end of file)\r\n    kCrossFade   =         0   ; cross-fade time\r\n    ; read
-    audio from the function table using the flooper2 opcode\r\n    aSigL,aSigR        
-    flooper2  kAmp,kPitch,kLoopStart,kLoopEnd,kCrossFade,giSoundFiles[p5]\r\n                
-    out       aSigL, aSigR ; send audio to output\r\nendin\r\n\r\n//Sampler instrument
-    for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
+    instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
     SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n    giSoundFiles[p4]
     chnget sprintf(\"sampletable%d\", 900+p4)\r\n\r\n    ifn   = giSoundFiles[p4]\r\n   
     ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n   
     ;prints \"actual numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
     ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
     by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
-    playback at index 0 samples\r\n    ; lphasor provides index into f1 \r\n    alphs
+    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
     lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n   
     outs atab *.1, atab*.1\r\nendin\r\n\r\n//EUCLIDEAN RHYTHMS\r\n\r\ngilayers init
     4 ;number of layers may be changed, however, only up to 4 files are supported
     as of writing\r\ngitotalsteps init 16\r\n\r\ngkgrid[][] init gilayers,gitotalsteps\r\n\r\ngkpulses[]
     init gilayers\r\n\r\n//Fills the grid. Triggered at the start of a new bar.\r\ninstr
-    EUC_FILL\r\n//\r\n    kbucket[] init gilayers\r\n    kstep init 0\r\n    klayer
-    init 0\r\n//\r\n    //Set pulse and rotation values from sliders for each layer\r\n   
-    while klayer < lenarray(gkgrid,1) do\r\n        gkpulses[klayer] = klayer + chnget(\"gIntensity\")
-    ;test value, change to: chnget sprintfk(\"layer%d_pulses\",ilayer)\r\n       
-    \r\n        //krotation[klayer] chnget sprintfk(\"layer%d_rotation\",klayer)\r\n       
-    klayer+=1\r\n    od\r\n    \r\n    klayer = 0\r\n    //Fill sequence\r\n    while
-    klayer < lenarray(gkgrid,1) do\r\n        kstep = 0\r\n        while kstep <
-    lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation
-    support)\r\n    \r\n            kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n   
-    \r\n            if kbucket[klayer] >= lenarray(gkgrid,2) then\r\n               
-    kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep]
-    = 1\r\n            else\r\n                gkgrid[klayer][kstep] = 0\r\n           
-    endif\r\n            \r\n            //gkgrid[ilayer][istep+ lenarray(gkgrid,2)]
-    = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation
-    support)\r\n    \r\n            kstep += 1\r\n        od\r\n        klayer +=
-    1\r\n    od\r\nendin\r\n\r\n//Steps through the grid and triggers sounds accordingly\r\ninstr
-    EUC_STEP\r\n//\r\n    krot init 0 ;rotation, i.e., grid offset\r\n    kstep init
-    0 ;current sequencer step\r\n//\r\n\r\n    if gktrig == 1 then\r\n        //Fill
-    grid on start of a new bar\r\n        if kstep == 0 then\r\n            event
-    \"i\", \"EUC_FILL\", 0, 1\r\n        endif\r\n    \r\n        //Check grid for
-    all layers at current step and trigger samples accordingly\r\n        klayer
-    = 0\r\n        \r\n        while klayer < lenarray(gkgrid,1) do\r\n           
-    if gkgrid[klayer][kstep] == 1 then\r\n                event \"i\", \"SMPLR_UNITY\",
-    0, 2, klayer\r\n            endif\r\n            klayer += 1\r\n        od\r\n   
-    \r\n        kstep = (kstep + 1) % gitotalsteps  ;perform modulo operation to
-    clamp step index\r\n    endif\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
-    0 z\r\ni \"CLOCK\" 0 -1\r\n;i \"SMPLR_LOAD\" 0 1 no need to load sampler when
-    using unity integration\r\ni \"EUC_STEP\" 0 -1\r\n</CsScore>\r\n</CsoundSynthesizer>"
+    EUC_FILL\r\n    //\r\n    kbucket[] init gilayers\r\n    kstep init 0\r\n   
+    klayer init 0\r\n    //\r\n    //Set pulse and rotation values from sliders for
+    each layer\r\n    while klayer < lenarray(gkgrid,1) do\r\n        gkpulses[klayer]
+    = klayer + chnget(\"gIntensity\") ;test value, change to: chnget sprintfk(\"layer%d_pulses\",ilayer)\r\n\r\n       
+    //krotation[klayer] chnget sprintfk(\"layer%d_rotation\",klayer)\r\n        klayer+=1\r\n   
+    od\r\n\r\n    klayer = 0\r\n    //Fill sequence\r\n    while klayer < lenarray(gkgrid,1)
+    do\r\n        kstep = 0\r\n        while kstep < lenarray(gkgrid,2) do ;dividing
+    by 2 as array is twice the step size (for rotation support)\r\n\r\n           
+    kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n\r\n            if kbucket[klayer]
+    >= lenarray(gkgrid,2) then\r\n                kbucket[klayer] = kbucket[klayer]
+    - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep] = 1\r\n           
+    else\r\n                gkgrid[klayer][kstep] = 0\r\n            endif\r\n\r\n           
+    //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying
+    current value to offset position (for rotation support)\r\n\r\n            kstep
+    += 1\r\n        od\r\n        klayer += 1\r\n    od\r\nendin\r\n\r\n//Steps through
+    the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    //\r\n    krot
+    init 0 ;rotation, i.e., grid offset\r\n    kstep init 0 ;current sequencer step\r\n   
+    //\r\n\r\n    if gktrig == 1 then\r\n        //Fill grid on start of a new bar\r\n       
+    if changed(kstep) == 1 then\r\n            event \"i\", \"EUC_FILL\", 0, 1\r\n       
+    endif\r\n\r\n        //Check grid for all layers at current step and trigger
+    samples accordingly\r\n        klayer = 0\r\n\r\n        while klayer < lenarray(gkgrid,1)
+    do\r\n            if gkgrid[klayer][kstep] == 1 then\r\n                event
+    \"i\", \"SMPLR_UNITY\", 0, 2, klayer\r\n            endif\r\n            klayer
+    += 1\r\n        od\r\n\r\n        kstep = (kstep + 1) % gitotalsteps  ;perform
+    modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\ninstr SNHMEL\r\n 
+    krangeMin init 48\r\n  krangeMax init 80\r\n  kfreq = gkbpm/60\r\n\r\n  kAmp
+    init 1\r\n\r\n  ksp rspline krangeMin, krangeMax, kfreq, kfreq\r\n\r\n  ksnh
+    samphold ksp, gktrig\r\n  ksnh limit ksp, 0, 127\r\n  ksnh = int(ksnh)\r\n\r\n\r\n 
+    krand random 0, 8\r\n  krand = int(krand)\r\n  ktab tablei krand, 800  ;test
+    code, remove/edit\r\n\r\n  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating
+    frequency from midi note number\r\n  ;kPitch = mtof:k(ktab)  //...because mtof
+    is not working in this version of CsoundUnity\r\n\r\n  if gktrig == 1 then\r\n   
+    event \"i\", \"SYNTH\", 0, 0.4, kPitch\r\n  endif\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
+    0 z\r\ni \"UPD\" 2 -1\r\n;i \"SMPLR_LOAD\" 2 1\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\"
+    2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
   _csoundFileName: eucrth_unity.csd
   _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
   _channels: []
   _availableAudioChannels: []
-  _drawCsoundString: 0
+  _drawCsoundString: 1
   _drawTestScore: 1
   _drawSettings: 1
   _drawChannels: 1

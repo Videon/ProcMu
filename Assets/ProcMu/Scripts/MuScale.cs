@@ -6,5 +6,6 @@ namespace ProcMu.CSUnity
     public class MuScale : ScriptableObject
     {
         [SerializeField] public bool[] Scale = new bool[128];
+        public double[] ScaleCs { get; } = new double[128];
     }
 }

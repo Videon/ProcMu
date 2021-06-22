@@ -8,7 +8,7 @@ namespace ProcMu.CSUnity
         #region Global parameters
 
         [SerializeField] private double bpm = 120;
-        [SerializeField] private MuScale scale;
+        public MuScale Scale;
 
         #endregion
 

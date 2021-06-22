@@ -3,24 +3,37 @@
 
 <CsoundSynthesizer>
 <CsOptions>
--n -d 
+-n -d
 </CsOptions>
 <CsInstruments>
-; Initialize the global variables. 
+; Initialize the global variables.
 ksmps = 32
 nchnls = 2
 0dbfs = 1
 
+seed 0  //Sets a new seed for randomization on every init
 
+//TABLES
+;system
+giScale ftgen 800, 0, 128, 2, -1
 
+giSoundFiles[] init 4   //Allocating space to load samples from Unity
+
+//SYSTEM INSTRUMENTS
+instr UPD
+
+  gktest table 0, 800
+endin
 
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
-    kbpm init 120
-    ;kbpm = chnget("gBpm")  ;beats per minute
+    gkbpm init 120 ;beats per minute
+
     kpulses = 4 ;pulses per beat
-    
-    gktrig metro kbpm*kpulses/60
+
+    gktrig metro gkbpm*kpulses/60
+
+    ;gkbpm = chnget("gkbpm")
 endin
 
 //INSTRUMENTS
@@ -31,13 +44,13 @@ instr SYNTH
     kAmp adsr .01,0.1,0,0
     kPitch = p4
     aOsc poscil kAmp, kPitch
-    out aOsc,aOsc
+    out aOsc*0.5,aOsc*0.5
 endin
 
 //SAMPLER
 instr SMPLR_LOAD
     ; file operations/setup
-    giSoundFiles[] init 4   //Allocating space to load samples from Unity
+
 
     ipcnt = 0 ;counter for iterating through the following arrays
 
@@ -49,15 +62,6 @@ instr SMPLR_LOAD
     gSSoundFileLocs[3] = "samples/CONGA1.wav"
 
 
-    //Generate ftables from files
-    ;giSoundFiles[] init 4 ;we only allocate space here. Initialization with values
-/*
-    ipcnt = 0
-    while ipcnt < lenarray(gSSoundFileLocs,1) do
-    giSoundFiles[ipcnt] ftgen 0, 0, 0, 1, gSSoundFileLocs[ipcnt], 0, 0, 0
-    ipcnt += 1
-    od
-*/
     //Get file sample rates
     giSoundFileSrs[] init 4
 
@@ -86,21 +90,6 @@ instr SMPLR_LOAD
     od
 endin
 
-//Sampler instrument
-//i, start, dur, pitch, file_index
-instr SMPLR ; play audio from function table using flooper2 opcode
-    giSoundFiles[p5] chnget sprintf("sampletable%d", 900+p5)
-
-    kAmp adsr 0.01,0.2,0,0     ; volume envelope
-    kPitch       =         p4  ; pitch/speed
-    kLoopStart   =         0   ; point where looping begins (in seconds)
-    kLoopEnd     =         giSoundFileLgts[p5]; loop end (end of file)
-    kCrossFade   =         0   ; cross-fade time
-    ; read audio from the function table using the flooper2 opcode
-    aSigL,aSigR         flooper2  kAmp,kPitch,kLoopStart,kLoopEnd,kCrossFade,giSoundFiles[p5]
-                 out       aSigL, aSigR ; send audio to output
-endin
-
 //Sampler instrument for use with audioclips from Unity
 //i, start, dur, pitch, file_index
 instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
@@ -115,7 +104,7 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
     ilpe  =  ilen	; ends at value returned by nsamp above
     imode =  1	; loops forward
     istrt =  0	; commence playback at index 0 samples
-    ; lphasor provides index into f1 
+    ; lphasor provides index into f1
     alphs lphasor itrns, ilps, ilpe, imode, istrt
     atab  tablei  alphs, ifn
     outs atab *.1, atab*.1
@@ -132,36 +121,36 @@ gkpulses[] init gilayers
 
 //Fills the grid. Triggered at the start of a new bar.
 instr EUC_FILL
-//
+    //
     kbucket[] init gilayers
     kstep init 0
     klayer init 0
-//
+    //
     //Set pulse and rotation values from sliders for each layer
     while klayer < lenarray(gkgrid,1) do
         gkpulses[klayer] = klayer + chnget("gIntensity") ;test value, change to: chnget sprintfk("layer%d_pulses",ilayer)
-        
+
         //krotation[klayer] chnget sprintfk("layer%d_rotation",klayer)
         klayer+=1
     od
-    
+
     klayer = 0
     //Fill sequence
     while klayer < lenarray(gkgrid,1) do
         kstep = 0
         while kstep < lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation support)
-    
+
             kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]
-    
+
             if kbucket[klayer] >= lenarray(gkgrid,2) then
                 kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)
                 gkgrid[klayer][kstep] = 1
             else
                 gkgrid[klayer][kstep] = 0
             endif
-            
+
             //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation support)
-    
+
             kstep += 1
         od
         klayer += 1
@@ -170,36 +159,64 @@ endin
 
 //Steps through the grid and triggers sounds accordingly
 instr EUC_STEP
-//
+    //
     krot init 0 ;rotation, i.e., grid offset
     kstep init 0 ;current sequencer step
-//
+    //
 
     if gktrig == 1 then
         //Fill grid on start of a new bar
-        if kstep == 0 then
+        if changed(kstep) == 1 then
             event "i", "EUC_FILL", 0, 1
         endif
-    
+
         //Check grid for all layers at current step and trigger samples accordingly
         klayer = 0
-        
+
         while klayer < lenarray(gkgrid,1) do
             if gkgrid[klayer][kstep] == 1 then
                 event "i", "SMPLR_UNITY", 0, 2, klayer
             endif
             klayer += 1
         od
-    
+
         kstep = (kstep + 1) % gitotalsteps  ;perform modulo operation to clamp step index
     endif
+endin
+
+instr SNHMEL
+  krangeMin init 48
+  krangeMax init 80
+  kfreq = gkbpm/60
+
+  kAmp init 1
+
+  ksp rspline krangeMin, krangeMax, kfreq, kfreq
+
+  ksnh samphold ksp, gktrig
+  ksnh limit ksp, 0, 127
+  ksnh = int(ksnh)
+
+
+  krand random 0, 8
+  krand = int(krand)
+  ktab tablei krand, 800  ;test code, remove/edit
+
+  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
+  ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
+
+  if gktrig == 1 then
+    event "i", "SYNTH", 0, 0.4, kPitch
+  endif
 endin
 
 </CsInstruments>
 <CsScore>
 f 0 z
-i "SMPLR_LOAD" 0 1
-i "CLOCK" 0 -1
-i "EUC_STEP" 0 -1
+i "UPD" 2 -1
+;i "SMPLR_LOAD" 2 1
+i "CLOCK" 2 -1
+i "EUC_STEP" 2 -1
+i "SNHMEL" 2 -1
 </CsScore>
 </CsoundSynthesizer>

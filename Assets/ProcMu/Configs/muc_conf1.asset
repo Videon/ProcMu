@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: muc_conf1
   m_EditorClassIdentifier: 
   bpm: 120
-  scale: {fileID: 11400000, guid: 42a8d29c27e164e82ba16670891df24a, type: 2}
+  Scale: {fileID: 11400000, guid: 12da68175461540f1934c4bb801a7d1e, type: 2}
