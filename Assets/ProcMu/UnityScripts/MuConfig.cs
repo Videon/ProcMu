@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProcMu.CSUnity
+namespace ProcMu.UnityScripts
 {
     [CreateAssetMenu(fileName = "muc_", menuName = "ProcMu/Music configuration", order = 1)]
     public class MuConfig : ScriptableObject

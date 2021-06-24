@@ -22,12 +22,12 @@ giSoundFiles[] init 4   //Allocating space to load samples from Unity
 //SYSTEM INSTRUMENTS
 instr UPD
 
-  gktest table 0, 800
+  gktest table 0, 800 ;check if obsolete
 endin
 
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
-    gkbpm init 120 ;beats per minute
+    gkbpm init 110 ;beats per minute
 
     kpulses = 4 ;pulses per beat
 
@@ -107,7 +107,11 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
     ; lphasor provides index into f1
     alphs lphasor itrns, ilps, ilpe, imode, istrt
     atab  tablei  alphs, ifn
-    outs atab *.1, atab*.1
+
+    ;outs atab *.1, atab*.1
+    chnset atab, "eucrth_l"
+    chnset atab, "eucrth_r"
+
 endin
 
 //EUCLIDEAN RHYTHMS
@@ -184,30 +188,52 @@ instr EUC_STEP
     endif
 endin
 
+//Maybe SNHMEL could use a morphable wavetable for sound generation??
 instr SNHMEL
-  krangeMin init 48
-  krangeMax init 80
-  kfreq = gkbpm/60
+  krangeMin init 0
+  krangeMax init 0
+  kfreqMin = 60/gkbpm
+  kfreqMax = gkbpm/60
 
   kAmp init 1
 
-  ksp rspline krangeMin, krangeMax, kfreq, kfreq
+
+
+  kCnt init 0
+  kTablen tableng 800 //Note: 800 is index of global scale table. Preferable to use a variable instead...
+
+  //Todo: Make sure that this is only performed if the table contents have changed!
+  while tablei(kCnt,800) != -1 do
+    kCnt += 1
+  od
+
+//SNH FOR VOLUME
+  kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be modified through config in Unity and connected with intensity
+  kAmp limit kAmp, 0, 1
+
+//SNH FOR MELODY
+  ksp rspline 0, kCnt, kfreqMin, kfreqMax
 
   ksnh samphold ksp, gktrig
-  ksnh limit ksp, 0, 127
+  ksnh limit ksp, 0, kCnt
   ksnh = int(ksnh)
 
 
-  krand random 0, 8
-  krand = int(krand)
-  ktab tablei krand, 800  ;test code, remove/edit
-
-  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
-  ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
+  ktab tablei ksnh, 800  ;test code, remove/edit
 
   if gktrig == 1 then
-    event "i", "SYNTH", 0, 0.4, kPitch
+    kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
+    ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
   endif
+
+  kPitchPrt portk kPitch, .01
+
+  //Sound generation
+
+  aOsc poscil kAmp, kPitchPrt
+
+  chnset aOsc, "snhmel_l"
+  chnset aOsc, "snhmel_r"
 endin
 
 </CsInstruments>

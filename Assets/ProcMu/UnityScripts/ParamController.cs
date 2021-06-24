@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace ProcMu.CSUnity
+namespace ProcMu.UnityScripts
 {
     public class ParamController : MonoBehaviour
     {
         [SerializeField] private CharacterController cc;
         // Start is called before the first frame update
 
-        private CsoundUnity _csoundUnity;
+        [SerializeField] private CsoundUnity _csoundUnity;
         private bool _isInitialized;
 
         private void Awake()
@@ -25,7 +25,7 @@ namespace ProcMu.CSUnity
         void Update()
         {
             if (!_csoundUnity.IsInitialized) return;
-            
+
             _csoundUnity.SetChannel("gIntensity", cc.velocity.magnitude);
         }
     }

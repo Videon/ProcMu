@@ -123,7 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &364543697
+--- !u!1 &140356639
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,127 +131,61 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 364543701}
-  - component: {fileID: 364543700}
-  - component: {fileID: 364543699}
+  - component: {fileID: 140356640}
+  - component: {fileID: 140356642}
+  - component: {fileID: 140356641}
   m_Layer: 0
-  m_Name: CsoundUnity
+  m_Name: SNHMEL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &364543699
+--- !u!4 &140356640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140356639}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 364543701}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &140356641
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364543697}
+  m_GameObject: {fileID: 140356639}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
+  m_Script: {fileID: 11500000, guid: a8ca54534d5404e2db1edcd9fb2a20c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logCsoundOutput: 0
-  mute: 0
-  processClipAudio: 0
-  loudVolumeWarning: 1
-  loudWarningThreshold: 10
-  csoundScore: 
-  _csoundFileGUID: 2c354fc75e3af46ba9fdaf755c10c0c9
-  _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
-    -d\r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.\r\nksmps
-    = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\nseed 0  //Sets a new seed for randomization
-    on every init\r\n\r\n//TABLES\r\n;system\r\ngiScale ftgen 800, 0, 128, 2, -1\r\n\r\ngiSoundFiles[]
-    init 4   //Allocating space to load samples from Unity\r\n\r\n//SYSTEM INSTRUMENTS\r\ninstr
-    UPD\r\n\r\n  gktest table 0, 800\r\nendin\r\n\r\n//Generates a global clock signal
-    (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    gkbpm init 120 ;beats
-    per minute\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n   
-    ;gkbpm = chnget(\"gkbpm\")\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST SIMPLE
-    OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr .01,0.1,0,0\r\n   
-    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc*0.5,aOsc*0.5\r\nendin\r\n\r\n//SAMPLER\r\ninstr
-    SMPLR_LOAD\r\n    ; file operations/setup\r\n\r\n\r\n    ipcnt = 0 ;counter for
-    iterating through the following arrays\r\n\r\n    //Set file locations / THIS
-    SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY\r\n   
-    gSSoundFileLocs[] init 4\r\n    gSSoundFileLocs[0] = \"samples/HIHAT1.wav\"\r\n   
-    gSSoundFileLocs[1] = \"samples/TOM1.wav\"\r\n    gSSoundFileLocs[2] = \"samples/CLAV1.wav\"\r\n   
-    gSSoundFileLocs[3] = \"samples/CONGA1.wav\"\r\n\r\n\r\n    //Get file sample
-    rates\r\n    giSoundFileSrs[] init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt
-    < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]\r\n   
-    ipcnt += 1\r\n    od\r\n\r\n    //Get file channels (mono/stereo)\r\n    giSoundFileChnls[]
-    init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
-    do\r\n    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]\r\n    ipcnt
-    += 1\r\n    od\r\n\r\n    //Get file lengths\r\n    giSoundFileLgts[] init 4\r\n\r\n   
-    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileLgts[ipcnt]
-    filelen gSSoundFileLocs[ipcnt]\r\n    ipcnt += 1\r\n    od\r\nendin\r\n\r\n//Sampler
-    instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
-    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n    giSoundFiles[p4]
-    chnget sprintf(\"sampletable%d\", 900+p4)\r\n\r\n    ifn   = giSoundFiles[p4]\r\n   
-    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n   
-    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
-    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
-    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
-    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
-    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n   
-    outs atab *.1, atab*.1\r\nendin\r\n\r\n//EUCLIDEAN RHYTHMS\r\n\r\ngilayers init
-    4 ;number of layers may be changed, however, only up to 4 files are supported
-    as of writing\r\ngitotalsteps init 16\r\n\r\ngkgrid[][] init gilayers,gitotalsteps\r\n\r\ngkpulses[]
-    init gilayers\r\n\r\n//Fills the grid. Triggered at the start of a new bar.\r\ninstr
-    EUC_FILL\r\n    //\r\n    kbucket[] init gilayers\r\n    kstep init 0\r\n   
-    klayer init 0\r\n    //\r\n    //Set pulse and rotation values from sliders for
-    each layer\r\n    while klayer < lenarray(gkgrid,1) do\r\n        gkpulses[klayer]
-    = klayer + chnget(\"gIntensity\") ;test value, change to: chnget sprintfk(\"layer%d_pulses\",ilayer)\r\n\r\n       
-    //krotation[klayer] chnget sprintfk(\"layer%d_rotation\",klayer)\r\n        klayer+=1\r\n   
-    od\r\n\r\n    klayer = 0\r\n    //Fill sequence\r\n    while klayer < lenarray(gkgrid,1)
-    do\r\n        kstep = 0\r\n        while kstep < lenarray(gkgrid,2) do ;dividing
-    by 2 as array is twice the step size (for rotation support)\r\n\r\n           
-    kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n\r\n            if kbucket[klayer]
-    >= lenarray(gkgrid,2) then\r\n                kbucket[klayer] = kbucket[klayer]
-    - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep] = 1\r\n           
-    else\r\n                gkgrid[klayer][kstep] = 0\r\n            endif\r\n\r\n           
-    //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying
-    current value to offset position (for rotation support)\r\n\r\n            kstep
-    += 1\r\n        od\r\n        klayer += 1\r\n    od\r\nendin\r\n\r\n//Steps through
-    the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    //\r\n    krot
-    init 0 ;rotation, i.e., grid offset\r\n    kstep init 0 ;current sequencer step\r\n   
-    //\r\n\r\n    if gktrig == 1 then\r\n        //Fill grid on start of a new bar\r\n       
-    if changed(kstep) == 1 then\r\n            event \"i\", \"EUC_FILL\", 0, 1\r\n       
-    endif\r\n\r\n        //Check grid for all layers at current step and trigger
-    samples accordingly\r\n        klayer = 0\r\n\r\n        while klayer < lenarray(gkgrid,1)
-    do\r\n            if gkgrid[klayer][kstep] == 1 then\r\n                event
-    \"i\", \"SMPLR_UNITY\", 0, 2, klayer\r\n            endif\r\n            klayer
-    += 1\r\n        od\r\n\r\n        kstep = (kstep + 1) % gitotalsteps  ;perform
-    modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\ninstr SNHMEL\r\n 
-    krangeMin init 48\r\n  krangeMax init 80\r\n  kfreq = gkbpm/60\r\n\r\n  kAmp
-    init 1\r\n\r\n  ksp rspline krangeMin, krangeMax, kfreq, kfreq\r\n\r\n  ksnh
-    samphold ksp, gktrig\r\n  ksnh limit ksp, 0, 127\r\n  ksnh = int(ksnh)\r\n\r\n\r\n 
-    krand random 0, 8\r\n  krand = int(krand)\r\n  ktab tablei krand, 800  ;test
-    code, remove/edit\r\n\r\n  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating
-    frequency from midi note number\r\n  ;kPitch = mtof:k(ktab)  //...because mtof
-    is not working in this version of CsoundUnity\r\n\r\n  if gktrig == 1 then\r\n   
-    event \"i\", \"SYNTH\", 0, 0.4, kPitch\r\n  endif\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
-    0 z\r\ni \"UPD\" 2 -1\r\n;i \"SMPLR_LOAD\" 2 1\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\"
-    2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
-  _csoundFileName: eucrth_unity.csd
-  _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
-  _channels: []
-  _availableAudioChannels: []
-  _drawCsoundString: 1
-  _drawTestScore: 1
-  _drawSettings: 1
-  _drawChannels: 1
-  _drawAudioChannels: 1
---- !u!82 &364543700
+  csoundUnityGameObject: {fileID: 364543697}
+  AudioChannelsSetting: 2
+  selectedAudioChannelIndexByChannel: 0200000003000000000000000000000000000000000000000000000000000000
+  availableAudioChannels:
+  - eucrth_l
+  - eucrth_r
+  - snhmel_l
+  - snhmel_r
+  bufferSize: 0
+--- !u!82 &140356642
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364543697}
+  m_GameObject: {fileID: 140356639}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -480404426382617597, guid: ff2d0d7f791774ff59edc76965182dfc, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -261,14 +195,14 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
-  BypassReverbZones: 0
+  BypassReverbZones: 1
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -328,7 +262,235 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1 &364543697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 364543701}
+  - component: {fileID: 364543700}
+  - component: {fileID: 364543699}
+  m_Layer: 0
+  m_Name: CsoundUnity
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &364543699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364543697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logCsoundOutput: 1
+  mute: 0
+  processClipAudio: 0
+  loudVolumeWarning: 1
+  loudWarningThreshold: 10
+  csoundScore: 
+  _csoundFileGUID: 2c354fc75e3af46ba9fdaf755c10c0c9
+  _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
+    -d\r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.\r\nksmps
+    = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\nseed 0  //Sets a new seed for randomization
+    on every init\r\n\r\n//TABLES\r\n;system\r\ngiScale ftgen 800, 0, 128, 2, -1\r\n\r\ngiSoundFiles[]
+    init 4   //Allocating space to load samples from Unity\r\n\r\n//SYSTEM INSTRUMENTS\r\ninstr
+    UPD\r\n\r\n  gktest table 0, 800 ;check if obsolete\r\nendin\r\n\r\n//Generates
+    a global clock signal (gktrig) as long as it's running.\r\ninstr CLOCK\r\n   
+    gkbpm init 110 ;beats per minute\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n   
+    gktrig metro gkbpm*kpulses/60\r\n\r\n    ;gkbpm = chnget(\"gkbpm\")\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST
+    SIMPLE OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr
+    .01,0.1,0,0\r\n    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc*0.5,aOsc*0.5\r\nendin\r\n\r\n//SAMPLER\r\ninstr
+    SMPLR_LOAD\r\n    ; file operations/setup\r\n\r\n\r\n    ipcnt = 0 ;counter for
+    iterating through the following arrays\r\n\r\n    //Set file locations / THIS
+    SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY\r\n   
+    gSSoundFileLocs[] init 4\r\n    gSSoundFileLocs[0] = \"samples/HIHAT1.wav\"\r\n   
+    gSSoundFileLocs[1] = \"samples/TOM1.wav\"\r\n    gSSoundFileLocs[2] = \"samples/CLAV1.wav\"\r\n   
+    gSSoundFileLocs[3] = \"samples/CONGA1.wav\"\r\n\r\n\r\n    //Get file sample
+    rates\r\n    giSoundFileSrs[] init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt
+    < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]\r\n   
+    ipcnt += 1\r\n    od\r\n\r\n    //Get file channels (mono/stereo)\r\n    giSoundFileChnls[]
+    init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
+    do\r\n    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]\r\n    ipcnt
+    += 1\r\n    od\r\n\r\n    //Get file lengths\r\n    giSoundFileLgts[] init 4\r\n\r\n   
+    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileLgts[ipcnt]
+    filelen gSSoundFileLocs[ipcnt]\r\n    ipcnt += 1\r\n    od\r\nendin\r\n\r\n//Sampler
+    instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
+    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n    giSoundFiles[p4]
+    chnget sprintf(\"sampletable%d\", 900+p4)\r\n\r\n    ifn   = giSoundFiles[p4]\r\n   
+    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n   
+    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
+    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
+    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
+    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
+    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n\r\n   
+    ;outs atab *.1, atab*.1\r\n    chnset atab, \"eucrth_l\"\r\n    chnset atab,
+    \"eucrth_r\"\r\n\r\nendin\r\n\r\n//EUCLIDEAN RHYTHMS\r\n\r\ngilayers init 4 ;number
+    of layers may be changed, however, only up to 4 files are supported as of writing\r\ngitotalsteps
+    init 16\r\n\r\ngkgrid[][] init gilayers,gitotalsteps\r\n\r\ngkpulses[] init gilayers\r\n\r\n//Fills
+    the grid. Triggered at the start of a new bar.\r\ninstr EUC_FILL\r\n    //\r\n   
+    kbucket[] init gilayers\r\n    kstep init 0\r\n    klayer init 0\r\n    //\r\n   
+    //Set pulse and rotation values from sliders for each layer\r\n    while klayer
+    < lenarray(gkgrid,1) do\r\n        gkpulses[klayer] = klayer + chnget(\"gIntensity\")
+    ;test value, change to: chnget sprintfk(\"layer%d_pulses\",ilayer)\r\n\r\n       
+    //krotation[klayer] chnget sprintfk(\"layer%d_rotation\",klayer)\r\n        klayer+=1\r\n   
+    od\r\n\r\n    klayer = 0\r\n    //Fill sequence\r\n    while klayer < lenarray(gkgrid,1)
+    do\r\n        kstep = 0\r\n        while kstep < lenarray(gkgrid,2) do ;dividing
+    by 2 as array is twice the step size (for rotation support)\r\n\r\n           
+    kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n\r\n            if kbucket[klayer]
+    >= lenarray(gkgrid,2) then\r\n                kbucket[klayer] = kbucket[klayer]
+    - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep] = 1\r\n           
+    else\r\n                gkgrid[klayer][kstep] = 0\r\n            endif\r\n\r\n           
+    //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying
+    current value to offset position (for rotation support)\r\n\r\n            kstep
+    += 1\r\n        od\r\n        klayer += 1\r\n    od\r\nendin\r\n\r\n//Steps through
+    the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    //\r\n    krot
+    init 0 ;rotation, i.e., grid offset\r\n    kstep init 0 ;current sequencer step\r\n   
+    //\r\n\r\n    if gktrig == 1 then\r\n        //Fill grid on start of a new bar\r\n       
+    if changed(kstep) == 1 then\r\n            event \"i\", \"EUC_FILL\", 0, 1\r\n       
+    endif\r\n\r\n        //Check grid for all layers at current step and trigger
+    samples accordingly\r\n        klayer = 0\r\n\r\n        while klayer < lenarray(gkgrid,1)
+    do\r\n            if gkgrid[klayer][kstep] == 1 then\r\n                event
+    \"i\", \"SMPLR_UNITY\", 0, 2, klayer\r\n            endif\r\n            klayer
+    += 1\r\n        od\r\n\r\n        kstep = (kstep + 1) % gitotalsteps  ;perform
+    modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\n//Maybe SNHMEL
+    could use a morphable wavetable for sound generation??\r\ninstr SNHMEL\r\n  krangeMin
+    init 0\r\n  krangeMax init 0\r\n  kfreqMin = 60/gkbpm\r\n  kfreqMax = gkbpm/60\r\n\r\n 
+    kAmp init 1\r\n\r\n\r\n\r\n  kCnt init 0\r\n  kTablen tableng 800 //Note: 800
+    is index of global scale table. Preferable to use a variable instead...\r\n\r\n 
+    //Todo: Make sure that this is only performed if the table contents have changed!\r\n 
+    while tablei(kCnt,800) != -1 do\r\n    kCnt += 1\r\n  od\r\n\r\n//SNH FOR VOLUME\r\n 
+    kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be modified through
+    config in Unity and connected with intensity\r\n  kAmp limit kAmp, 0, 1\r\n\r\n//SNH
+    FOR MELODY\r\n  ksp rspline 0, kCnt, kfreqMin, kfreqMax\r\n\r\n  ksnh samphold
+    ksp, gktrig\r\n  ksnh limit ksp, 0, kCnt\r\n  ksnh = int(ksnh)\r\n\r\n\r\n  ktab
+    tablei ksnh, 800  ;test code, remove/edit\r\n\r\n  if gktrig == 1 then\r\n   
+    kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi
+    note number\r\n    ;kPitch = mtof:k(ktab)  //...because mtof is not working in
+    this version of CsoundUnity\r\n  endif\r\n\r\n  kPitchPrt portk kPitch, .01\r\n\r\n 
+    //Sound generation\r\n\r\n  aOsc poscil kAmp, kPitchPrt\r\n\r\n  chnset aOsc,
+    \"snhmel_l\"\r\n  chnset aOsc, \"snhmel_r\"\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
+    0 z\r\ni \"UPD\" 2 -1\r\n;i \"SMPLR_LOAD\" 2 1\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\"
+    2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
+  _csoundFileName: eucrth_unity.csd
+  _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
+  _channels: []
+  _availableAudioChannels:
+  - eucrth_l
+  - eucrth_r
+  - snhmel_l
+  - snhmel_r
+  _drawCsoundString: 1
+  _drawTestScore: 1
+  _drawSettings: 1
+  _drawChannels: 1
+  _drawAudioChannels: 1
+--- !u!82 &364543700
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364543697}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 1
+  BypassReverbZones: 1
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
       value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -348,7 +510,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2095221265}
+  - {fileID: 140356640}
   m_Father: {fileID: 1424407682}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1113,6 +1277,155 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
+--- !u!1 &2095221264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2095221265}
+  - component: {fileID: 2095221267}
+  - component: {fileID: 2095221266}
+  m_Layer: 0
+  m_Name: EUCRTH
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2095221265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095221264}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 364543701}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2095221266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095221264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8ca54534d5404e2db1edcd9fb2a20c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  csoundUnityGameObject: {fileID: 364543697}
+  AudioChannelsSetting: 2
+  selectedAudioChannelIndexByChannel: 0000000001000000000000000000000000000000000000000000000000000000
+  availableAudioChannels:
+  - eucrth_l
+  - eucrth_r
+  - snhmel_l
+  - snhmel_r
+  bufferSize: 0
+--- !u!82 &2095221267
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095221264}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 758183161078276854, guid: ff2d0d7f791774ff59edc76965182dfc, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 1
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &60889539378096550
 PrefabInstance:
   m_ObjectHideFlags: 0

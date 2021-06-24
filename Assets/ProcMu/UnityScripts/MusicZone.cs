@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProcMu.CSUnity
+namespace ProcMu.UnityScripts
 {
     public class MusicZone : MonoBehaviour
     {

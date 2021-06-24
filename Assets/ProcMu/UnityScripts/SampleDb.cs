@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProcMu.CSUnity
+namespace ProcMu.UnityScripts
 {
     public class SampleDb : ScriptableObject
     {

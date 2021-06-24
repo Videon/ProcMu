@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace ProcMu.CSUnity
+namespace ProcMu.UnityScripts
 {
     public class EucRth : MonoBehaviour
     {

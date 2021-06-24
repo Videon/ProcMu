@@ -1,3 +1,5 @@
+using ProcMu.UnityScripts;
+using ProcMu.UnityScripts.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,6 +9,9 @@ namespace ProcMu.CSUnity.Editor
     [CustomEditor(typeof(MuScale))]
     public class MuScaleEditor : UnityEditor.Editor
     {
+        private Tonic _tonic;
+        private Scale _scale;
+
         public override void OnInspectorGUI()
         {
             //Assign object variables
@@ -15,6 +20,16 @@ namespace ProcMu.CSUnity.Editor
 
             int arrlen = activeNotes.Length;
 
+            DrawScale(scale, activeNotes, arrlen);
+            DrawGenerateDialogue(scale, ref activeNotes, arrlen);
+
+            EditorUtility.SetDirty(target); //TODO Set dirty only when something was changed!
+        }
+
+        #region Drawing elements
+
+        private void DrawScale(MuScale scale, bool[] activeNotes, int arrlen)
+        {
             EditorGUILayout.BeginVertical();
             while (arrlen > 0)
             {
@@ -40,14 +55,22 @@ namespace ProcMu.CSUnity.Editor
             }
 
             EditorGUILayout.EndVertical();
-
-            EditorUtility.SetDirty(target); //TODO Set dirty only when something was changed!
         }
 
-        #region Drawing elements
-
-        private void DrawScale()
+        private void DrawGenerateDialogue(MuScale scale, ref bool[] activeNotes, int arrlen)
         {
+            EditorGUILayout.BeginHorizontal();
+
+            _tonic = (Tonic) EditorGUILayout.EnumPopup(_tonic);
+            _scale = (Scale) EditorGUILayout.EnumPopup(_scale);
+
+            if (GUILayout.Button("Generate scale"))
+            {
+                ProcMuUtils.GenerateScale(_tonic, _scale, ref activeNotes);
+                DrawScale(scale, activeNotes, arrlen);
+            }
+
+            EditorGUILayout.EndHorizontal();
         }
 
         #endregion
