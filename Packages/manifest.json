@@ -2,7 +2,7 @@
   "dependencies": {
     "com.csound.csoundunity": "https://github.com/rorywalsh/CsoundUnity.git#develop",
     "com.unity.cinemachine": "2.6.5",
-    "com.unity.ide.rider": "2.0.7",
+    "com.unity.ide.rider": "3.0.7",
     "com.unity.ide.vscode": "1.2.3",
     "com.unity.inputsystem": "1.0.2",
     "com.unity.render-pipelines.universal": "10.5.0",

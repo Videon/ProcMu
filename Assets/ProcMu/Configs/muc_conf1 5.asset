@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a868a37e677a4ffd9772fbe11c32c38, type: 3}
-  m_Name: muc_conf1
+  m_Name: muc_conf1 5
   m_EditorClassIdentifier: 
   bpm: 120
-  Scale: {fileID: 11400000, guid: 9e6b57d02016d4ecbaf2791c4923671a, type: 2}
+  Scale: {fileID: 11400000, guid: dae37be81f79f42fd8607f61de608833, type: 2}
   sampleSelection: 00000000000000000000000000000000
   minImpulses0: 00000000000000000000000000000000
   maxImpulses0: 00000000000000000000000000000000

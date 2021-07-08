@@ -100,5 +100,35 @@ namespace ProcMu.UnityScripts.Utilities
                 scaleCnt %= scale.Length; //Performing mod operation to wrap index
             }
         }
+
+        /// <summary> Comparer for use with Array.Sort, sorting arrays according to distance, in ascending order. </summary>
+        /// <param name="m1"></param>
+        /// <param name="m2"></param>
+        /// <returns>1 if m1 is larger than m2, or equal, or null. -1 if m1 is smaller than m2 or m2 is null.</returns>
+        public static int CompareMcDists(McDist m1, McDist m2)
+        {
+            //Checking for null will ensure that null values rise to the top of the array when sorting
+            if (m1.Mc == null) return 1; //Move up if first parameter is null
+
+            if (m2.Mc == null) return -1; //Move down if second parameter is null
+
+            //Now that null cases have been handled, the actual value comparison follows
+            if (m1.Dist < m2.Dist) return -1;
+
+            return 1;
+        }
+
+        public static int CompareMcDistsInverse(McDist m1, McDist m2)
+        {
+            //Checking for null will ensure that null values rise to the top of the array when sorting
+            if (m1.Mc == null) return 1; //Move up if first parameter is null
+
+            if (m2.Mc == null) return -1; //Move down if second parameter is null
+
+            //Now that null cases have been handled, the actual value comparison follows
+            if (m1.Dist < m2.Dist) return 1;
+
+            return -1;
+        }
     }
 }

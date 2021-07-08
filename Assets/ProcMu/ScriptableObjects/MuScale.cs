@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProcMu.UnityScripts
+namespace ProcMu.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "mus_", menuName = "ProcMu/Scale", order = 1)]
     public class MuScale : ScriptableObject

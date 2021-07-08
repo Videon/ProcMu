@@ -14,9 +14,13 @@ nchnls = 2
 seed 0  //Sets a new seed for randomization on every init
 
 //TABLES
-;system
+;global scale config table
 giScale ftgen 800, 0, 128, 2, -1
 
+;EucRth config table
+giEucRthConfig ftgen 801, 0, 8, -2, 0
+
+;EucRth samples tables
 giSoundFiles[] init 4   //Allocating space to load samples from Unity
 
 //SYSTEM INSTRUMENTS
@@ -27,7 +31,8 @@ endin
 
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
-    gkbpm init 110 ;beats per minute
+    gkbpm init 110 ;beats per minute, TODO fetch from Unity with chnget
+    gkbpm chnget "gBpm"
 
     kpulses = 4 ;pulses per beat
 
@@ -47,7 +52,7 @@ instr SYNTH
     out aOsc*0.5,aOsc*0.5
 endin
 
-//SAMPLER
+//SAMPLER - TODO DEPRECATED?
 instr SMPLR_LOAD
     ; file operations/setup
 
@@ -56,10 +61,6 @@ instr SMPLR_LOAD
 
     //Set file locations / THIS SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY
     gSSoundFileLocs[] init 4
-    gSSoundFileLocs[0] = "samples/HIHAT1.wav"
-    gSSoundFileLocs[1] = "samples/TOM1.wav"
-    gSSoundFileLocs[2] = "samples/CLAV1.wav"
-    gSSoundFileLocs[3] = "samples/CONGA1.wav"
 
 
     //Get file sample rates
@@ -130,11 +131,10 @@ instr EUC_FILL
     kstep init 0
     klayer init 0
     //
-    //Set pulse and rotation values from sliders for each layer
+    //Set pulse and rotation values from sliders for each layer, TODO rotation not implemented!
     while klayer < lenarray(gkgrid,1) do
-        gkpulses[klayer] = klayer + chnget("gIntensity") ;test value, change to: chnget sprintfk("layer%d_pulses",ilayer)
+        gkpulses[klayer] tab (klayer * 2) + 1, 801
 
-        //krotation[klayer] chnget sprintfk("layer%d_rotation",klayer)
         klayer+=1
     od
 
@@ -142,13 +142,14 @@ instr EUC_FILL
     //Fill sequence
     while klayer < lenarray(gkgrid,1) do
         kstep = 0
+        kbucket[klayer] = 0
         while kstep < lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation support)
 
             kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]
 
             if kbucket[klayer] >= lenarray(gkgrid,2) then
                 kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)
-                gkgrid[klayer][kstep] = 1
+                gkgrid[klayer][kstep] = tab(klayer * 2, 801)  ;set grid value to sample index
             else
                 gkgrid[klayer][kstep] = 0
             endif
@@ -170,7 +171,7 @@ instr EUC_STEP
 
     if gktrig == 1 then
         //Fill grid on start of a new bar
-        if changed(kstep) == 1 then
+        if kstep == 0 then
             event "i", "EUC_FILL", 0, 1
         endif
 
@@ -178,8 +179,8 @@ instr EUC_STEP
         klayer = 0
 
         while klayer < lenarray(gkgrid,1) do
-            if gkgrid[klayer][kstep] == 1 then
-                event "i", "SMPLR_UNITY", 0, 2, klayer
+            if gkgrid[klayer][kstep] != 0 then
+                event "i", "SMPLR_UNITY", 0, 2, gkgrid[klayer][kstep]
             endif
             klayer += 1
         od
@@ -213,6 +214,7 @@ instr SNHMEL
 
 //SNH FOR MELODY
   ksp rspline 0, kCnt, kfreqMin, kfreqMax
+
 
   ksnh samphold ksp, gktrig
   ksnh limit ksp, 0, kCnt
