@@ -15,10 +15,12 @@ seed 0  //Sets a new seed for randomization on every init
 
 //TABLES
 ;global scale config table
-giScale ftgen 800, 0, 128, 2, -1
+giScale ftgen 800, 0, 128, -2, -1
 
 ;EucRth config table
 giEucRthConfig ftgen 801, 0, 8, -2, 0
+giSnhMelConfig ftgen 802, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
+giChordsConfig ftgen 803, 0, 2, -2, 0 ;params 0 = minOct, 1 = maxOct
 
 ;EucRth samples tables
 giSoundFiles[] init 4   //Allocating space to load samples from Unity
@@ -31,14 +33,13 @@ endin
 
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
-    gkbpm init 110 ;beats per minute, TODO fetch from Unity with chnget
-    gkbpm chnget "gBpm"
+    gkbpm init 110 ;beats per minute
+    ;gkbpm portk chnget("gBpm"), 0.5
+    gkbpm chnget "gBpm" ;TODO implement smoothing for handling external value changes
 
     kpulses = 4 ;pulses per beat
 
     gktrig metro gkbpm*kpulses/60
-
-    ;gkbpm = chnget("gkbpm")
 endin
 
 //INSTRUMENTS
@@ -94,9 +95,8 @@ endin
 //Sampler instrument for use with audioclips from Unity
 //i, start, dur, pitch, file_index
 instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
-    giSoundFiles[p4] chnget sprintf("sampletable%d", 900+p4)
 
-    ifn   = giSoundFiles[p4]
+    ifn   =  chnget(sprintf("sampletable%d", 900+p4))
     ;prints "giTable p4 = %d, ifn = %d\n", p4, ifn
     ilen  =  nsamp(ifn)
     ;prints "actual numbers of samples = %d\n", ilen
@@ -109,9 +109,11 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
     alphs lphasor itrns, ilps, ilpe, imode, istrt
     atab  tablei  alphs, ifn
 
-    ;outs atab *.1, atab*.1
-    chnset atab, "eucrth_l"
-    chnset atab, "eucrth_r"
+    outs atab *.1, atab*.1
+
+
+    ;chnmix atab, "eucrth_l"  TODO use chnmix to sum sound of all sampler instances
+    ;chnmix atab, "eucrth_r"
 
 endin
 
@@ -127,13 +129,13 @@ gkpulses[] init gilayers
 //Fills the grid. Triggered at the start of a new bar.
 instr EUC_FILL
     //
-    kbucket[] init gilayers
+    kbucket[] init gilayers ;using as many "buckets" as percussion layers
     kstep init 0
-    klayer init 0
+    klayer = 0
     //
     //Set pulse and rotation values from sliders for each layer, TODO rotation not implemented!
     while klayer < lenarray(gkgrid,1) do
-        gkpulses[klayer] tab (klayer * 2) + 1, 801
+        gkpulses[klayer] tab (klayer * 2) + 1, 801 ;fetch number of pulses from eucrth config table
 
         klayer+=1
     od
@@ -149,9 +151,9 @@ instr EUC_FILL
 
             if kbucket[klayer] >= lenarray(gkgrid,2) then
                 kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)
-                gkgrid[klayer][kstep] = tab(klayer * 2, 801)  ;set grid value to sample index
+                gkgrid[klayer][kstep] = tab(klayer * 2, 801)  ;if impulse, set grid value to sample index
             else
-                gkgrid[klayer][kstep] = 0
+                gkgrid[klayer][kstep] = -1  ;-1 = no impulse on grid position
             endif
 
             //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation support)
@@ -179,7 +181,7 @@ instr EUC_STEP
         klayer = 0
 
         while klayer < lenarray(gkgrid,1) do
-            if gkgrid[klayer][kstep] != 0 then
+            if gkgrid[klayer][kstep] > -1 then
                 event "i", "SMPLR_UNITY", 0, 2, gkgrid[klayer][kstep]
             endif
             klayer += 1
@@ -191,51 +193,140 @@ endin
 
 //Maybe SNHMEL could use a morphable wavetable for sound generation??
 instr SNHMEL
-  krangeMin init 0
-  krangeMax init 0
-  kfreqMin = 60/gkbpm
-  kfreqMax = gkbpm/60
+  krangeMin = tab(0,802)
+  krangeMax = tab(1,802)
+  kfreqMin = tab(2,802)
+  kfreqMax = kfreqMin
 
-  kAmp init 1
-
-
+  kAmp = 1
 
   kCnt init 0
-  kTablen tableng 800 //Note: 800 is index of global scale table. Preferable to use a variable instead...
+  kTablen tableng 800
 
-  //Todo: Make sure that this is only performed if the table contents have changed!
-  while tablei(kCnt,800) != -1 do
+  //TODO: Make sure this is only performed if the table contents have changed!
+  while tablei(kCnt,800) > -1 do
     kCnt += 1
   od
 
 //SNH FOR VOLUME
-  kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be modified through config in Unity and connected with intensity
-  kAmp limit kAmp, 0, 1
+  ;kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be modified through config in Unity and connected with intensity
+  ;kAmp limit kAmp, 0, 1
 
 //SNH FOR MELODY
-  ksp rspline 0, kCnt, kfreqMin, kfreqMax
+  ksp rspline krangeMin*12, krangeMax*12, kfreqMin, kfreqMax
 
+  ktab tab int(ksp), 800
 
-  ksnh samphold ksp, gktrig
-  ksnh limit ksp, 0, kCnt
-  ksnh = int(ksnh)
-
-
-  ktab tablei ksnh, 800  ;test code, remove/edit
-
-  if gktrig == 1 then
-    kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
-    ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
+  if ktab > -1 then
+    kPitch = pow(2,(ktab-69)/12)*440
   endif
+
+
+  ;ksnh samphold ksp, gktrig
+  ;ksnh limit ksp, 0, kCnt
+  ;ksnh = int(ksnh)
+
+
+  ;ktab tab ksnh, 800  ;test code, remove/edit
+
+  ;if gktrig == 1 then
+  ;  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
+    ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
+  ;endif
 
   kPitchPrt portk kPitch, .01
 
   //Sound generation
 
-  aOsc poscil kAmp, kPitchPrt
+  aOsc poscil kAmp*.1, kPitchPrt
 
   chnset aOsc, "snhmel_l"
   chnset aOsc, "snhmel_r"
+endin
+
+gkChord[] init 5 ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes w smaller intervals
+
+//Builds a new chord
+instr CHORDS_SET
+  ;krangeMin = tab(0,803)
+  ;krangeMax = tab(1,803)
+
+  krangeMin = 64  ;TODO REMOVE TEST VALUES AND USE ABOVE FETCH FROM TAB
+  krangeMax = 88
+
+  kNotes[] init 128 ; array for saving possible notes to choose from (as midi note number)
+
+  gkChord[] init 5 ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes w smaller intervals
+
+  kCnt = 0  ;counter variable
+
+//Find all notes which are part of the scale and are between krangeMin/krangeMax
+  while krangeMin + kCnt < krangeMax do
+    kVal = tab(krangeMin + kCnt, 800)
+    if kVal > -1 then
+      kNotes[kCnt] = krangeMin + kCnt
+
+      else
+    endif
+
+    kCnt+=1
+  od
+
+  kNotesMax = kCnt
+
+
+  kRoot = kNotes[int(random(0, kNotesMax))]   ; 1. get "root" note, can be any note which was found above
+
+
+
+//Filling the chord note array
+  kCnt = 0
+
+  gkChord[kCnt] = kRoot
+  kCnt+=1
+
+  ; 2. if root note + 7 is within scale, add note
+  kVal = tab(kRoot + 7, 800)
+  if kVal > -1 then
+    gkChord[kCnt] = kRoot+7
+  endif
+
+  kCnt+=1
+
+  ; 3. add note which is root note + 12
+  kVal = tab(kRoot + 12, 800)
+  if kVal > -1 then
+    gkChord[kCnt] = kRoot + 12
+  endif
+
+  kCnt+=1
+
+  ; 4. add root note + 15, if possible
+  kVal = tab(kRoot + 15, 800)
+  if kVal > -1 then
+    gkChord[kCnt] = kRoot + 15
+  endif
+
+  kCnt+=1
+
+  ; 5. add root note + 17, if possible
+  kVal = tab(kRoot + 17, 800)
+  if kVal > -1 then
+    gkChord[kCnt] = kRoot + 17
+    else
+      kVal = tab(kRoot + 19, 800)
+      if kVal > -1 then
+        gkChord[kCnt] = kRoot + 19
+      endif
+  endif
+
+  kCnt=0
+
+  while kCnt < lenarray(gkChord) do
+    prints "chord note %d: %d", kCnt, gkChord[kCnt]
+    kCnt+=1
+  od
+
 endin
 
 </CsInstruments>
@@ -246,5 +337,8 @@ i "UPD" 2 -1
 i "CLOCK" 2 -1
 i "EUC_STEP" 2 -1
 i "SNHMEL" 2 -1
+i "CHORDS_SET" 20 1
+i "CHORDS_SET" 21 1
+i "CHORDS_SET" 22 1
 </CsScore>
 </CsoundSynthesizer>

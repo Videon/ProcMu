@@ -13,8 +13,8 @@ namespace ProcMu.UnityScripts
         private AudioClip[] audioClips;
 
         //Test variables
-        [SerializeField] private double bpm = 120;
-        [SerializeField] private float intensity = 1;
+        [SerializeField, Range(0, 1000)] private double bpm = 120;
+        [SerializeField, Range(0f, 1f)] private float intensity = 1;
 
         public MuConfig mc;
 
@@ -93,8 +93,7 @@ namespace ProcMu.UnityScripts
 
 
             csoundUnity.CopyTableIn(801, EucRthGenerateConfig());
-
-            //Eucrth variables
+            csoundUnity.CopyTableIn(802, SnhMelGenerateConfig());
         }
 
         private double[] EucRthGenerateConfig()
@@ -105,12 +104,22 @@ namespace ProcMu.UnityScripts
             {
                 eucrthConfig[2 * i] = mc.sampleSelection[i];
                 eucrthConfig[2 * i + 1] = Mathf.RoundToInt(Random.Range(
-                    Mathf.RoundToInt(Mathf.Lerp(mc.minImpulses0[i], mc.minImpulses1[i], intensity)),
-                    Mathf.RoundToInt(Mathf.Lerp(mc.maxImpulses0[i], mc.maxImpulses1[i], intensity))
+                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.minImpulses0[i], mc.minImpulses1[i], intensity)),
+                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.maxImpulses0[i], mc.maxImpulses1[i], intensity))
                 ));
             }
-            
+
             return eucrthConfig;
+        }
+
+        private double[] SnhMelGenerateConfig()
+        {
+            double[] snhmelConfig = new double[3];
+            snhmelConfig[0] = mc.minOct;
+            snhmelConfig[1] = mc.maxOct;
+            snhmelConfig[2] = mc.occurence;
+
+            return snhmelConfig;
         }
     }
 }

@@ -22,5 +22,13 @@ namespace ProcMu.ScriptableObjects
         public int[] maxImpulses1 = new int[4];
 
         #endregion
+
+        #region SNHMEL parameters
+
+        public int minOct = 0;
+        public int maxOct = 10;
+        public double occurence = 2;
+
+        #endregion
     }
 }

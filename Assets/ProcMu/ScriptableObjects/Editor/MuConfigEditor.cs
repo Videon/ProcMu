@@ -32,7 +32,7 @@ public class MuConfigEditor : Editor
     private void DrawEucRth()
     {
         EditorGUILayout.BeginVertical();
-        EditorGUILayout.Space(10f);
+        EditorGUILayout.Space(20f);
         EditorGUILayout.LabelField("Euclidean Rhythm settings");
 
         EditorGUILayout.BeginHorizontal();
@@ -83,8 +83,24 @@ public class MuConfigEditor : Editor
     private void DrawSnhMel()
     {
         EditorGUILayout.BeginVertical();
-        EditorGUILayout.Space(10f);
+        EditorGUILayout.Space(20f);
         EditorGUILayout.LabelField("Sample And Hold Melody Settings");
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Octave range", GUILayout.Width(120f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("Occurence (per minute)", GUILayout.Width(240f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        _muConfig.minOct = EditorGUILayout.IntField(_muConfig.minOct, GUILayout.Width(60f));
+        _muConfig.maxOct = EditorGUILayout.IntField(_muConfig.maxOct, GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        _muConfig.occurence = EditorGUILayout.DoubleField(_muConfig.occurence, GUILayout.Width(60f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("min", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("max", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
     }
 
