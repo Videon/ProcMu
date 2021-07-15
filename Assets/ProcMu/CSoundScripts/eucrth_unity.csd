@@ -14,22 +14,36 @@ nchnls = 2
 seed 0  //Sets a new seed for randomization on every init
 
 //TABLES
-;global scale config table
-giScale ftgen 800, 0, 128, -2, -1
+;Global config tables - #800-809
+giScale ftgen 800, 0, 128, -2, -1 ;Global scale table
 
-;EucRth config table
-giEucRthConfig ftgen 801, 0, 8, -2, 0
-giSnhMelConfig ftgen 802, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
-giChordsConfig ftgen 803, 0, 2, -2, 0 ;params 0 = minOct, 1 = maxOct
+;EucRth config tables - #810-819
+giEucRthConfig ftgen 810, 0, 8, -2, 0
+giSoundFiles[] init 4   //EucRth samples tables, allocating space to load samples from Unity. Uses tables 900+n. Currently n = 4
 
-;EucRth samples tables
-giSoundFiles[] init 4   //Allocating space to load samples from Unity
+
+;SnhMel config tables - #820-829
+giSnhMelConfig ftgen 820, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
+
+
+;Chords config tables - #830-839
+giChordsConfig ftgen 830, 0, -7, -2, 0  ;params: 0 = minOct, 1 = maxOct
+giChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 = note0, 1 = note1...16 = note16
+giChordsInstr ftgen 832, 0, 16, -2, 0 ;instrument config table
+
+;Waveforms
+giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+giSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10
+giSqu  ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0
+giTri  ftgen  703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0
+
+//GLOBAL VARIABLES
+gitotalsteps init 16
+
+//CHANNELS
+chn_k "update", 1
 
 //SYSTEM INSTRUMENTS
-instr UPD
-
-  gktest table 0, 800 ;check if obsolete
-endin
 
 //Generates a global clock signal (gktrig) as long as it's running.
 instr CLOCK
@@ -37,9 +51,22 @@ instr CLOCK
     ;gkbpm portk chnget("gBpm"), 0.5
     gkbpm chnget "gBpm" ;TODO implement smoothing for handling external value changes
 
+    kstep init 0
+
     kpulses = 4 ;pulses per beat
 
     gktrig metro gkbpm*kpulses/60
+
+    if gktrig == 1 then
+      kstep = (kstep + 1) % gitotalsteps  ;perform modulo operation to clamp step index
+
+      if kstep == 0 then
+        chnset 1, "update"
+
+        event "i", "CHORDS", 0, 1
+      endif
+    endif
+
 endin
 
 //INSTRUMENTS
@@ -51,45 +78,6 @@ instr SYNTH
     kPitch = p4
     aOsc poscil kAmp, kPitch
     out aOsc*0.5,aOsc*0.5
-endin
-
-//SAMPLER - TODO DEPRECATED?
-instr SMPLR_LOAD
-    ; file operations/setup
-
-
-    ipcnt = 0 ;counter for iterating through the following arrays
-
-    //Set file locations / THIS SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH CSOUND-UNITY
-    gSSoundFileLocs[] init 4
-
-
-    //Get file sample rates
-    giSoundFileSrs[] init 4
-
-    ipcnt = 0
-    while ipcnt < lenarray(gSSoundFileLocs,1) do
-    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]
-    ipcnt += 1
-    od
-
-    //Get file channels (mono/stereo)
-    giSoundFileChnls[] init 4
-
-    ipcnt = 0
-    while ipcnt < lenarray(gSSoundFileLocs,1) do
-    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]
-    ipcnt += 1
-    od
-
-    //Get file lengths
-    giSoundFileLgts[] init 4
-
-    ipcnt = 0
-    while ipcnt < lenarray(gSSoundFileLocs,1) do
-    giSoundFileLgts[ipcnt] filelen gSSoundFileLocs[ipcnt]
-    ipcnt += 1
-    od
 endin
 
 //Sampler instrument for use with audioclips from Unity
@@ -117,12 +105,14 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
 
 endin
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //EUCLIDEAN RHYTHMS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 gilayers init 4 ;number of layers may be changed, however, only up to 4 files are supported as of writing
-gitotalsteps init 16
+giEucsteps init 16
 
-gkgrid[][] init gilayers,gitotalsteps
+gkgrid[][] init gilayers,giEucsteps
 
 gkpulses[] init gilayers
 
@@ -135,7 +125,7 @@ instr EUC_FILL
     //
     //Set pulse and rotation values from sliders for each layer, TODO rotation not implemented!
     while klayer < lenarray(gkgrid,1) do
-        gkpulses[klayer] tab (klayer * 2) + 1, 801 ;fetch number of pulses from eucrth config table
+        gkpulses[klayer] tab (klayer * 2) + 1, 810 ;fetch number of pulses from eucrth config table
 
         klayer+=1
     od
@@ -151,7 +141,7 @@ instr EUC_FILL
 
             if kbucket[klayer] >= lenarray(gkgrid,2) then
                 kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)
-                gkgrid[klayer][kstep] = tab(klayer * 2, 801)  ;if impulse, set grid value to sample index
+                gkgrid[klayer][kstep] = tab(klayer * 2, 810)  ;if impulse, set grid value to sample index
             else
                 gkgrid[klayer][kstep] = -1  ;-1 = no impulse on grid position
             endif
@@ -187,15 +177,22 @@ instr EUC_STEP
             klayer += 1
         od
 
-        kstep = (kstep + 1) % gitotalsteps  ;perform modulo operation to clamp step index
+        kstep = (kstep + 1) % giEucsteps  ;perform modulo operation to clamp step index
     endif
 endin
 
-//Maybe SNHMEL could use a morphable wavetable for sound generation??
+//EUCLIDEAN RHYTHMS END
+//-----------------------------------------------------------------------------------------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SAMPLE AND HOLD MELODY
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//TODO Maybe SNHMEL could use a morphable wavetable for sound generation??
 instr SNHMEL
-  krangeMin = tab(0,802)
-  krangeMax = tab(1,802)
-  kfreqMin = tab(2,802)
+  krangeMin = tablei(0,820)
+  krangeMax = tablei(1,820)
+  kfreqMin = tablei(2,820)
   kfreqMax = kfreqMin
 
   kAmp = 1
@@ -244,101 +241,101 @@ instr SNHMEL
   chnset aOsc, "snhmel_r"
 endin
 
-gkChord[] init 5 ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes w smaller intervals
+//SAMPLE AND HOLD MELODY END
+//-----------------------------------------------------------------------------------------------------------------------------
 
-//Builds a new chord
-instr CHORDS_SET
-  ;krangeMin = tab(0,803)
-  ;krangeMax = tab(1,803)
 
-  krangeMin = 64  ;TODO REMOVE TEST VALUES AND USE ABOVE FETCH FROM TAB
-  krangeMax = 88
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//CHORDS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  kNotes[] init 128 ; array for saving possible notes to choose from (as midi note number)
 
-  gkChord[] init 5 ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes w smaller intervals
+//Fetches notes from note ftable (#831)
+instr CHORDS
+  kCnt init 0
 
-  kCnt = 0  ;counter variable
+  while kCnt < 16 do
+    kval = tablei(kCnt,831)
 
-//Find all notes which are part of the scale and are between krangeMin/krangeMax
-  while krangeMin + kCnt < krangeMax do
-    kVal = tab(krangeMin + kCnt, 800)
-    if kVal > -1 then
-      kNotes[kCnt] = krangeMin + kCnt
-
-      else
+    if kval > -1 then
+      event "i", "GSYNTH", 0, 1, kval, 0.2, 0.02, 16000, 0.2, 0.2, 0.3, 3.0, 0.2, 0.2, 0.3, 3.0 ;TODO ADD PARAMETERS FROM CHORDS INSTRUMENT TABLE
     endif
 
-    kCnt+=1
+    kCnt += 1
   od
+endin
 
-  kNotesMax = kCnt
+//CHORDS END
+//-----------------------------------------------------------------------------------------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//GAME SYNTH
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+gisine   ftgen 710, 0, 16384, 10, 1	;sine wave
+gisquare ftgen 711, 0, 16384, 10, 1, 0 , .33, 0, .2 , 0, .14, 0 , .11, 0, .09 ;odd harmonics
+gisaw    ftgen 712, 0, 16384, 10, 0, .2, 0, .4, 0, .6, 0, .8, 0, 1, 0, .8, 0, .6, 0, .4, 0,.2 ;even harmonics
+
+//i GSYNTH [delay] [p3 = length] [p4 = note] [p5 = velocity] [p6 = noise amp] [p7 = filter frequency] [p8,9,10,11 = filter A,D,S,R] [p12,13,14,15 = amp A,D,S,R]
+instr GSYNTH
+
+ifn = 711 ;p4 = waveform
+;p5 = lfo waveform
+
+//Input/midi variables
+ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)
+ivel = p5 ;note velocity value
+
+inoise = p6 ;noise amplitude
+
+//Filter variables
+iffreq = p7 ;lowpass filter frequency
+
+ifenv_att = p8  ;filter attack
+ifenv_dec = p9  ;filter decay
+ifenv_sus = p10 ;filter sustain
+ifenv_rel = p11 ;filter release
+
+//Amp variables
+iaenv_att = p12 ;amp attack
+iaenv_dec = p13 ;amp decay
+iaenv_sus = p14 ;amp sustain
+iaenv_rel = p15 ;amp release
 
 
-  kRoot = kNotes[int(random(0, kNotesMax))]   ; 1. get "root" note, can be any note which was found above
+//LFOs
+klfo1 lfo 1, 1
 
 
+//OSCs
+aosc1 poscil ivel, ifreq, ifn
 
-//Filling the chord note array
-  kCnt = 0
+anoise rand limit(inoise,0,1)
 
-  gkChord[kCnt] = kRoot
-  kCnt+=1
+abus = aosc1 + anoise
 
-  ; 2. if root note + 7 is within scale, add note
-  kVal = tab(kRoot + 7, 800)
-  if kVal > -1 then
-    gkChord[kCnt] = kRoot+7
-  endif
+//Filters
+kfenv madsr ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel  ;filter envelope
 
-  kCnt+=1
+alp tone abus, iffreq*kfenv  ;filter signal
 
-  ; 3. add note which is root note + 12
-  kVal = tab(kRoot + 12, 800)
-  if kVal > -1 then
-    gkChord[kCnt] = kRoot + 12
-  endif
 
-  kCnt+=1
+//Amp
+aaenv madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope
 
-  ; 4. add root note + 15, if possible
-  kVal = tab(kRoot + 15, 800)
-  if kVal > -1 then
-    gkChord[kCnt] = kRoot + 15
-  endif
+abus = alp*aaenv
 
-  kCnt+=1
-
-  ; 5. add root note + 17, if possible
-  kVal = tab(kRoot + 17, 800)
-  if kVal > -1 then
-    gkChord[kCnt] = kRoot + 17
-    else
-      kVal = tab(kRoot + 19, 800)
-      if kVal > -1 then
-        gkChord[kCnt] = kRoot + 19
-      endif
-  endif
-
-  kCnt=0
-
-  while kCnt < lenarray(gkChord) do
-    prints "chord note %d: %d", kCnt, gkChord[kCnt]
-    kCnt+=1
-  od
+outs alp, alp
 
 endin
+//GAME SYNTH END
+//-----------------------------------------------------------------------------------------------------------------------------
 
 </CsInstruments>
 <CsScore>
 f 0 z
-i "UPD" 2 -1
-;i "SMPLR_LOAD" 2 1
 i "CLOCK" 2 -1
 i "EUC_STEP" 2 -1
 i "SNHMEL" 2 -1
-i "CHORDS_SET" 20 1
-i "CHORDS_SET" 21 1
-i "CHORDS_SET" 22 1
 </CsScore>
 </CsoundSynthesizer>

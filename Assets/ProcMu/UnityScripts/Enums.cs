@@ -26,4 +26,12 @@ namespace ProcMu.UnityScripts
         Phrygian,
         Locrian
     }
+
+    public enum ChordMode
+    {
+        Random357,
+        Random357Oct,
+        RandomRoot,
+        RandomRootOct
+    }
 }

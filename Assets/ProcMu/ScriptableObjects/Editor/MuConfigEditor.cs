@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ProcMu.ScriptableObjects;
+using ProcMu.UnityScripts;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class MuConfigEditor : Editor
         DrawGeneralSettings();
         DrawEucRth();
         DrawSnhMel();
+        DrawChords();
 
         EditorUtility.SetDirty(_muConfig); //TODO SET ONLY DIRTY WHEN A CHANGE WAS MADE
     }
@@ -91,10 +93,34 @@ public class MuConfigEditor : Editor
         EditorGUILayout.LabelField("Occurence (per minute)", GUILayout.Width(240f));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-        _muConfig.minOct = EditorGUILayout.IntField(_muConfig.minOct, GUILayout.Width(60f));
-        _muConfig.maxOct = EditorGUILayout.IntField(_muConfig.maxOct, GUILayout.Width(60f));
+        _muConfig.snhmel_minOct = EditorGUILayout.IntField(_muConfig.snhmel_minOct, GUILayout.Width(60f));
+        _muConfig.snhmel_maxOct = EditorGUILayout.IntField(_muConfig.snhmel_maxOct, GUILayout.Width(60f));
         EditorGUILayout.LabelField("", GUILayout.Width(10f));
         _muConfig.occurence = EditorGUILayout.DoubleField(_muConfig.occurence, GUILayout.Width(60f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("min", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("max", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawChords()
+    {
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.Space(20f);
+        EditorGUILayout.LabelField("Chords Settings");
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Octave range", GUILayout.Width(120f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("Chord Mode", GUILayout.Width(120f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        _muConfig.chords_minOct = EditorGUILayout.IntField(_muConfig.chords_minOct, GUILayout.Width(60f));
+        _muConfig.chords_maxOct = EditorGUILayout.IntField(_muConfig.chords_maxOct, GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        _muConfig.chordMode = (ChordMode) EditorGUILayout.EnumPopup(_muConfig.chordMode, GUILayout.Width(120f));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("min", GUILayout.Width(60f));

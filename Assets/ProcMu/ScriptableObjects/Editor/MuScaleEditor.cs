@@ -10,7 +10,6 @@ namespace ProcMu.CSUnity.Editor
     [CustomEditor(typeof(MuScale))]
     public class MuScaleEditor : UnityEditor.Editor
     {
-        private Tonic _tonic;
         private Scale _scale;
 
         public override void OnInspectorGUI()
@@ -62,12 +61,12 @@ namespace ProcMu.CSUnity.Editor
         {
             EditorGUILayout.BeginHorizontal();
 
-            _tonic = (Tonic) EditorGUILayout.EnumPopup(_tonic);
+            scale.tonic = (Tonic) EditorGUILayout.EnumPopup(scale.tonic);
             _scale = (Scale) EditorGUILayout.EnumPopup(_scale);
 
             if (GUILayout.Button("Generate scale"))
             {
-                ProcMuUtils.GenerateScale(_tonic, _scale, ref activeNotes);
+                ProcMuUtils.GenerateScale(scale.tonic, _scale, ref activeNotes);
                 DrawScale(scale, activeNotes, arrlen);
             }
 

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using ProcMu.ScriptableObjects;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ProcMu.UnityScripts.Utilities
 {
@@ -14,16 +17,7 @@ namespace ProcMu.UnityScripts.Utilities
 
             for (int i = 0; i < input.Length; i++)
             {
-                if (input[i])
-                {
-                    output[index] = i;
-                    index++;
-                }
-            }
-
-            for (int i = index; i < output.Length; i++)
-            {
-                output[i] = -1;
+                output[i] = input[i] ? 1 : -1;
             }
 
             return output;

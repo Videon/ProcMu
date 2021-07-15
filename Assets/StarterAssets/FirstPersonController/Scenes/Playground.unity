@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: 619e305f5165a9946b7f72464e44ca4a, type: 3}
   m_Sun: {fileID: 2114283754330233425}
-  m_IndirectSpecularColor: {r: 0.029151943, g: 0.064445056, b: 0.12694976, a: 1}
+  m_IndirectSpecularColor: {r: 0.02525222, g: 0.05498174, b: 0.11085867, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 51e8050f26ab504469d218c927558c5e, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 2690b0834b22e2940b40018922228eb6, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 027dc98253d80d849acc2271be9bffaf, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -513,31 +513,30 @@ MonoBehaviour:
   _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
     -d\r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.\r\nksmps
     = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\nseed 0  //Sets a new seed for randomization
-    on every init\r\n\r\n//TABLES\r\n;global scale config table\r\ngiScale ftgen
-    800, 0, 128, -2, -1\r\n\r\n;EucRth config table\r\ngiEucRthConfig ftgen 801,
-    0, 8, -2, 0\r\ngiSnhMelConfig ftgen 802, 0, -3, -2, 0  ;params: 0 = minOct, 1
-    = maxOct, 2 = occurence\r\ngiChordsConfig ftgen 803, 0, 2, -2, 0 ;params 0 =
-    minOct, 1 = maxOct\r\n\r\n;EucRth samples tables\r\ngiSoundFiles[] init 4   //Allocating
-    space to load samples from Unity\r\n\r\n//SYSTEM INSTRUMENTS\r\ninstr UPD\r\n\r\n 
-    gktest table 0, 800 ;check if obsolete\r\nendin\r\n\r\n//Generates a global clock
-    signal (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    gkbpm init 110
-    ;beats per minute\r\n    ;gkbpm portk chnget(\"gBpm\"), 0.5\r\n    gkbpm chnget
-    \"gBpm\" ;TODO implement smoothing for handling external value changes\r\n\r\n   
-    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST
+    on every init\r\n\r\n//TABLES\r\n;Global config tables - #800-809\r\ngiScale
+    ftgen 800, 0, 128, -2, -1 ;Global scale table\r\n\r\n;EucRth config tables -
+    #810-819\r\ngiEucRthConfig ftgen 810, 0, 8, -2, 0\r\ngiSoundFiles[] init 4  
+    //EucRth samples tables, allocating space to load samples from Unity. Uses tables
+    900+n. Currently n = 4\r\n\r\n\r\n;SnhMel config tables - #820-829\r\ngiSnhMelConfig
+    ftgen 820, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence\r\n\r\n\r\n;Chords
+    config tables - #830-839\r\ngiChordsConfig ftgen 830, 0, -7, -2, 0  ;params:
+    0 = minOct, 1 = maxOct\r\ngiChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 =
+    note0, 1 = note1...16 = note16\r\ngiChordsInstr ftgen 832, 0, 16, -2, 0 ;instrument
+    config table\r\n\r\n;Waveforms\r\ngiImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1\r\ngiSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10\r\ngiSqu 
+    ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0\r\ngiTri  ftgen 
+    703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0\r\n\r\n//GLOBAL VARIABLES\r\ngitotalsteps
+    init 16\r\n\r\n//CHANNELS\r\nchn_k \"update\", 1\r\n\r\n//SYSTEM INSTRUMENTS\r\n\r\n//Generates
+    a global clock signal (gktrig) as long as it's running.\r\ninstr CLOCK\r\n   
+    gkbpm init 110 ;beats per minute\r\n    ;gkbpm portk chnget(\"gBpm\"), 0.5\r\n   
+    gkbpm chnget \"gBpm\" ;TODO implement smoothing for handling external value changes\r\n\r\n   
+    kstep init 0\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro
+    gkbpm*kpulses/60\r\n\r\n    if gktrig == 1 then\r\n      kstep = (kstep + 1)
+    % gitotalsteps  ;perform modulo operation to clamp step index\r\n\r\n      if
+    kstep == 0 then\r\n        chnset 1, \"update\"\r\n\r\n        event \"i\", \"CHORDS\",
+    0, 1\r\n      endif\r\n    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//TEST
     SIMPLE OSCIL SYNTH\r\n//i, start, dur, pitch\r\ninstr SYNTH\r\n    kAmp adsr
-    .01,0.1,0,0\r\n    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc*0.5,aOsc*0.5\r\nendin\r\n\r\n//SAMPLER
-    - TODO DEPRECATED?\r\ninstr SMPLR_LOAD\r\n    ; file operations/setup\r\n\r\n\r\n   
-    ipcnt = 0 ;counter for iterating through the following arrays\r\n\r\n    //Set
-    file locations / THIS SHOULD BECOME DEPRECATED, AS SAMPLES SHALL BE LOADED THROUGH
-    CSOUND-UNITY\r\n    gSSoundFileLocs[] init 4\r\n\r\n\r\n    //Get file sample
-    rates\r\n    giSoundFileSrs[] init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt
-    < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileSrs[ipcnt] filesr gSSoundFileLocs[ipcnt]\r\n   
-    ipcnt += 1\r\n    od\r\n\r\n    //Get file channels (mono/stereo)\r\n    giSoundFileChnls[]
-    init 4\r\n\r\n    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1)
-    do\r\n    giSoundFileChnls[ipcnt] filenchnls gSSoundFileLocs[ipcnt]\r\n    ipcnt
-    += 1\r\n    od\r\n\r\n    //Get file lengths\r\n    giSoundFileLgts[] init 4\r\n\r\n   
-    ipcnt = 0\r\n    while ipcnt < lenarray(gSSoundFileLocs,1) do\r\n    giSoundFileLgts[ipcnt]
-    filelen gSSoundFileLocs[ipcnt]\r\n    ipcnt += 1\r\n    od\r\nendin\r\n\r\n//Sampler
+    .01,0.1,0,0\r\n    kPitch = p4\r\n    aOsc poscil kAmp, kPitch\r\n    out aOsc*0.5,aOsc*0.5\r\nendin\r\n\r\n//Sampler
     instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
     SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n\r\n   
     ifn   =  chnget(sprintf(\"sampletable%d\", 900+p4))\r\n    ;prints \"giTable
@@ -548,89 +547,93 @@ MonoBehaviour:
     playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
     lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n\r\n   
     outs atab *.1, atab*.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\"  TODO use chnmix
-    to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n//EUCLIDEAN
-    RHYTHMS\r\n\r\ngilayers init 4 ;number of layers may be changed, however, only
-    up to 4 files are supported as of writing\r\ngitotalsteps init 16\r\n\r\ngkgrid[][]
-    init gilayers,gitotalsteps\r\n\r\ngkpulses[] init gilayers\r\n\r\n//Fills the
-    grid. Triggered at the start of a new bar.\r\ninstr EUC_FILL\r\n    //\r\n   
-    kbucket[] init gilayers ;using as many \"buckets\" as percussion layers\r\n   
-    kstep init 0\r\n    klayer = 0\r\n    //\r\n    //Set pulse and rotation values
-    from sliders for each layer, TODO rotation not implemented!\r\n    while klayer
-    < lenarray(gkgrid,1) do\r\n        gkpulses[klayer] tab (klayer * 2) + 1, 801
-    ;fetch number of pulses from eucrth config table\r\n\r\n        klayer+=1\r\n   
-    od\r\n\r\n    klayer = 0\r\n    //Fill sequence\r\n    while klayer < lenarray(gkgrid,1)
-    do\r\n        kstep = 0\r\n        kbucket[klayer] = 0\r\n        while kstep
-    < lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation
-    support)\r\n\r\n            kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]\r\n\r\n           
-    if kbucket[klayer] >= lenarray(gkgrid,2) then\r\n                kbucket[klayer]
-    = kbucket[klayer] - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep]
-    = tab(klayer * 2, 801)  ;if impulse, set grid value to sample index\r\n           
-    else\r\n                gkgrid[klayer][kstep] = -1  ;-1 = no impulse on grid
-    position\r\n            endif\r\n\r\n            //gkgrid[ilayer][istep+ lenarray(gkgrid,2)]
-    = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation
-    support)\r\n\r\n            kstep += 1\r\n        od\r\n        klayer += 1\r\n   
-    od\r\nendin\r\n\r\n//Steps through the grid and triggers sounds accordingly\r\ninstr
-    EUC_STEP\r\n    //\r\n    krot init 0 ;rotation, i.e., grid offset\r\n    kstep
-    init 0 ;current sequencer step\r\n    //\r\n\r\n    if gktrig == 1 then\r\n       
-    //Fill grid on start of a new bar\r\n        if kstep == 0 then\r\n           
-    event \"i\", \"EUC_FILL\", 0, 1\r\n        endif\r\n\r\n        //Check grid
-    for all layers at current step and trigger samples accordingly\r\n        klayer
-    = 0\r\n\r\n        while klayer < lenarray(gkgrid,1) do\r\n            if gkgrid[klayer][kstep]
-    > -1 then\r\n                event \"i\", \"SMPLR_UNITY\", 0, 2, gkgrid[klayer][kstep]\r\n           
-    endif\r\n            klayer += 1\r\n        od\r\n\r\n        kstep = (kstep
-    + 1) % gitotalsteps  ;perform modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\n//Maybe
-    SNHMEL could use a morphable wavetable for sound generation??\r\ninstr SNHMEL\r\n 
-    krangeMin = tab(0,802)\r\n  krangeMax = tab(1,802)\r\n  kfreqMin = tab(2,802)\r\n 
-    kfreqMax = kfreqMin\r\n\r\n  kAmp = 1\r\n\r\n  kCnt init 0\r\n  kTablen tableng
-    800\r\n\r\n  //TODO: Make sure this is only performed if the table contents have
-    changed!\r\n  while tablei(kCnt,800) > -1 do\r\n    kCnt += 1\r\n  od\r\n\r\n//SNH
-    FOR VOLUME\r\n  ;kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be
-    modified through config in Unity and connected with intensity\r\n  ;kAmp limit
-    kAmp, 0, 1\r\n\r\n//SNH FOR MELODY\r\n  ksp rspline krangeMin*12, krangeMax*12,
-    kfreqMin, kfreqMax\r\n\r\n  ktab tab int(ksp), 800\r\n\r\n  if ktab > -1 then\r\n   
-    kPitch = pow(2,(ktab-69)/12)*440\r\n  endif\r\n\r\n\r\n  ;ksnh samphold ksp,
-    gktrig\r\n  ;ksnh limit ksp, 0, kCnt\r\n  ;ksnh = int(ksnh)\r\n\r\n\r\n  ;ktab
-    tab ksnh, 800  ;test code, remove/edit\r\n\r\n  ;if gktrig == 1 then\r\n  ; 
-    kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi
+    to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
+    RHYTHMS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\ngilayers
+    init 4 ;number of layers may be changed, however, only up to 4 files are supported
+    as of writing\r\ngiEucsteps init 16\r\n\r\ngkgrid[][] init gilayers,giEucsteps\r\n\r\ngkpulses[]
+    init gilayers\r\n\r\n//Fills the grid. Triggered at the start of a new bar.\r\ninstr
+    EUC_FILL\r\n    //\r\n    kbucket[] init gilayers ;using as many \"buckets\"
+    as percussion layers\r\n    kstep init 0\r\n    klayer = 0\r\n    //\r\n    //Set
+    pulse and rotation values from sliders for each layer, TODO rotation not implemented!\r\n   
+    while klayer < lenarray(gkgrid,1) do\r\n        gkpulses[klayer] tab (klayer
+    * 2) + 1, 810 ;fetch number of pulses from eucrth config table\r\n\r\n       
+    klayer+=1\r\n    od\r\n\r\n    klayer = 0\r\n    //Fill sequence\r\n    while
+    klayer < lenarray(gkgrid,1) do\r\n        kstep = 0\r\n        kbucket[klayer]
+    = 0\r\n        while kstep < lenarray(gkgrid,2) do ;dividing by 2 as array is
+    twice the step size (for rotation support)\r\n\r\n            kbucket[klayer]
+    = kbucket[klayer] + gkpulses[klayer]\r\n\r\n            if kbucket[klayer] >=
+    lenarray(gkgrid,2) then\r\n                kbucket[klayer] = kbucket[klayer]
+    - lenarray(gkgrid,2)\r\n                gkgrid[klayer][kstep] = tab(klayer *
+    2, 810)  ;if impulse, set grid value to sample index\r\n            else\r\n               
+    gkgrid[klayer][kstep] = -1  ;-1 = no impulse on grid position\r\n           
+    endif\r\n\r\n            //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep]
+    ;copying current value to offset position (for rotation support)\r\n\r\n           
+    kstep += 1\r\n        od\r\n        klayer += 1\r\n    od\r\nendin\r\n\r\n//Steps
+    through the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    //\r\n   
+    krot init 0 ;rotation, i.e., grid offset\r\n    kstep init 0 ;current sequencer
+    step\r\n    //\r\n\r\n    if gktrig == 1 then\r\n        //Fill grid on start
+    of a new bar\r\n        if kstep == 0 then\r\n            event \"i\", \"EUC_FILL\",
+    0, 1\r\n        endif\r\n\r\n        //Check grid for all layers at current step
+    and trigger samples accordingly\r\n        klayer = 0\r\n\r\n        while klayer
+    < lenarray(gkgrid,1) do\r\n            if gkgrid[klayer][kstep] > -1 then\r\n               
+    event \"i\", \"SMPLR_UNITY\", 0, 2, gkgrid[klayer][kstep]\r\n            endif\r\n           
+    klayer += 1\r\n        od\r\n\r\n        kstep = (kstep + 1) % giEucsteps  ;perform
+    modulo operation to clamp step index\r\n    endif\r\nendin\r\n\r\n//EUCLIDEAN
+    RHYTHMS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//SAMPLE
+    AND HOLD MELODY\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//TODO
+    Maybe SNHMEL could use a morphable wavetable for sound generation??\r\ninstr
+    SNHMEL\r\n  krangeMin = tablei(0,820)\r\n  krangeMax = tablei(1,820)\r\n  kfreqMin
+    = tablei(2,820)\r\n  kfreqMax = kfreqMin\r\n\r\n  kAmp = 1\r\n\r\n  kCnt init
+    0\r\n  kTablen tableng 800\r\n\r\n  //TODO: Make sure this is only performed
+    if the table contents have changed!\r\n  while tablei(kCnt,800) > -1 do\r\n   
+    kCnt += 1\r\n  od\r\n\r\n//SNH FOR VOLUME\r\n  ;kAmp rspline -1, 0.5, 0.1, 1 
+    ;kFreqMin, kFreqMax should be modified through config in Unity and connected
+    with intensity\r\n  ;kAmp limit kAmp, 0, 1\r\n\r\n//SNH FOR MELODY\r\n  ksp rspline
+    krangeMin*12, krangeMax*12, kfreqMin, kfreqMax\r\n\r\n  ktab tab int(ksp), 800\r\n\r\n 
+    if ktab > -1 then\r\n    kPitch = pow(2,(ktab-69)/12)*440\r\n  endif\r\n\r\n\r\n 
+    ;ksnh samphold ksp, gktrig\r\n  ;ksnh limit ksp, 0, kCnt\r\n  ;ksnh = int(ksnh)\r\n\r\n\r\n 
+    ;ktab tab ksnh, 800  ;test code, remove/edit\r\n\r\n  ;if gktrig == 1 then\r\n 
+    ;  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi
     note number\r\n    ;kPitch = mtof:k(ktab)  //...because mtof is not working in
     this version of CsoundUnity\r\n  ;endif\r\n\r\n  kPitchPrt portk kPitch, .01\r\n\r\n 
     //Sound generation\r\n\r\n  aOsc poscil kAmp*.1, kPitchPrt\r\n\r\n  chnset aOsc,
-    \"snhmel_l\"\r\n  chnset aOsc, \"snhmel_r\"\r\nendin\r\n\r\ngkChord[] init 5
-    ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes w smaller
-    intervals\r\n\r\n//Builds a new chord\r\ninstr CHORDS_SET\r\n  ;krangeMin = tab(0,803)\r\n 
-    ;krangeMax = tab(1,803)\r\n\r\n  krangeMin = 64  ;TODO REMOVE TEST VALUES AND
-    USE ABOVE FETCH FROM TAB\r\n  krangeMax = 88\r\n\r\n  kNotes[] init 128 ; array
-    for saving possible notes to choose from (as midi note number)\r\n\r\n  gkChord[]
-    init 5 ;holds max 5 notes: 1-2 lower notes w bigger intervals, 2-3 higher notes
-    w smaller intervals\r\n\r\n  kCnt = 0  ;counter variable\r\n\r\n//Find all notes
-    which are part of the scale and are between krangeMin/krangeMax\r\n  while krangeMin
-    + kCnt < krangeMax do\r\n    kVal = tab(krangeMin + kCnt, 800)\r\n    if kVal
-    > -1 then\r\n      kNotes[kCnt] = krangeMin + kCnt\r\n\r\n      else\r\n    endif\r\n\r\n   
-    kCnt+=1\r\n  od\r\n\r\n  kNotesMax = kCnt\r\n\r\n\r\n  kRoot = kNotes[int(random(0,
-    kNotesMax))]   ; 1. get \"root\" note, can be any note which was found above\r\n\r\n\r\n\r\n//Filling
-    the chord note array\r\n  kCnt = 0\r\n\r\n  gkChord[kCnt] = kRoot\r\n  kCnt+=1\r\n\r\n 
-    ; 2. if root note + 7 is within scale, add note\r\n  kVal = tab(kRoot + 7, 800)\r\n 
-    if kVal > -1 then\r\n    gkChord[kCnt] = kRoot+7\r\n  endif\r\n\r\n  kCnt+=1\r\n\r\n 
-    ; 3. add note which is root note + 12\r\n  kVal = tab(kRoot + 12, 800)\r\n  if
-    kVal > -1 then\r\n    gkChord[kCnt] = kRoot + 12\r\n  endif\r\n\r\n  kCnt+=1\r\n\r\n 
-    ; 4. add root note + 15, if possible\r\n  kVal = tab(kRoot + 15, 800)\r\n  if
-    kVal > -1 then\r\n    gkChord[kCnt] = kRoot + 15\r\n  endif\r\n\r\n  kCnt+=1\r\n\r\n 
-    ; 5. add root note + 17, if possible\r\n  kVal = tab(kRoot + 17, 800)\r\n  if
-    kVal > -1 then\r\n    gkChord[kCnt] = kRoot + 17\r\n    else\r\n      kVal =
-    tab(kRoot + 19, 800)\r\n      if kVal > -1 then\r\n        gkChord[kCnt] = kRoot
-    + 19\r\n      endif\r\n  endif\r\n\r\n  kCnt=0\r\n\r\n  while kCnt < lenarray(gkChord)
-    do\r\n    prints \"chord note %d: %d\", kCnt, gkChord[kCnt]\r\n    kCnt+=1\r\n 
-    od\r\n\r\nendin\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf 0 z\r\ni \"UPD\" 2
-    -1\r\n;i \"SMPLR_LOAD\" 2 1\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\" 2 -1\r\ni \"SNHMEL\"
-    2 -1\r\ni \"CHORDS_SET\" 20 1\r\ni \"CHORDS_SET\" 21 1\r\ni \"CHORDS_SET\" 22
-    1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
+    \"snhmel_l\"\r\n  chnset aOsc, \"snhmel_r\"\r\nendin\r\n\r\n//SAMPLE AND HOLD
+    MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
+    notes from note ftable (#831)\r\ninstr CHORDS\r\n  kCnt init 0\r\n\r\n  while
+    kCnt < 16 do\r\n    kval = tablei(kCnt,831)\r\n\r\n    if kval > -1 then\r\n     
+    ;event \"i\", \"CHORDS_PLAY\", 0, 1, kval\r\n      event \"i\", \"GSYNTH\", 0,
+    1, kval, 0.2, 0.02, 16000, 0.2, 0.2, 0.3, 3.0, 0.2, 0.2, 0.3, 3.0 ;TODO ADD PARAMETERS
+    FROM CHORDS INSTRUMENT TABLE\r\n    endif\r\n\r\n    kCnt += 1\r\n  od\r\nendin\r\n\r\ninstr
+    CHORDS_PLAY\r\n  kNote = p4\r\n  kPitch = pow(2,(kNote-69)/12)*440 ;midi note
+    # to frequency\r\n\r\n  aOsc poscil 1, kPitch, 701\r\n\r\n  aAdsr madsr 2,0.1,1,0.4\r\n 
+    outs aOsc*(aAdsr*0.2), aOsc*(aAdsr*0.2)\r\nendin\r\n\r\n//CHORDS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//GAME
+    SYNTH\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\ngisine  
+    ftgen 710, 0, 16384, 10, 1\t;sine wave\r\ngisquare ftgen 711, 0, 16384, 10, 1,
+    0 , .33, 0, .2 , 0, .14, 0 , .11, 0, .09 ;odd harmonics\r\ngisaw    ftgen 712,
+    0, 16384, 10, 0, .2, 0, .4, 0, .6, 0, .8, 0, 1, 0, .8, 0, .6, 0, .4, 0,.2 ;even
+    harmonics\r\n\r\n//i GSYNTH [delay] [p3 = length] [p4 = note] [p5 = velocity]
+    [p6 = noise amp] [p7 = filter frequency] [p8,9,10,11 = filter A,D,S,R] [p12,13,14,15
+    = amp A,D,S,R]\r\ninstr GSYNTH\r\n\r\nifn = 711 ;p4 = waveform\r\n;p5 = lfo waveform\r\n\r\n//Input/midi
+    variables\r\nifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted
+    to frequency (Hz)\r\nivel = p5 ;note velocity value\r\n\r\ninoise = p6 ;noise
+    amplitude\r\n\r\n//Filter variables\r\niffreq = p7 ;lowpass filter frequency\r\n\r\nifenv_att
+    = p8  ;filter attack\r\nifenv_dec = p9  ;filter decay\r\nifenv_sus = p10 ;filter
+    sustain\r\nifenv_rel = p11 ;filter release\r\n\r\n//Amp variables\r\niaenv_att
+    = p12 ;amp attack\r\niaenv_dec = p13 ;amp decay\r\niaenv_sus = p14 ;amp sustain\r\niaenv_rel
+    = p15 ;amp release\r\n\r\n\r\n//LFOs\r\nklfo1 lfo 1, 1\r\n\r\n\r\n//OSCs\r\naosc1
+    poscil ivel, ifreq, ifn\r\n\r\nanoise rand limit(inoise,0,1)\r\n\r\nabus = aosc1
+    + anoise\r\n\r\n//Filters\r\nkfenv madsr ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel 
+    ;filter envelope\r\n\r\nalp tone abus, iffreq*kfenv  ;filter signal\r\n\r\n\r\n//Amp\r\naaenv
+    madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope\r\n\r\nabus
+    = alp*aaenv\r\n\r\nouts alp, alp\r\n\r\nendin\r\n//GAME SYNTH END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
+    0 z\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\" 2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
   _csoundFileName: eucrth_unity.csd
   _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
   _channels: []
   _availableAudioChannels:
   - snhmel_l
   - snhmel_r
-  _drawCsoundString: 1
+  _drawCsoundString: 0
   _drawTestScore: 1
   _drawSettings: 1
   _drawChannels: 1
@@ -1437,7 +1440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1798,7 +1801,7 @@ Transform:
   m_Children:
   - {fileID: 364543701}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1424407683
 MonoBehaviour:
@@ -1976,7 +1979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2314,7 +2317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2728,7 +2731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3068,7 +3071,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!108 &2114283754330233425
 Light:
   m_ObjectHideFlags: 0
@@ -3081,7 +3084,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.972549, g: 0.9607843, b: 0.8784314, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -3120,7 +3123,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 1
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1

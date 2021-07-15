@@ -17,8 +17,11 @@ MonoBehaviour:
   sampleSelection: 03000000010000000200000000000000
   minImpulses0: 02000000000000000200000002000000
   maxImpulses0: 02000000020000000200000003000000
-  minImpulses1: 03000000000000000400000004000000
+  minImpulses1: 03000000010000000400000004000000
   maxImpulses1: 03000000040000000500000004000000
-  minOct: 4
-  maxOct: 6
+  snhmel_minOct: 4
+  snhmel_maxOct: 6
   occurence: 1
+  chords_minOct: 2
+  chords_maxOct: 2
+  chordMode: 1

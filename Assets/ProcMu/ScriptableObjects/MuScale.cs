@@ -1,3 +1,4 @@
+using ProcMu.UnityScripts;
 using UnityEngine;
 
 namespace ProcMu.ScriptableObjects
@@ -6,5 +7,6 @@ namespace ProcMu.ScriptableObjects
     public class MuScale : ScriptableObject
     {
         [SerializeField] public bool[] Scale = new bool[128];
+        [SerializeField] public Tonic tonic;
     }
 }

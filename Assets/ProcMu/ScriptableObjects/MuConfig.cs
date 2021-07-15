@@ -1,5 +1,6 @@
 using ProcMu.UnityScripts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ProcMu.ScriptableObjects
 {
@@ -25,9 +26,18 @@ namespace ProcMu.ScriptableObjects
 
         #region SNHMEL parameters
 
-        public int minOct = 0;
-        public int maxOct = 10;
+        public int snhmel_minOct = 0;
+        public int snhmel_maxOct = 10;
         public double occurence = 2;
+
+        #endregion
+
+        #region CHORDS parameters
+
+        public int chords_minOct;
+        public int chords_maxOct;
+
+        public ChordMode chordMode;
 
         #endregion
     }

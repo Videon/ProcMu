@@ -77,7 +77,20 @@ namespace ProcMu.UnityScripts
         {
             if (!_isInitialized)
                 return;
+
+            if (csoundUnity.GetChannel("update") > 0)
+                UpdateCsound();
+
             SetChannels();
+        }
+
+        /// <summary> Csound update is triggered once every bar (16 steps). </summary>
+        void UpdateCsound()
+        {
+            return; //TODO FIX CHANNEL UPDATING ONLY ONCE
+            csoundUnity.SetChannel("update", 0);
+
+            csoundUnity.CopyTableIn(831, ChordsGenerateNotes());
         }
 
         /// <summary> Sends information to Csound. </summary>
@@ -92,8 +105,10 @@ namespace ProcMu.UnityScripts
             csoundUnity.CopyTableIn(800, ProcMuUtils.ConvertScale(mc.Scale.Scale));
 
 
-            csoundUnity.CopyTableIn(801, EucRthGenerateConfig());
-            csoundUnity.CopyTableIn(802, SnhMelGenerateConfig());
+            csoundUnity.CopyTableIn(810, EucRthGenerateConfig());
+            csoundUnity.CopyTableIn(820, SnhMelGenerateConfig());
+
+            csoundUnity.CopyTableIn(831, ChordsGenerateNotes());
         }
 
         private double[] EucRthGenerateConfig()
@@ -115,11 +130,24 @@ namespace ProcMu.UnityScripts
         private double[] SnhMelGenerateConfig()
         {
             double[] snhmelConfig = new double[3];
-            snhmelConfig[0] = mc.minOct;
-            snhmelConfig[1] = mc.maxOct;
+            snhmelConfig[0] = mc.snhmel_minOct;
+            snhmelConfig[1] = mc.snhmel_maxOct;
             snhmelConfig[2] = mc.occurence;
 
             return snhmelConfig;
+        }
+
+        private double[] ChordsGenerateNotes()
+        {
+            double[] output = new double[16];
+            double[] notes =
+                Chords.MakeChord(mc.Scale, mc.snhmel_minOct, mc.snhmel_maxOct, mc.chordMode);
+            notes.CopyTo(output, 0);
+
+            for (int i = notes.Length; i < output.Length; i++)
+                output[i] = -1;
+
+            return output;
         }
     }
 }
