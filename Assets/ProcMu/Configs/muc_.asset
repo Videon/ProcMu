@@ -19,3 +19,10 @@ MonoBehaviour:
   maxImpulses0: 00000000000000000000000000000000
   minImpulses1: 00000000000000000000000000000000
   maxImpulses1: 00000000000000000000000000000000
+  snhmel_minOct: 0
+  snhmel_maxOct: 10
+  occurence: 2
+  chords_minOct: 0
+  chords_maxOct: 0
+  chordMode: 0
+  chordsSynthConfig: {fileID: 0}

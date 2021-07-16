@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
+  m_Name: gsc_start
+  m_EditorClassIdentifier: 
+  velocity: 0.1
+  wavetable: 0
+  noise: 0
+  ffreq: 400
+  fres: 7
+  fenv_amt: 2000
+  fenv_att: 1
+  fenv_dec: 0
+  fenv_sus: 1
+  fenv_rel: 3
+  aenv_att: 1
+  aenv_dec: 0.4
+  aenv_sus: 1
+  aenv_rel: 3

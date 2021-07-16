@@ -1,6 +1,5 @@
 using ProcMu.UnityScripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ProcMu.ScriptableObjects
 {
@@ -38,6 +37,8 @@ namespace ProcMu.ScriptableObjects
         public int chords_maxOct;
 
         public ChordMode chordMode;
+
+        public GSynthConfig chordsSynthConfig;
 
         #endregion
     }

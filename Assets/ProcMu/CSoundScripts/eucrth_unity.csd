@@ -16,6 +16,7 @@ seed 0  //Sets a new seed for randomization on every init
 //TABLES
 ;Global config tables - #800-809
 giScale ftgen 800, 0, 128, -2, -1 ;Global scale table
+giNotes ftgen 801, 0, 128, -2, -1 ;Global table containing midi note numbers of all active notes in scale
 
 ;EucRth config tables - #810-819
 giEucRthConfig ftgen 810, 0, 8, -2, 0
@@ -29,7 +30,7 @@ giSnhMelConfig ftgen 820, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occ
 ;Chords config tables - #830-839
 giChordsConfig ftgen 830, 0, -7, -2, 0  ;params: 0 = minOct, 1 = maxOct
 giChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 = note0, 1 = note1...16 = note16
-giChordsInstr ftgen 832, 0, 16, -2, 0 ;instrument config table
+giChordsInstr ftgen 832, 0, 32, -2, 0 ;instrument config table
 
 ;Waveforms
 giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -70,15 +71,6 @@ instr CLOCK
 endin
 
 //INSTRUMENTS
-
-//TEST SIMPLE OSCIL SYNTH
-//i, start, dur, pitch
-instr SYNTH
-    kAmp adsr .01,0.1,0,0
-    kPitch = p4
-    aOsc poscil kAmp, kPitch
-    out aOsc*0.5,aOsc*0.5
-endin
 
 //Sampler instrument for use with audioclips from Unity
 //i, start, dur, pitch, file_index
@@ -123,7 +115,7 @@ instr EUC_FILL
     kstep init 0
     klayer = 0
     //
-    //Set pulse and rotation values from sliders for each layer, TODO rotation not implemented!
+    //Set pulse and rotation values from sliders for each layer, TODO rotation needs to be implemented!
     while klayer < lenarray(gkgrid,1) do
         gkpulses[klayer] tab (klayer * 2) + 1, 810 ;fetch number of pulses from eucrth config table
 
@@ -255,10 +247,10 @@ instr CHORDS
   kCnt init 0
 
   while kCnt < 16 do
-    kval = tablei(kCnt,831)
+    kval = table(kCnt,831)
 
     if kval > -1 then
-      event "i", "GSYNTH", 0, 1, kval, 0.2, 0.02, 16000, 0.2, 0.2, 0.3, 3.0, 0.2, 0.2, 0.3, 3.0 ;TODO ADD PARAMETERS FROM CHORDS INSTRUMENT TABLE
+      event "i", "GSYNTH", 0, 1, kval, tab_i(5,832), tab_i(6,832), tab_i(7,832), tab_i(8,832), tab_i(9,832), tab_i(10,832), tab_i(11,832), tab_i(12,832), tab_i(13,832), tab_i(14,832), tab_i(15,832), tab_i(16,832), tab_i(17,832), tab_i(18,832)
     endif
 
     kCnt += 1
@@ -276,31 +268,35 @@ gisine   ftgen 710, 0, 16384, 10, 1	;sine wave
 gisquare ftgen 711, 0, 16384, 10, 1, 0 , .33, 0, .2 , 0, .14, 0 , .11, 0, .09 ;odd harmonics
 gisaw    ftgen 712, 0, 16384, 10, 0, .2, 0, .4, 0, .6, 0, .8, 0, 1, 0, .8, 0, .6, 0, .4, 0,.2 ;even harmonics
 
-//i GSYNTH [delay] [p3 = length] [p4 = note] [p5 = velocity] [p6 = noise amp] [p7 = filter frequency] [p8,9,10,11 = filter A,D,S,R] [p12,13,14,15 = amp A,D,S,R]
+//i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
+//  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
 instr GSYNTH
 
-ifn = 711 ;p4 = waveform
-;p5 = lfo waveform
+;pX = lfo waveform
 
 //Input/midi variables
 ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)
 ivel = p5 ;note velocity value
 
-inoise = p6 ;noise amplitude
+ifn = 710+p6
+
+inoise = p7 ;noise amount
 
 //Filter variables
-iffreq = p7 ;lowpass filter frequency
+iffreq = p8 ;lowpass filter frequency
+ifres = p9  ;lowpass filter resonance
+ifenv_amt = p10 ;lowpass filter env amount
 
-ifenv_att = p8  ;filter attack
-ifenv_dec = p9  ;filter decay
-ifenv_sus = p10 ;filter sustain
-ifenv_rel = p11 ;filter release
+ifenv_att = p11 ;filter attack
+ifenv_dec = p12 ;filter decay
+ifenv_sus = p13 ;filter sustain
+ifenv_rel = p14 ;filter release
 
 //Amp variables
-iaenv_att = p12 ;amp attack
-iaenv_dec = p13 ;amp decay
-iaenv_sus = p14 ;amp sustain
-iaenv_rel = p15 ;amp release
+iaenv_att = p15 ;amp attack
+iaenv_dec = p16 ;amp decay
+iaenv_sus = p17 ;amp sustain
+iaenv_rel = p18 ;amp release
 
 
 //LFOs
@@ -317,7 +313,8 @@ abus = aosc1 + anoise
 //Filters
 kfenv madsr ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel  ;filter envelope
 
-alp tone abus, iffreq*kfenv  ;filter signal
+
+alp zdf_2pole abus, iffreq+kfenv*ifenv_amt, ifres ;filter signal
 
 
 //Amp
@@ -325,7 +322,7 @@ aaenv madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope
 
 abus = alp*aaenv
 
-outs alp, alp
+outs abus, abus
 
 endin
 //GAME SYNTH END

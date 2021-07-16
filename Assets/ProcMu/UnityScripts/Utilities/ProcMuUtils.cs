@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using ProcMu.ScriptableObjects;
-using Unity.Mathematics;
-using UnityEngine;
-using Random = UnityEngine.Random;
-
 namespace ProcMu.UnityScripts.Utilities
 {
     public static class ProcMuUtils
@@ -13,11 +6,47 @@ namespace ProcMu.UnityScripts.Utilities
         public static double[] ConvertScale(bool[] input)
         {
             double[] output = new double[input.Length];
-            int index = 0;
 
             for (int i = 0; i < input.Length; i++)
             {
                 output[i] = input[i] ? 1 : -1;
+            }
+
+            return output;
+        }
+
+        /// <summary> Takes indexes of active notes in scale and puts them into an array. </summary>
+        public static int[] ScaleActiveNotes(bool[] input)
+        {
+            int[] output = new int[input.Length];
+
+            int index = 0;
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i])
+                {
+                    output[index] = i;
+                    index++;
+                }
+            }
+
+            //Fill remaining fields with -1 to indicate no more notes available.
+            for (int i = index; i < output.Length; i++)
+            {
+                output[i] = -1;
+            }
+
+            return output;
+        }
+
+        public static double[] Int2Double(int[] input)
+        {
+            double[] output = new double[input.Length];
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i];
             }
 
             return output;

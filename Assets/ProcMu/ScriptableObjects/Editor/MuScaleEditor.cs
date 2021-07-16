@@ -22,6 +22,7 @@ namespace ProcMu.CSUnity.Editor
 
             DrawScale(scale, activeNotes, arrlen);
             DrawGenerateDialogue(scale, ref activeNotes, arrlen);
+            scale.ScaleNotes = ProcMuUtils.ScaleActiveNotes(scale.Scale); //Update active notes in scale
 
             EditorUtility.SetDirty(target); //TODO Set dirty only when something was changed!
         }

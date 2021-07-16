@@ -101,14 +101,16 @@ namespace ProcMu.UnityScripts
             csoundUnity.SetChannel("gIntensity", intensity);
 
 
-            //Set scale table / TODO Only execute when scale has changed
+            //Set scale tables / TODO Only execute when scale has changed
             csoundUnity.CopyTableIn(800, ProcMuUtils.ConvertScale(mc.Scale.Scale));
+            csoundUnity.CopyTableIn(801, ProcMuUtils.Int2Double(mc.Scale.ScaleNotes));
 
 
             csoundUnity.CopyTableIn(810, EucRthGenerateConfig());
             csoundUnity.CopyTableIn(820, SnhMelGenerateConfig());
 
             csoundUnity.CopyTableIn(831, ChordsGenerateNotes());
+            csoundUnity.CopyTableIn(832, GSynthGenerateConfig(mc.chordsSynthConfig));
         }
 
         private double[] EucRthGenerateConfig()
@@ -140,13 +142,41 @@ namespace ProcMu.UnityScripts
         private double[] ChordsGenerateNotes()
         {
             double[] output = new double[16];
-            double[] notes =
-                Chords.MakeChord(mc.Scale, mc.snhmel_minOct, mc.snhmel_maxOct, mc.chordMode);
+            double[] notes = Chords.MakeChord(mc.Scale, mc.chords_minOct, mc.chords_maxOct, mc.chordMode);
             notes.CopyTo(output, 0);
 
             for (int i = notes.Length; i < output.Length; i++)
                 output[i] = -1;
 
+            return output;
+        }
+
+        private double[] GSynthGenerateConfig(GSynthConfig config)
+        {
+            double[] output = new double[32];
+            output[0] = -1;
+            output[1] = -1;
+            output[2] = -1;
+            output[3] = -1;
+            output[4] = -1;
+            output[5] = config.velocity;
+            output[6] = (int) config.wavetable;
+            output[7] = config.noise; //noise amount
+            output[8] = config.ffreq; //filter frequency
+            output[9] = config.fres; //filter resonance
+
+            output[10] = config.fenv_amt; //filter envelope amount
+
+            output[11] = config.fenv_att; //filter attack
+            output[12] = config.fenv_dec; //filter decay
+            output[13] = config.fenv_sus; //filter sustain
+            output[14] = config.fenv_rel; //filter release
+
+            //amp variables
+            output[15] = config.aenv_att; //amp attack
+            output[16] = config.aenv_dec; //amp decay
+            output[17] = config.aenv_sus; //amp sustain
+            output[18] = config.aenv_rel; //amp release
             return output;
         }
     }

@@ -7,6 +7,7 @@ namespace ProcMu.ScriptableObjects
     public class MuScale : ScriptableObject
     {
         [SerializeField] public bool[] Scale = new bool[128];
+        [HideInInspector] public int[] ScaleNotes = new int[128];
         [SerializeField] public Tonic tonic;
     }
 }

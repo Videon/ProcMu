@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using ProcMu.ScriptableObjects;
 using ProcMu.UnityScripts;
 using UnityEditor;
@@ -127,6 +125,9 @@ public class MuConfigEditor : Editor
         EditorGUILayout.LabelField("max", GUILayout.Width(60f));
         EditorGUILayout.LabelField("", GUILayout.Width(10f));
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space(20f);
+        _muConfig.chordsSynthConfig = (GSynthConfig) EditorGUILayout.ObjectField("Chords synth settings",
+            _muConfig.chordsSynthConfig, typeof(GSynthConfig), false);
         EditorGUILayout.EndVertical();
     }
 

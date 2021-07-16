@@ -32,6 +32,15 @@ namespace ProcMu.UnityScripts
         Random357,
         Random357Oct,
         RandomRoot,
-        RandomRootOct
+        RandomRootOct,
+        Triads,
+        TriadsOct
+    }
+
+    public enum Wavetable
+    {
+        Sine,
+        Square,
+        Saw
     }
 }
