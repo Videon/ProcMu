@@ -41,6 +41,7 @@ namespace ProcMu.UnityScripts
     {
         Sine,
         Square,
-        Saw
+        Saw,
+        Pulse
     }
 }

@@ -12,17 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
   m_Name: gsc_start 2
   m_EditorClassIdentifier: 
-  velocity: 1
+  velocity: 0.4
   wavetable: 2
-  noise: 0.01
+  noise: 0.04
   ffreq: 914.83
   fres: 0.5
   fenv_amt: 2000
-  fenv_att: 0
-  fenv_dec: 0.4
+  fenv_att: 0.10000000149011612
+  fenv_dec: 0
   fenv_sus: 0
-  fenv_rel: 1
-  aenv_att: 0.1
+  fenv_rel: 0.20000000298023224
+  aenv_att: 0.10000000149011612
   aenv_dec: 0.4
   aenv_sus: 0
-  aenv_rel: 1
+  aenv_rel: 0.4000000059604645
+  width: 0.8

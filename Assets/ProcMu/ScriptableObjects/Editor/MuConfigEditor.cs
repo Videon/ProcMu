@@ -54,7 +54,7 @@ public class MuConfigEditor : Editor
         EditorGUILayout.LabelField("max pulses", GUILayout.Width(80f));
         EditorGUILayout.EndHorizontal();
 
-
+        //Draw rhythm layers
         for (int i = 0; i < 4; i++)
         {
             EditorGUILayout.BeginHorizontal();
@@ -63,14 +63,18 @@ public class MuConfigEditor : Editor
                     GUILayout.Width(80f));
             EditorGUILayout.LabelField("", GUILayout.Width(10f));
 
-            _muConfig.minImpulses0[i] = EditorGUILayout.IntField(_muConfig.minImpulses0[i], GUILayout.Width(40f));
+            _muConfig.eucrth_minImpulses0[i] =
+                EditorGUILayout.IntField(_muConfig.eucrth_minImpulses0[i], GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.maxImpulses0[i] = EditorGUILayout.IntField(_muConfig.maxImpulses0[i], GUILayout.Width(40f));
+            _muConfig.eucrth_maxImpulses0[i] =
+                EditorGUILayout.IntField(_muConfig.eucrth_maxImpulses0[i], GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.minImpulses1[i] = EditorGUILayout.IntField(_muConfig.minImpulses1[i], GUILayout.Width(40f));
+            _muConfig.eucrth_minImpulses1[i] =
+                EditorGUILayout.IntField(_muConfig.eucrth_minImpulses1[i], GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.maxImpulses1[i] = EditorGUILayout.IntField(_muConfig.maxImpulses1[i], GUILayout.Width(40f));
+            _muConfig.eucrth_maxImpulses1[i] =
+                EditorGUILayout.IntField(_muConfig.eucrth_maxImpulses1[i], GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
 
 
@@ -125,6 +129,43 @@ public class MuConfigEditor : Editor
         EditorGUILayout.LabelField("max", GUILayout.Width(60f));
         EditorGUILayout.LabelField("", GUILayout.Width(10f));
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space(20f);
+        EditorGUILayout.LabelField("Chords trigger settings");
+
+        #region Chords trigger settings
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Intensity = 0 settings", GUILayout.Width(160f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("Intensity = 1 settings", GUILayout.Width(160f));
+        EditorGUILayout.EndHorizontal();
+
+        //Draw labels
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("min pulses", GUILayout.Width(80f));
+        EditorGUILayout.LabelField("max pulses", GUILayout.Width(80f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("min pulses", GUILayout.Width(80f));
+        EditorGUILayout.LabelField("max pulses", GUILayout.Width(80f));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        _muConfig.chords_minImpulses0 = EditorGUILayout.IntField(_muConfig.chords_minImpulses0, GUILayout.Width(40f));
+        EditorGUILayout.LabelField("", GUILayout.Width(40f));
+        _muConfig.chords_maxImpulses0 = EditorGUILayout.IntField(_muConfig.chords_maxImpulses0, GUILayout.Width(40f));
+        EditorGUILayout.LabelField("", GUILayout.Width(40f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        _muConfig.chords_minImpulses1 = EditorGUILayout.IntField(_muConfig.chords_minImpulses1, GUILayout.Width(40f));
+        EditorGUILayout.LabelField("", GUILayout.Width(40f));
+        _muConfig.chords_maxImpulses1 = EditorGUILayout.IntField(_muConfig.chords_maxImpulses1, GUILayout.Width(40f));
+        EditorGUILayout.LabelField("", GUILayout.Width(40f));
+
+
+        EditorGUILayout.EndHorizontal();
+
+        #endregion
+
+
         EditorGUILayout.Space(20f);
         _muConfig.chordsSynthConfig = (GSynthConfig) EditorGUILayout.ObjectField("Chords synth settings",
             _muConfig.chordsSynthConfig, typeof(GSynthConfig), false);

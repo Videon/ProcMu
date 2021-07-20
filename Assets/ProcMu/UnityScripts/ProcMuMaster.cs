@@ -107,8 +107,10 @@ namespace ProcMu.UnityScripts
 
 
             csoundUnity.CopyTableIn(810, EucRthGenerateConfig());
+            
             csoundUnity.CopyTableIn(820, SnhMelGenerateConfig());
 
+            csoundUnity.CopyTableIn(830, ChordsGenerateConfig());
             csoundUnity.CopyTableIn(831, ChordsGenerateNotes());
             csoundUnity.CopyTableIn(832, GSynthGenerateConfig(mc.chordsSynthConfig));
         }
@@ -121,8 +123,10 @@ namespace ProcMu.UnityScripts
             {
                 eucrthConfig[2 * i] = mc.sampleSelection[i];
                 eucrthConfig[2 * i + 1] = Mathf.RoundToInt(Random.Range(
-                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.minImpulses0[i], mc.minImpulses1[i], intensity)),
-                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.maxImpulses0[i], mc.maxImpulses1[i], intensity))
+                    (float) Mathf.RoundToInt(
+                        Mathf.Lerp(mc.eucrth_minImpulses0[i], mc.eucrth_minImpulses1[i], intensity)),
+                    (float) Mathf.RoundToInt(
+                        Mathf.Lerp(mc.eucrth_maxImpulses0[i], mc.eucrth_maxImpulses1[i], intensity))
                 ));
             }
 
@@ -137,6 +141,26 @@ namespace ProcMu.UnityScripts
             snhmelConfig[2] = mc.occurence;
 
             return snhmelConfig;
+        }
+
+
+        private double[] ChordsGenerateConfig()
+        {
+            double[] output = new double[8];
+            
+                output[0] = Mathf.RoundToInt(Random.Range(
+                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_minImpulses0, mc.chords_minImpulses1, intensity)),
+                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_maxImpulses0, mc.chords_maxImpulses1, intensity))
+                ));
+                output[1] = 0;
+                output[2] = 0;
+                output[3] = 0;
+                output[4] = 0;
+                output[5] = 0;
+                output[6] = 0;
+                output[7] = 0;
+
+            return output;
         }
 
         private double[] ChordsGenerateNotes()
@@ -177,6 +201,7 @@ namespace ProcMu.UnityScripts
             output[16] = config.aenv_dec; //amp decay
             output[17] = config.aenv_sus; //amp sustain
             output[18] = config.aenv_rel; //amp release
+            output[19] = config.width;
             return output;
         }
     }

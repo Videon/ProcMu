@@ -13,24 +13,30 @@ nchnls = 2
 
 seed 0  //Sets a new seed for randomization on every init
 
+//GLOBAL VARIABLES
+giSteps init 16 ;Number of steps per loop (global)
+
+giEuclayers init 4 ;Number of euclidean rhythm percussion layers. Only 4 are supported as of writing. May be changed in the future.
+
 //TABLES
 ;Global config tables - #800-809
 giScale ftgen 800, 0, 128, -2, -1 ;Global scale table
 giNotes ftgen 801, 0, 128, -2, -1 ;Global table containing midi note numbers of all active notes in scale
 
 ;EucRth config tables - #810-819
-giEucRthConfig ftgen 810, 0, 8, -2, 0
-giSoundFiles[] init 4   //EucRth samples tables, allocating space to load samples from Unity. Uses tables 900+n. Currently n = 4
+giEucRthConfig ftgen 810, 0, 8, -2, 0; params: 0 = sample table#, 1 = pulses
+giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Length is steps * layers.
 
 
 ;SnhMel config tables - #820-829
-giSnhMelConfig ftgen 820, 0, -3, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
+giSnhMelConfig ftgen 820, 0, 4, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
 
 
 ;Chords config tables - #830-839
-giChordsConfig ftgen 830, 0, -7, -2, 0  ;params: 0 = minOct, 1 = maxOct
+giChordsConfig ftgen 830, 0, 8, -2, 0  ;params: 0 = pulses
 giChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 = note0, 1 = note1...16 = note16
 giChordsInstr ftgen 832, 0, 32, -2, 0 ;instrument config table
+giChordsGrid ftgen 833, 0, giSteps, -2, -1 ;chords steps grid
 
 ;Waveforms
 giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -38,8 +44,7 @@ giSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10
 giSqu  ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0
 giTri  ftgen  703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0
 
-//GLOBAL VARIABLES
-gitotalsteps init 16
+
 
 //CHANNELS
 chn_k "update", 1
@@ -59,12 +64,10 @@ instr CLOCK
     gktrig metro gkbpm*kpulses/60
 
     if gktrig == 1 then
-      kstep = (kstep + 1) % gitotalsteps  ;perform modulo operation to clamp step index
+      kstep = (kstep + 1) % giSteps  ;perform modulo operation to clamp step index
 
       if kstep == 0 then
         chnset 1, "update"
-
-        event "i", "CHORDS", 0, 1
       endif
     endif
 
@@ -101,75 +104,77 @@ endin
 //EUCLIDEAN RHYTHMS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-gilayers init 4 ;number of layers may be changed, however, only up to 4 files are supported as of writing
-giEucsteps init 16
-
-gkgrid[][] init gilayers,giEucsteps
-
-gkpulses[] init gilayers
-
 //Fills the grid. Triggered at the start of a new bar.
 instr EUC_FILL
-    //
-    kbucket[] init gilayers ;using as many "buckets" as percussion layers
+    ipulses = p4
+    irotation = p5  ;TODO rotation currently not implemented
+    itabn = p6  ;p6 is grid table#
+    ioffset = p7 ;offsets write index by grid length * ioffset. needed for tables with multiple grid layers (e.g. EUCRTH)
+
+    kbucket init 0
     kstep init 0
-    klayer = 0
-    //
-    //Set pulse and rotation values from sliders for each layer, TODO rotation needs to be implemented!
-    while klayer < lenarray(gkgrid,1) do
-        gkpulses[klayer] tab (klayer * 2) + 1, 810 ;fetch number of pulses from eucrth config table
 
-        klayer+=1
-    od
-
-    klayer = 0
     //Fill sequence
-    while klayer < lenarray(gkgrid,1) do
-        kstep = 0
-        kbucket[klayer] = 0
-        while kstep < lenarray(gkgrid,2) do ;dividing by 2 as array is twice the step size (for rotation support)
+    while kstep < giSteps do
 
-            kbucket[klayer] = kbucket[klayer] + gkpulses[klayer]
+        kbucket = kbucket + ipulses
 
-            if kbucket[klayer] >= lenarray(gkgrid,2) then
-                kbucket[klayer] = kbucket[klayer] - lenarray(gkgrid,2)
-                gkgrid[klayer][kstep] = tab(klayer * 2, 810)  ;if impulse, set grid value to sample index
-            else
-                gkgrid[klayer][kstep] = -1  ;-1 = no impulse on grid position
-            endif
+        if kbucket >= giSteps then
+            kbucket = kbucket - giSteps
+            tabw(1,kstep+ioffset*giSteps,itabn)   ;1 = impulse for triggering sound
+        else
+            tabw(-1,kstep+ioffset*giSteps,itabn)  ;-1 = no impulse on grid position
+        endif
 
-            //gkgrid[ilayer][istep+ lenarray(gkgrid,2)] = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation support)
+        //gkgrid[ilayer][kstep+ giSteps] = gkgrid[ilayer][istep] ;copying current value to offset position (for rotation support)
 
-            kstep += 1
-        od
-        klayer += 1
+        kstep += 1
     od
 endin
 
 //Steps through the grid and triggers sounds accordingly
 instr EUC_STEP
     //
-    krot init 0 ;rotation, i.e., grid offset
     kstep init 0 ;current sequencer step
     //
 
     if gktrig == 1 then
         //Fill grid on start of a new bar
         if kstep == 0 then
-            event "i", "EUC_FILL", 0, 1
+          //EUC_FILL for all instruments
+
+          //EUCRTH
+          klayer = 0
+          while klayer < giEuclayers do
+            event "i", "EUC_FILL", 0, 1, tab:k(klayer*2+1, 810), 0, 811, klayer
+            klayer += 1
+          od
+
+          event "i", "EUC_FILL", 0, 1, tab:k(0,830), 0, 833, 0 //CHORDS
+
+          //TODO SNHMEL
+
         endif
 
-        //Check grid for all layers at current step and trigger samples accordingly
+        //Check grid for all instruments at current step and trigger samples accordingly
+        //EUCRTH
         klayer = 0
-
-        while klayer < lenarray(gkgrid,1) do
-            if gkgrid[klayer][kstep] > -1 then
-                event "i", "SMPLR_UNITY", 0, 2, gkgrid[klayer][kstep]
+        while klayer < giEuclayers do
+            if tab:k(klayer*16+kstep, 811) > -1 then
+                event "i", "SMPLR_UNITY", 0, 2, tab:k(klayer*2, 810)
             endif
             klayer += 1
         od
 
-        kstep = (kstep + 1) % giEucsteps  ;perform modulo operation to clamp step index
+        //CHORDS
+        if tab:k(kstep, 833) > -1 then
+          event "i", "CHORDS", 0, 1
+        endif
+
+        //SNHMEL
+        ;TODO
+
+        kstep = (kstep + 1) % giSteps  ;increase step index and perform modulo operation to total number of steps
     endif
 endin
 
@@ -190,7 +195,6 @@ instr SNHMEL
   kAmp = 1
 
   kCnt init 0
-  kTablen tableng 800
 
   //TODO: Make sure this is only performed if the table contents have changed!
   while tablei(kCnt,800) > -1 do
@@ -209,19 +213,6 @@ instr SNHMEL
   if ktab > -1 then
     kPitch = pow(2,(ktab-69)/12)*440
   endif
-
-
-  ;ksnh samphold ksp, gktrig
-  ;ksnh limit ksp, 0, kCnt
-  ;ksnh = int(ksnh)
-
-
-  ;ktab tab ksnh, 800  ;test code, remove/edit
-
-  ;if gktrig == 1 then
-  ;  kPitch = pow(2,(ktab-69)/12)*440  //Manually calculating frequency from midi note number
-    ;kPitch = mtof:k(ktab)  //...because mtof is not working in this version of CsoundUnity
-  ;endif
 
   kPitchPrt portk kPitch, .01
 
@@ -247,10 +238,10 @@ instr CHORDS
   kCnt init 0
 
   while kCnt < 16 do
-    kval = table(kCnt,831)
+    kval = tab:k(kCnt,831)  ;kval is also note as midi number
 
     if kval > -1 then
-      event "i", "GSYNTH", 0, 1, kval, tab_i(5,832), tab_i(6,832), tab_i(7,832), tab_i(8,832), tab_i(9,832), tab_i(10,832), tab_i(11,832), tab_i(12,832), tab_i(13,832), tab_i(14,832), tab_i(15,832), tab_i(16,832), tab_i(17,832), tab_i(18,832)
+      event "i", "GSYNTH", 0, 1, kval, tab_i(5,832), tab_i(6,832), tab_i(7,832), tab_i(8,832), tab_i(9,832), tab_i(10,832), tab_i(11,832), tab_i(12,832), tab_i(13,832), tab_i(14,832), tab_i(15,832), tab_i(16,832), tab_i(17,832), tab_i(18,832), tab_i(19,832)
     endif
 
     kCnt += 1
@@ -264,9 +255,12 @@ endin
 //GAME SYNTH
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-gisine   ftgen 710, 0, 16384, 10, 1	;sine wave
-gisquare ftgen 711, 0, 16384, 10, 1, 0 , .33, 0, .2 , 0, .14, 0 , .11, 0, .09 ;odd harmonics
-gisaw    ftgen 712, 0, 16384, 10, 0, .2, 0, .4, 0, .6, 0, .8, 0, 1, 0, .8, 0, .6, 0, .4, 0,.2 ;even harmonics
+gisine   ftgen 710, 0, 16384, 10, 1	                                                  ; Sine wave
+gisquare ftgen 711, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14, 0, .111                 ; Square
+gisaw    ftgen 712, 0, 16384, 10, 1, 0.5, 0.3, 0.25, 0.2, 0.167, 0.14, 0.125, .111    ; Sawtooth
+gipulse  ftgen 714, 0, 16384, 10, 1, 1, 1, 1, 0.7, 0.5, 0.3, 0.1                      ; Pulse
+
+gisyntrig init 0
 
 //i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
 //  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
@@ -275,14 +269,14 @@ instr GSYNTH
 ;pX = lfo waveform
 
 //Input/midi variables
-ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)
+ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz) TODO TEST IF MTOF WORKS AFTER ALL
 ivel = p5 ;note velocity value
 
 ifn = 710+p6
 
 inoise = p7 ;noise amount
 
-//Filter variables
+//Filter parameters
 iffreq = p8 ;lowpass filter frequency
 ifres = p9  ;lowpass filter resonance
 ifenv_amt = p10 ;lowpass filter env amount
@@ -292,12 +286,23 @@ ifenv_dec = p12 ;filter decay
 ifenv_sus = p13 ;filter sustain
 ifenv_rel = p14 ;filter release
 
-//Amp variables
+//Amp parameters
 iaenv_att = p15 ;amp attack
 iaenv_dec = p16 ;amp decay
 iaenv_sus = p17 ;amp sustain
 iaenv_rel = p18 ;amp release
 
+//Additional parameters
+iwidth = p19  ;stereo width
+
+//Perform alternating execution when a note is played
+if gisyntrig == 1 then
+  kpan = 0.5 + iwidth / 2 ;set note panning r
+  gisyntrig = 0
+  else
+    kpan = 0.5 - iwidth / 2
+    gisyntrig = 1
+endif
 
 //LFOs
 klfo1 lfo 1, 1
@@ -322,9 +327,12 @@ aaenv madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope
 
 abus = alp*aaenv
 
-outs abus, abus
+abusL, abusR pan2 abus, kpan  ;pan signal
+
+outs abusL, abusR
 
 endin
+
 //GAME SYNTH END
 //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -333,6 +341,5 @@ endin
 f 0 z
 i "CLOCK" 2 -1
 i "EUC_STEP" 2 -1
-i "SNHMEL" 2 -1
 </CsScore>
 </CsoundSynthesizer>

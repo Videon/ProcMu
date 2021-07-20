@@ -8,32 +8,38 @@ namespace ProcMu.ScriptableObjects
     {
         #region General config
 
-        public double velocity;
+        [Range(0, 1)] public double velocity;
         public Wavetable wavetable;
-        public double noise;
+        [Range(0, 1)] public double noise;
 
         #endregion
 
         #region Filter config
 
-        public double ffreq; //LP filter frequency
-        public double fres; //LP filter resonance
+        [Range(0, 20000)] public double ffreq; //LP filter frequency
+        [Range(0.5f, 25)] public double fres; //LP filter resonance
 
-        public double fenv_amt; //filter envelope amount
+        [Range(0, 20000)] public double fenv_amt; //filter envelope amount
 
-        public double fenv_att; //filter attack
-        public double fenv_dec; //filter decay
-        public double fenv_sus; //filter sustain
-        public double fenv_rel; //filter release
+        [Range(0, 10)] public double fenv_att; //filter attack
+        [Range(0, 10)] public double fenv_dec; //filter decay
+        [Range(0, 1)] public double fenv_sus; //filter sustain
+        [Range(0, 10)] public double fenv_rel; //filter release
 
         #endregion
 
         #region Amplitude config
 
-        public double aenv_att; //amp attack
-        public double aenv_dec; //amp decay
-        public double aenv_sus; //amp sustain
-        public double aenv_rel; //amp release
+        [Range(0, 10)] public double aenv_att; //amp attack
+        [Range(0, 10)] public double aenv_dec; //amp decay
+        [Range(0, 1)] public double aenv_sus; //amp sustain
+        [Range(0, 10)] public double aenv_rel; //amp release
+
+        #endregion
+
+        #region Additional config
+
+        [Range(0, 1)] public double width;
 
         #endregion
     }

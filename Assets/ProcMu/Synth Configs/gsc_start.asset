@@ -26,3 +26,4 @@ MonoBehaviour:
   aenv_dec: 0.4
   aenv_sus: 1
   aenv_rel: 3
+  width: 1
