@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: gsc_start
   m_EditorClassIdentifier: 
   velocity: 0.1
-  wavetable: 0
+  wavetable: 2
   noise: 0
   ffreq: 400
   fres: 7

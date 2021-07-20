@@ -14,29 +14,31 @@ nchnls = 2
 seed 0  //Sets a new seed for randomization on every init
 
 //GLOBAL VARIABLES
-giSteps init 16 ;Number of steps per loop (global)
+giSteps init 16     ;Number of steps per bar (global)
+giBars init 4       ;Number of bars per loop (global)
 
-giEuclayers init 4 ;Number of euclidean rhythm percussion layers. Only 4 are supported as of writing. May be changed in the future.
+giEuclayers init 4  ;Number of euclidean rhythm percussion layers. Only 4 are supported as of writing. May be changed in the future.
 
 //TABLES
 ;Global config tables - #800-809
-giScale ftgen 800, 0, 128, -2, -1 ;Global scale table
-giNotes ftgen 801, 0, 128, -2, -1 ;Global table containing midi note numbers of all active notes in scale
+giScale ftgen 800, 0, 128, -2, -1                   ;Global scale table
+giNotes ftgen 801, 0, 128, -2, -1                   ;Global table containing midi note numbers of all active notes in scale
+giActivebars ftgen 802, 0, 64, -2, -1               ;Global table containing active bar information, read: 4 * # of layers, including individual eucrth layers
 
 ;EucRth config tables - #810-819
-giEucRthConfig ftgen 810, 0, 8, -2, 0; params: 0 = sample table#, 1 = pulses
+giEucRthConfig ftgen 810, 0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses
 giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Length is steps * layers.
 
 
 ;SnhMel config tables - #820-829
-giSnhMelConfig ftgen 820, 0, 4, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
+giSnhMelConfig ftgen 820, 0, 4, -2, 0               ;Params: 0 = minOct, 1 = maxOct, 2 = occurence
 
 
 ;Chords config tables - #830-839
-giChordsConfig ftgen 830, 0, 8, -2, 0  ;params: 0 = pulses
-giChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 = note0, 1 = note1...16 = note16
-giChordsInstr ftgen 832, 0, 32, -2, 0 ;instrument config table
-giChordsGrid ftgen 833, 0, giSteps, -2, -1 ;chords steps grid
+giChordsConfig ftgen 830, 0, 8, -2, 0               ;Params: 0 = pulses
+giChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0 = note0, 1 = note1...16 = note16
+giChordsInstr ftgen 832, 0, 32, -2, 0               ;Instrument config table
+giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;Chords steps grid
 
 ;Waveforms
 giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -57,6 +59,7 @@ instr CLOCK
     ;gkbpm portk chnget("gBpm"), 0.5
     gkbpm chnget "gBpm" ;TODO implement smoothing for handling external value changes
 
+    gkcurrentbar init 0 ;setting to -1 as it will be set to 1 on first gkstep
     kstep init 0
 
     kpulses = 4 ;pulses per beat
@@ -67,6 +70,7 @@ instr CLOCK
       kstep = (kstep + 1) % giSteps  ;perform modulo operation to clamp step index
 
       if kstep == 0 then
+        gkcurrentbar = (gkcurrentbar+1) % giBars
         chnset 1, "update"
       endif
     endif
@@ -156,23 +160,28 @@ instr EUC_STEP
 
         endif
 
-        //Check grid for all instruments at current step and trigger samples accordingly
+        //PLAY ALL INSTRUMENTS ACCORDING TO GRID AND ACTIVE BAR INFORMATION
         //EUCRTH
-        klayer = 0
-        while klayer < giEuclayers do
-            if tab:k(klayer*16+kstep, 811) > -1 then
-                event "i", "SMPLR_UNITY", 0, 2, tab:k(klayer*2, 810)
+
+          klayer = 0
+          while klayer < giEuclayers do ;iterate through all percussion layers
+            if tab:k(0 * giBars + gkcurrentbar, 802) > 0 then ;only play if current bar is active
+              if tab:k(klayer * 16 + kstep, 811) > -1 then
+                  event "i", "SMPLR_UNITY", 0, 2, tab:k(klayer*2, 810)
+              endif
             endif
             klayer += 1
-        od
+          od
+
 
         //CHORDS
-        if tab:k(kstep, 833) > -1 then
-          event "i", "CHORDS", 0, 1
+        if tab:k(1 * giBars + gkcurrentbar, 802) > 0 then ;only play if current bar is active, x * giBars to skip bars indices for other instruments
+          if tab:k(kstep, 833) > -1 then
+            event "i", "CHORDS", 0, 1
+          endif
         endif
 
-        //SNHMEL
-        ;TODO
+        //TODO SNHMEL
 
         kstep = (kstep + 1) % giSteps  ;increase step index and perform modulo operation to total number of steps
     endif

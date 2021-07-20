@@ -12,6 +12,12 @@ namespace ProcMu.ScriptableObjects
         [SerializeField] public double bpm = 120;
         public MuScale Scale;
 
+        /// <summary> Contains active bar information for all instruments. 4 indices reserved per layer. </summary>
+        public double[] activeBars = new double[128];
+
+        public bool[] activeBars0 = new bool[64];
+        public bool[] activeBars1 = new bool[64];
+        
         #endregion
 
         #region EUCRTH parameters

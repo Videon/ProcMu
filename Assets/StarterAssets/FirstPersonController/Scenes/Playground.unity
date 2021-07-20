@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logCsoundOutput: 0
+  logCsoundOutput: 1
   mute: 0
   processClipAudio: 0
   loudVolumeWarning: 1
@@ -513,42 +513,49 @@ MonoBehaviour:
   _csoundString: "<Cabbage>\r\n</Cabbage>\r\n\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-n
     -d\r\n</CsOptions>\r\n<CsInstruments>\r\n; Initialize the global variables.\r\nksmps
     = 32\r\nnchnls = 2\r\n0dbfs = 1\r\n\r\nseed 0  //Sets a new seed for randomization
-    on every init\r\n\r\n//GLOBAL VARIABLES\r\ngiSteps init 16 ;Number of steps per
-    loop (global)\r\n\r\ngiEuclayers init 4 ;Number of euclidean rhythm percussion
-    layers. Only 4 are supported as of writing. May be changed in the future.\r\n\r\n//TABLES\r\n;Global
-    config tables - #800-809\r\ngiScale ftgen 800, 0, 128, -2, -1 ;Global scale table\r\ngiNotes
-    ftgen 801, 0, 128, -2, -1 ;Global table containing midi note numbers of all active
-    notes in scale\r\n\r\n;EucRth config tables - #810-819\r\ngiEucRthConfig ftgen
-    810, 0, 8, -2, 0; params: 0 = sample table#, 1 = pulses\r\ngiEucGrid ftgen 811,
-    0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Length is steps * layers.\r\n\r\n\r\n;SnhMel
-    config tables - #820-829\r\ngiSnhMelConfig ftgen 820, 0, 4, -2, 0  ;params: 0
-    = minOct, 1 = maxOct, 2 = occurence\r\n\r\n\r\n;Chords config tables - #830-839\r\ngiChordsConfig
-    ftgen 830, 0, 8, -2, 0  ;params: 0 = pulses\r\ngiChordsNotes ftgen 831, 0, 16,
-    -2, 0 ;params: 0 = note0, 1 = note1...16 = note16\r\ngiChordsInstr ftgen 832,
-    0, 32, -2, 0 ;instrument config table\r\ngiChordsGrid ftgen 833, 0, giSteps,
-    -2, -1 ;chords steps grid\r\n\r\n;Waveforms\r\ngiImp  ftgen  700, 0, 4096, 10,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1\r\ngiSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10\r\ngiSqu 
-    ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0\r\ngiTri  ftgen 
-    703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0\r\n\r\n\r\n\r\n//CHANNELS\r\nchn_k
+    on every init\r\n\r\n//GLOBAL VARIABLES\r\ngiSteps init 16     ;Number of steps
+    per bar (global)\r\ngiBars init 4       ;Number of bars per loop (global)\r\n\r\ngiEuclayers
+    init 4  ;Number of euclidean rhythm percussion layers. Only 4 are supported as
+    of writing. May be changed in the future.\r\n\r\n//TABLES\r\n;Global config tables
+    - #800-809\r\ngiScale ftgen 800, 0, 128, -2, -1                   ;Global scale
+    table\r\ngiNotes ftgen 801, 0, 128, -2, -1                   ;Global table containing
+    midi note numbers of all active notes in scale\r\ngiActivebars ftgen 802, 0,
+    64, -2, -1               ;Global table containing active bar information, read:
+    4 * # of layers, including individual eucrth layers\r\n\r\n;EucRth config tables
+    - #810-819\r\ngiEucRthConfig ftgen 810, 0, 8, -2, 0               ;Params: 0
+    = sample table#, 1 = pulses\r\ngiEucGrid ftgen 811, 0, giEuclayers*giSteps, -2,
+    -1 ;EucRth grid as table. Length is steps * layers.\r\n\r\n\r\n;SnhMel config
+    tables - #820-829\r\ngiSnhMelConfig ftgen 820, 0, 4, -2, 0               ;Params:
+    0 = minOct, 1 = maxOct, 2 = occurence\r\n\r\n\r\n;Chords config tables - #830-839\r\ngiChordsConfig
+    ftgen 830, 0, 8, -2, 0               ;Params: 0 = pulses\r\ngiChordsNotes ftgen
+    831, 0, 16, -2, 0               ;Params: 0 = note0, 1 = note1...16 = note16\r\ngiChordsInstr
+    ftgen 832, 0, 32, -2, 0               ;Instrument config table\r\ngiChordsGrid
+    ftgen 833, 0, giSteps, -2, -1          ;Chords steps grid\r\n\r\n;Waveforms\r\ngiImp 
+    ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1\r\ngiSaw  ftgen  701, 0,
+    4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10\r\ngiSqu  ftgen  702, 0,
+    4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0\r\ngiTri  ftgen  703, 0, 4096,
+    10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0\r\n\r\n\r\n\r\n//CHANNELS\r\nchn_k
     \"update\", 1\r\n\r\n//SYSTEM INSTRUMENTS\r\n\r\n//Generates a global clock signal
     (gktrig) as long as it's running.\r\ninstr CLOCK\r\n    gkbpm init 110 ;beats
     per minute\r\n    ;gkbpm portk chnget(\"gBpm\"), 0.5\r\n    gkbpm chnget \"gBpm\"
-    ;TODO implement smoothing for handling external value changes\r\n\r\n    kstep
-    init 0\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n   
+    ;TODO implement smoothing for handling external value changes\r\n\r\n    gkcurrentbar
+    init 0 ;setting to -1 as it will be set to 1 on first gkstep\r\n    kstep init
+    0\r\n\r\n    kpulses = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n   
     if gktrig == 1 then\r\n      kstep = (kstep + 1) % giSteps  ;perform modulo operation
-    to clamp step index\r\n\r\n      if kstep == 0 then\r\n        chnset 1, \"update\"\r\n     
-    endif\r\n    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler instrument
-    for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
-    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n\r\n   
-    ifn   =  chnget(sprintf(\"sampletable%d\", 900+p4))\r\n    ;prints \"giTable
-    p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n    ;prints \"actual
-    numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
-    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
-    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
-    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
-    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n\r\n   
-    outs atab *.1, atab*.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\"  TODO use chnmix
-    to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
+    to clamp step index\r\n\r\n      if kstep == 0 then\r\n        gkcurrentbar =
+    (gkcurrentbar+1) % giBars\r\n        chnset 1, \"update\"\r\n      endif\r\n   
+    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler instrument for use with
+    audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr SMPLR_UNITY
+    ; play audio from function table using flooper2 opcode\r\n\r\n    ifn   =  chnget(sprintf(\"sampletable%d\",
+    900+p4))\r\n    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen 
+    =  nsamp(ifn)\r\n    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n   
+    itrns =  1\t; no transposition\r\n    ilps  =  0\t; loop starts at index 0\r\n   
+    ilpe  =  ilen\t; ends at value returned by nsamp above\r\n    imode =  1\t; loops
+    forward\r\n    istrt =  0\t; commence playback at index 0 samples\r\n    ; lphasor
+    provides index into f1\r\n    alphs lphasor itrns, ilps, ilpe, imode, istrt\r\n   
+    atab  tablei  alphs, ifn\r\n\r\n    outs atab *.1, atab*.1\r\n\r\n\r\n    ;chnmix
+    atab, \"eucrth_l\"  TODO use chnmix to sum sound of all sampler instances\r\n   
+    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
     RHYTHMS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//Fills
     the grid. Triggered at the start of a new bar.\r\ninstr EUC_FILL\r\n    ipulses
     = p4\r\n    irotation = p5  ;TODO rotation currently not implemented\r\n    itabn
@@ -568,15 +575,19 @@ MonoBehaviour:
     = 0\r\n          while klayer < giEuclayers do\r\n            event \"i\", \"EUC_FILL\",
     0, 1, tab:k(klayer*2+1, 810), 0, 811, klayer\r\n            klayer += 1\r\n         
     od\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,830), 0, 833, 0
-    //CHORDS\r\n\r\n          //TODO SNHMEL\r\n\r\n        endif\r\n\r\n        //Check
-    grid for all instruments at current step and trigger samples accordingly\r\n       
-    //EUCRTH\r\n        klayer = 0\r\n        while klayer < giEuclayers do\r\n           
-    if tab:k(klayer*16+kstep, 811) > -1 then\r\n                event \"i\", \"SMPLR_UNITY\",
-    0, 2, tab:k(klayer*2, 810)\r\n            endif\r\n            klayer += 1\r\n       
-    od\r\n\r\n        //CHORDS\r\n        if tab:k(kstep, 833) > -1 then\r\n         
-    event \"i\", \"CHORDS\", 0, 1\r\n        endif\r\n\r\n        //SNHMEL\r\n       
-    ;TODO\r\n\r\n        kstep = (kstep + 1) % giSteps  ;increase step index and
-    perform modulo operation to total number of steps\r\n    endif\r\nendin\r\n\r\n//EUCLIDEAN
+    //CHORDS\r\n\r\n          //TODO SNHMEL\r\n\r\n        endif\r\n\r\n        //PLAY
+    ALL INSTRUMENTS ACCORDING TO GRID AND ACTIVE BAR INFORMATION\r\n        //EUCRTH\r\n\r\n         
+    klayer = 0\r\n          while klayer < giEuclayers do ;iterate through all percussion
+    layers\r\n            if tab:k(0 * giBars + gkcurrentbar, 802) > 0 then ;only
+    play if current bar is active\r\n              if tab:k(klayer * 16 + kstep,
+    811) > -1 then\r\n                  event \"i\", \"SMPLR_UNITY\", 0, 2, tab:k(klayer*2,
+    810)\r\n              endif\r\n            endif\r\n            klayer += 1\r\n         
+    od\r\n\r\n\r\n        //CHORDS\r\n        if tab:k(1 * giBars + gkcurrentbar,
+    802) > 0 then ;only play if current bar is active, x * giBars to skip bars indices
+    for other instruments\r\n          if tab:k(kstep, 833) > -1 then\r\n           
+    event \"i\", \"CHORDS\", 0, 1\r\n          endif\r\n        endif\r\n\r\n       
+    //TODO SNHMEL\r\n\r\n        kstep = (kstep + 1) % giSteps  ;increase step index
+    and perform modulo operation to total number of steps\r\n    endif\r\nendin\r\n\r\n//EUCLIDEAN
     RHYTHMS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//SAMPLE
     AND HOLD MELODY\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//TODO
     Maybe SNHMEL could use a morphable wavetable for sound generation??\r\ninstr
@@ -1572,7 +1583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radiusInner: 20
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: 6508505932bd248c889073791b57627c, type: 2}
+  Config: {fileID: 0}
 --- !u!4 &1047722899
 Transform:
   m_ObjectHideFlags: 0
@@ -1664,7 +1675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radiusInner: 20
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: 46e6bd06848da4de1bb1ba5c2ca214c1, type: 2}
+  Config: {fileID: 0}
 --- !u!4 &1224878708
 Transform:
   m_ObjectHideFlags: 0
@@ -1741,7 +1752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radiusInner: 20
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: 0ead0a4f793744d6e8e460692d0b54fc, type: 2}
+  Config: {fileID: 0}
 --- !u!4 &1345296274
 Transform:
   m_ObjectHideFlags: 0
@@ -1789,7 +1800,7 @@ MonoBehaviour:
   csoundUnity: {fileID: 364543699}
   bpm: 80
   intensity: 0
-  mc: {fileID: 11400000, guid: 6508505932bd248c889073791b57627c, type: 2}
+  mc: {fileID: 11400000, guid: 86f591569dc56423aa224721c18d9d40, type: 2}
 --- !u!4 &1424407682
 Transform:
   m_ObjectHideFlags: 0
@@ -2111,7 +2122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radiusInner: 20
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: 0d25bd0c21b13441a9b7dcfa1afb64ec, type: 2}
+  Config: {fileID: 0}
 --- !u!4 &1670474232
 Transform:
   m_ObjectHideFlags: 0

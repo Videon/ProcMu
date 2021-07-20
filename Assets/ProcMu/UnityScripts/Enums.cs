@@ -44,4 +44,12 @@ namespace ProcMu.UnityScripts
         Saw,
         Pulse
     }
+
+    public enum Instrument
+    {
+        EucRth,
+        Chords,
+        SnhMel,
+        SnhBass
+    }
 }

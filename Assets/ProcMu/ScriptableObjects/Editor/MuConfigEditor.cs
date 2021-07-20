@@ -1,3 +1,4 @@
+using System;
 using ProcMu.ScriptableObjects;
 using ProcMu.UnityScripts;
 using UnityEditor;
@@ -8,14 +9,23 @@ public class MuConfigEditor : Editor
 {
     private MuConfig _muConfig;
 
+    #region GUI styles
+
+    //TODO CREATE STYLES FOR INDICATING CURRENT BAR
+    private GUIStyle gsActive = new GUIStyle()
+    {
+    };
+
+    #endregion
+
     public override void OnInspectorGUI()
     {
         _muConfig = (MuConfig) target;
 
         DrawGeneralSettings();
         DrawEucRth();
-        DrawSnhMel();
         DrawChords();
+        DrawSnhMel();
 
         EditorUtility.SetDirty(_muConfig); //TODO SET ONLY DIRTY WHEN A CHANGE WAS MADE
     }
@@ -34,6 +44,8 @@ public class MuConfigEditor : Editor
         EditorGUILayout.BeginVertical();
         EditorGUILayout.Space(20f);
         EditorGUILayout.LabelField("Euclidean Rhythm settings");
+
+        DrawActiveBars(Instrument.EucRth);
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("", GUILayout.Width(80f));
@@ -84,35 +96,14 @@ public class MuConfigEditor : Editor
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawSnhMel()
-    {
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.Space(20f);
-        EditorGUILayout.LabelField("Sample And Hold Melody Settings");
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Octave range", GUILayout.Width(120f));
-        EditorGUILayout.LabelField("", GUILayout.Width(10f));
-        EditorGUILayout.LabelField("Occurence (per minute)", GUILayout.Width(240f));
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal();
-        _muConfig.snhmel_minOct = EditorGUILayout.IntField(_muConfig.snhmel_minOct, GUILayout.Width(60f));
-        _muConfig.snhmel_maxOct = EditorGUILayout.IntField(_muConfig.snhmel_maxOct, GUILayout.Width(60f));
-        EditorGUILayout.LabelField("", GUILayout.Width(10f));
-        _muConfig.occurence = EditorGUILayout.DoubleField(_muConfig.occurence, GUILayout.Width(60f));
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("min", GUILayout.Width(60f));
-        EditorGUILayout.LabelField("max", GUILayout.Width(60f));
-        EditorGUILayout.LabelField("", GUILayout.Width(10f));
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.EndVertical();
-    }
-
     private void DrawChords()
     {
         EditorGUILayout.BeginVertical();
         EditorGUILayout.Space(20f);
         EditorGUILayout.LabelField("Chords Settings");
+
+        DrawActiveBars(Instrument.Chords);
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Octave range", GUILayout.Width(120f));
         EditorGUILayout.LabelField("", GUILayout.Width(10f));
@@ -169,6 +160,71 @@ public class MuConfigEditor : Editor
         EditorGUILayout.Space(20f);
         _muConfig.chordsSynthConfig = (GSynthConfig) EditorGUILayout.ObjectField("Chords synth settings",
             _muConfig.chordsSynthConfig, typeof(GSynthConfig), false);
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawSnhMel()
+    {
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.Space(20f);
+        EditorGUILayout.LabelField("Sample And Hold Melody Settings");
+
+        DrawActiveBars(Instrument.SnhMel);
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Octave range", GUILayout.Width(120f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("Occurence (per minute)", GUILayout.Width(240f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        _muConfig.snhmel_minOct = EditorGUILayout.IntField(_muConfig.snhmel_minOct, GUILayout.Width(60f));
+        _muConfig.snhmel_maxOct = EditorGUILayout.IntField(_muConfig.snhmel_maxOct, GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        _muConfig.occurence = EditorGUILayout.DoubleField(_muConfig.occurence, GUILayout.Width(60f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("min", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("max", GUILayout.Width(60f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+    }
+
+
+    private void DrawActiveBars(Instrument instrument)
+    {
+        int offset = (int) instrument * 4;
+
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.Space(10f);
+        EditorGUILayout.LabelField("Active bars");
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Intensity = 0 settings", GUILayout.Width(160f));
+        EditorGUILayout.LabelField("", GUILayout.Width(10f));
+        EditorGUILayout.LabelField("Intensity = 1 settings", GUILayout.Width(160f));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+
+        //Draw active bars for intensity = 0
+        for (int i = 0; i < 4; i++)
+        {
+            _muConfig.activeBars0[offset + i] =
+                EditorGUILayout.Toggle("", _muConfig.activeBars0[offset + i], GUILayout.Width(20f));
+        }
+
+        EditorGUILayout.LabelField("", GUILayout.Width(80f));
+
+        //Draw active bars for intensity = 1
+        for (int i = 0; i < 4; i++)
+        {
+            _muConfig.activeBars1[offset + i] =
+                EditorGUILayout.Toggle("", _muConfig.activeBars1[offset + i], GUILayout.Width(20f));
+        }
+
+        EditorGUILayout.EndHorizontal();
+
         EditorGUILayout.EndVertical();
     }
 

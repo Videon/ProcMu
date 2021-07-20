@@ -5,6 +5,34 @@ using UnityEngine;
 
 namespace ProcMu.UnityScripts
 {
+    /*
+     * OVERVIEW OF TABLE NUMBERS FOLLOWS
+     * ;Global config tables - #800-809
+        giScale ftgen 800, 0, 128, -2, -1 ;Global scale table
+        giNotes ftgen 801, 0, 128, -2, -1 ;Global table containing midi note numbers of all active notes in scale
+        giActivebars ftgen 802, 0, 64, -2, -1  ;Global table containing active bar information, read: 4 * # of layers, including individual eucrth layers
+
+        ;EucRth config tables - #810-819
+        giEucRthConfig ftgen 810, 0, 8, -2, 0; params: 0 = sample table#, 1 = pulses
+        giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Length is steps * layers.
+
+
+        ;SnhMel config tables - #820-829
+        giSnhMelConfig ftgen 820, 0, 4, -2, 0  ;params: 0 = minOct, 1 = maxOct, 2 = occurence
+
+
+        ;Chords config tables - #830-839
+        giChordsConfig ftgen 830, 0, 8, -2, 0  ;params: 0 = pulses
+        giChordsNotes ftgen 831, 0, 16, -2, 0 ;params: 0 = note0, 1 = note1...16 = note16
+        giChordsInstr ftgen 832, 0, 32, -2, 0 ;instrument config table
+        giChordsGrid ftgen 833, 0, giSteps, -2, -1 ;chords steps grid
+
+        ;Waveforms
+        giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+        giSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10
+        giSqu  ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0
+        giTri  ftgen  703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0
+     */
     public class ProcMuMaster : MonoBehaviour
     {
         [SerializeField] private CsoundUnity csoundUnity;
@@ -104,15 +132,29 @@ namespace ProcMu.UnityScripts
             //Set scale tables / TODO Only execute when scale has changed
             csoundUnity.CopyTableIn(800, ProcMuUtils.ConvertScale(mc.Scale.Scale));
             csoundUnity.CopyTableIn(801, ProcMuUtils.Int2Double(mc.Scale.ScaleNotes));
+            csoundUnity.CopyTableIn(802, GlobalGenerateBars());
 
 
             csoundUnity.CopyTableIn(810, EucRthGenerateConfig());
-            
+
             csoundUnity.CopyTableIn(820, SnhMelGenerateConfig());
 
             csoundUnity.CopyTableIn(830, ChordsGenerateConfig());
             csoundUnity.CopyTableIn(831, ChordsGenerateNotes());
             csoundUnity.CopyTableIn(832, GSynthGenerateConfig(mc.chordsSynthConfig));
+        }
+
+        private double[] GlobalGenerateBars()
+        {
+            double[] output = new double[64];
+
+            for (int i = 0; i < output.Length; i++)
+            {
+                if (intensity <= 0.5f) output[i] = mc.activeBars0[i] ? 1 : -1;
+                else output[i] = mc.activeBars1[i] ? 1 : -1;
+            }
+
+            return output;
         }
 
         private double[] EucRthGenerateConfig()
@@ -147,18 +189,18 @@ namespace ProcMu.UnityScripts
         private double[] ChordsGenerateConfig()
         {
             double[] output = new double[8];
-            
-                output[0] = Mathf.RoundToInt(Random.Range(
-                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_minImpulses0, mc.chords_minImpulses1, intensity)),
-                    (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_maxImpulses0, mc.chords_maxImpulses1, intensity))
-                ));
-                output[1] = 0;
-                output[2] = 0;
-                output[3] = 0;
-                output[4] = 0;
-                output[5] = 0;
-                output[6] = 0;
-                output[7] = 0;
+
+            output[0] = Mathf.RoundToInt(Random.Range(
+                (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_minImpulses0, mc.chords_minImpulses1, intensity)),
+                (float) Mathf.RoundToInt(Mathf.Lerp(mc.chords_maxImpulses0, mc.chords_maxImpulses1, intensity))
+            ));
+            output[1] = 0;
+            output[2] = 0;
+            output[3] = 0;
+            output[4] = 0;
+            output[5] = 0;
+            output[6] = 0;
+            output[7] = 0;
 
             return output;
         }
