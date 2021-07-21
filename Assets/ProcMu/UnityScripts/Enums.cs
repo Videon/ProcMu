@@ -52,4 +52,21 @@ namespace ProcMu.UnityScripts
         SnhMel,
         SnhBass
     }
+
+    public enum MelodyCurve
+    {
+        Sine,
+        Triangle,
+        SquareBipolar,
+        SquareUnipolar,
+        Sawtooth,
+        SawtoothInverse
+    }
+
+    public enum MelodyMode
+    {
+        Continuous,
+        Retriggered
+    }
+
 }

@@ -53,19 +53,6 @@ namespace ProcMu.UnityScripts
         // Start is called before the first frame update
         void Start()
         {
-            float[] testDist = new float[] {1.41f, 1.41f, 1f, 2.24f, 4.24f};
-            double[][] testVal = new double[1][];
-
-            testVal[0] = new double[] {100, 105, 105, 100, 115};
-            //testVal[1] = new double[] {4.4, 1.2, 2.7, 7.9, 3.75};
-
-
-            double[] testRet = Interpolate(testDist, testVal);
-
-            for (int i = 0; i < testRet.Length; i++)
-            {
-                Debug.Log("Interpolator " + i + " says: " + testRet[i]);
-            }
         }
 
         // Update is called once per frame

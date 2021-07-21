@@ -32,10 +32,12 @@ namespace ProcMu.UnityScripts.Utilities
             }
 
             //Fill remaining fields with -1 to indicate no more notes available.
-            for (int i = index; i < output.Length; i++)
+            for (int i = index; i < output.Length - 1; i++)
             {
                 output[i] = -1;
             }
+
+            output[output.Length - 1] = index;  //Last index indicates number of active notes. Needed for certain features in csound, e.g. lfo range to select notes.
 
             return output;
         }

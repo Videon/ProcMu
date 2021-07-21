@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: muc_1
   m_EditorClassIdentifier: 
   bpm: 120
-  Scale: {fileID: 11400000, guid: 12da68175461540f1934c4bb801a7d1e, type: 2}
+  Scale: {fileID: 11400000, guid: e86135a03c8e54d659d00a4046a21042, type: 2}
   activeBars:
   - 1
   - 1
@@ -79,21 +79,35 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  activeBars0: 00000101010100000000000000000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  activeBars1: 01010101010001000000000000000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  sampleSelection: 00000000020000000100000003000000
+  activeBars0: 01010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  activeBars1: 01010101010001000101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  sampleSelection: 01000000030000000400000000000000
   eucrth_minImpulses0: 04000000080000000200000001000000
   eucrth_maxImpulses0: 04000000080000000200000003000000
   eucrth_minImpulses1: 070000000e0000000600000002000000
   eucrth_maxImpulses1: 08000000100000000600000004000000
-  snhmel_minOct: 0
-  snhmel_maxOct: 10
-  occurence: 2
-  chords_minOct: 5
-  chords_maxOct: 5
+  snhmel_minImpulses0: 4
+  snhmel_maxImpulses0: 4
+  snhmel_minImpulses1: 2
+  snhmel_maxImpulses1: 3
+  snhmel_minOccurence0: 1
+  snhmel_maxOccurence0: 1
+  snhmel_minOccurence1: 1
+  snhmel_maxOccurence1: 1
+  snhmel_minOct0: 2
+  snhmel_maxOct0: 2
+  snhmel_minOct1: 5
+  snhmel_maxOct1: 6
+  snhmel_melodycurve: 0
+  snhmel_melodymode: 0
+  snhmel_synthconfig: {fileID: 11400000, guid: be31be1cb1de94c66bd1d94629cf2b67, type: 2}
+  chords_minOct0: 4
+  chords_maxOct0: 4
+  chords_minOct1: 6
+  chords_maxOct1: 6
   chords_minImpulses0: 1
   chords_maxImpulses0: 1
   chords_minImpulses1: 1
   chords_maxImpulses1: 2
   chordMode: 4
-  chordsSynthConfig: {fileID: 11400000, guid: da94afd83affc4cf0bd99e3fc81526e4, type: 2}
+  chords_synthconfig: {fileID: 11400000, guid: da94afd83affc4cf0bd99e3fc81526e4, type: 2}

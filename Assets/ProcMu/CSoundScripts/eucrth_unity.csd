@@ -19,37 +19,34 @@ giBars init 4       ;Number of bars per loop (global)
 
 giEuclayers init 4  ;Number of euclidean rhythm percussion layers. Only 4 are supported as of writing. May be changed in the future.
 
-//TABLES
+//TABLES  - RANGE 900-999 is reserved for perc samples!
 ;Global config tables - #800-809
 giScale ftgen 800, 0, 128, -2, -1                   ;Global scale table
-giNotes ftgen 801, 0, 128, -2, -1                   ;Global table containing midi note numbers of all active notes in scale
+giNotes ftgen 801, 0, 128, -2, -1                   ;Global table containing midi note numbers of all active notes in scale, last index(127) contains number of active notes, i.e. highest index containing a valid note
 giActivebars ftgen 802, 0, 64, -2, -1               ;Global table containing active bar information, read: 4 * # of layers, including individual eucrth layers
+giComm ftgen 803, 0, 4, -2, 0                       ;Communication table for providing Unity with Csound state information, Params: 0 = update
 
 ;EucRth config tables - #810-819
-giEucRthConfig ftgen 810, 0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses
+giEucRthConfig ftgen 810, 0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses, for layers 0-3
 giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Length is steps * layers.
 
 
 ;SnhMel config tables - #820-829
-giSnhMelConfig ftgen 820, 0, 4, -2, 0               ;Params: 0 = minOct, 1 = maxOct, 2 = occurence
-
+giSnhMelConfig ftgen 820, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
+giSnhMelInstr ftgen 821, 0, 32, -2, 0               ;GSYNTH Instrument config table
+giSnhMelGrid  ftgen 822, 0, giSteps, -2, -1         ;SNHMEL steps grid
 
 ;Chords config tables - #830-839
 giChordsConfig ftgen 830, 0, 8, -2, 0               ;Params: 0 = pulses
 giChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0 = note0, 1 = note1...16 = note16
-giChordsInstr ftgen 832, 0, 32, -2, 0               ;Instrument config table
-giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;Chords steps grid
+giChordsInstr ftgen 832, 0, 32, -2, 0               ;GSYNTH Instrument config table
+giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;CHORDS steps grid
 
 ;Waveforms
-giImp  ftgen  700, 0, 4096, 10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-giSaw  ftgen  701, 0, 4096, 10, 1,-1/2,1/3,-1/4,1/5,-1/6,1/7,-1/8,1/9,-1/10
-giSqu  ftgen  702, 0, 4096, 10, 1, 0, 1/3, 0, 1/5, 0, 1/7, 0, 1/9, 0
-giTri  ftgen  703, 0, 4096, 10, 1, 0, -1/9, 0, 1/25, 0, -1/49, 0, 1/81, 0
-
-
-
-//CHANNELS
-chn_k "update", 1
+gisine   ftgen 700, 0, 16384, 10, 1	                                                  ; Sine wave
+gisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14, 0, .111                 ; Square
+gisaw    ftgen 702, 0, 16384, 10, 1, 0.5, 0.3, 0.25, 0.2, 0.167, 0.14, 0.125, .111    ; Sawtooth
+gipulse  ftgen 703, 0, 16384, 10, 1, 1, 1, 1, 0.7, 0.5, 0.3, 0.1                      ; Pulse
 
 //SYSTEM INSTRUMENTS
 
@@ -71,7 +68,7 @@ instr CLOCK
 
       if kstep == 0 then
         gkcurrentbar = (gkcurrentbar+1) % giBars
-        chnset 1, "update"
+        tabw(1,0,803) ;
       endif
     endif
 
@@ -96,7 +93,9 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
     alphs lphasor itrns, ilps, ilpe, imode, istrt
     atab  tablei  alphs, ifn
 
-    outs atab *.1, atab*.1
+    arevL, arevR freeverb atab, atab, 0.5, 0.6
+
+    outs atab*0.1+arevL*0.1, atab*0.1+arevR*0.1
 
 
     ;chnmix atab, "eucrth_l"  TODO use chnmix to sum sound of all sampler instances
@@ -154,9 +153,9 @@ instr EUC_STEP
             klayer += 1
           od
 
-          event "i", "EUC_FILL", 0, 1, tab:k(0,830), 0, 833, 0 //CHORDS
+          event "i", "EUC_FILL", 0, 1, tab:k(0,830), 0, 833, 0  //CHORDS
 
-          //TODO SNHMEL
+          event "i", "EUC_FILL", 0, 1, tab:k(0,820), 0, 822, 0  //SNHMEL
 
         endif
 
@@ -181,7 +180,12 @@ instr EUC_STEP
           endif
         endif
 
-        //TODO SNHMEL
+        //SNHMEL
+        if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
+          if tab:k(kstep, 833) > -1 then
+            ;event "i", "SNHMEL", 0, 1
+          endif
+        endif
 
         kstep = (kstep + 1) % giSteps  ;increase step index and perform modulo operation to total number of steps
     endif
@@ -196,41 +200,54 @@ endin
 
 //TODO Maybe SNHMEL could use a morphable wavetable for sound generation??
 instr SNHMEL
-  krangeMin = tablei(0,820)
-  krangeMax = tablei(1,820)
-  kfreqMin = tablei(2,820)
-  kfreqMax = kfreqMin
+  ;kmaxnote = tab:k(127, 801)
+  kminnote init 0
+  kmaxnote init 0
 
-  kAmp = 1
+  koccurence = tab:k(1, 820)
+  kminoct = tab:k(2,820)*12 //multiply octave values by 12 to get octaves as midi-style notes
+  kmaxoct = tab:k(3,820)*(12+11)  //add 11 to include last note of octave
 
-  kCnt init 0
-
-  //TODO: Make sure this is only performed if the table contents have changed!
-  while tablei(kCnt,800) > -1 do
-    kCnt += 1
-  od
-
-//SNH FOR VOLUME
-  ;kAmp rspline -1, 0.5, 0.1, 1  ;kFreqMin, kFreqMax should be modified through config in Unity and connected with intensity
-  ;kAmp limit kAmp, 0, 1
-
-//SNH FOR MELODY
-  ksp rspline krangeMin*12, krangeMax*12, kfreqMin, kfreqMax
-
-  ktab tab int(ksp), 800
-
-  if ktab > -1 then
-    kPitch = pow(2,(ktab-69)/12)*440
+  //Find min note index whenever oct settings have changed
+  if changed(kminoct) == 1 then
+    kcnt = 0
+    while kcnt < 127 do
+      if tab:k(kcnt, 801) >= kminoct then
+        kminnote = kcnt
+        kcnt=127
+      endif
+      kcnt +=1
+    od
+    printks "MINNOTE: %d", 0, kminnote
   endif
 
-  kPitchPrt portk kPitch, .01
+  if changed(kmaxoct) == 1 then
+    kcnt = 0
+    while kcnt < 127 do
+      kmaxnote = kcnt
+      if tab:k(kcnt, 801) >= kmaxoct then
+        kcnt=127
+      endif
+      kcnt +=1
+    od
+    printks "MAXNOTE: %d", 0, kmaxnote
+  endif
 
-  //Sound generation
 
-  aOsc poscil kAmp*.1, kPitchPrt
+  klfo lfo 1, 1.2, 5
+  kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max note indices
 
-  chnset aOsc, "snhmel_l"
-  chnset aOsc, "snhmel_r"
+  printks "KRES: %d", 0.5, kscaled
+
+  knote = limit(kscaled,kminnote,kmaxnote)
+  knote = tab:k(kscaled,801)
+
+  printks "KNOTE: %d", 0.5, knote
+
+  if gktrig == 1 then
+    event "i", "GSYNTH", 0, 1, knote, tab_i(5,821), tab_i(6,821), tab_i(7,821), tab_i(8,821), tab_i(9,821), tab_i(10,821), tab_i(11,821), tab_i(12,821), tab_i(13,821), tab_i(14,821), tab_i(15,821), tab_i(16,821), tab_i(17,821), tab_i(18,821), tab_i(19,821)
+  endif
+
 endin
 
 //SAMPLE AND HOLD MELODY END
@@ -264,15 +281,13 @@ endin
 //GAME SYNTH
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-gisine   ftgen 710, 0, 16384, 10, 1	                                                  ; Sine wave
-gisquare ftgen 711, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14, 0, .111                 ; Square
-gisaw    ftgen 712, 0, 16384, 10, 1, 0.5, 0.3, 0.25, 0.2, 0.167, 0.14, 0.125, .111    ; Sawtooth
-gipulse  ftgen 714, 0, 16384, 10, 1, 1, 1, 1, 0.7, 0.5, 0.3, 0.1                      ; Pulse
+//Wavetable numbers: sine = 710, square = 711, saw = 712, pulse = 713
 
 gisyntrig init 0
 
 //i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
 //  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
+//  [p19 = stereo width]
 instr GSYNTH
 
 ;pX = lfo waveform
@@ -281,7 +296,7 @@ instr GSYNTH
 ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz) TODO TEST IF MTOF WORKS AFTER ALL
 ivel = p5 ;note velocity value
 
-ifn = 710+p6
+ifn = 700+p6  ;waveform
 
 inoise = p7 ;noise amount
 
@@ -338,7 +353,9 @@ abus = alp*aaenv
 
 abusL, abusR pan2 abus, kpan  ;pan signal
 
-outs abusL, abusR
+aoutL, aoutR freeverb abusL, abusR, 0.5, 0.6
+
+outs aoutL, aoutR
 
 endin
 
@@ -350,5 +367,6 @@ endin
 f 0 z
 i "CLOCK" 2 -1
 i "EUC_STEP" 2 -1
+i "SNHMEL" 2 -1
 </CsScore>
 </CsoundSynthesizer>

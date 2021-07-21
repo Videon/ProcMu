@@ -17,7 +17,7 @@ namespace ProcMu.ScriptableObjects
 
         public bool[] activeBars0 = new bool[64];
         public bool[] activeBars1 = new bool[64];
-        
+
         #endregion
 
         #region EUCRTH parameters
@@ -32,16 +32,34 @@ namespace ProcMu.ScriptableObjects
 
         #region SNHMEL parameters
 
-        public int snhmel_minOct = 0;
-        public int snhmel_maxOct = 10;
-        public double occurence = 2;
+        public int snhmel_minImpulses0;
+        public int snhmel_maxImpulses0;
+        public int snhmel_minImpulses1;
+        public int snhmel_maxImpulses1;
+
+        public float snhmel_minOccurence0;
+        public float snhmel_maxOccurence0;
+        public float snhmel_minOccurence1;
+        public float snhmel_maxOccurence1;
+
+        public int snhmel_minOct0 = 0;
+        public int snhmel_maxOct0 = 10;
+        public int snhmel_minOct1;
+        public int snhmel_maxOct1;
+
+        public MelodyCurve snhmel_melodycurve;
+        public MelodyMode snhmel_melodymode;
+
+        public GSynthConfig snhmel_synthconfig;
 
         #endregion
 
         #region CHORDS parameters
 
-        public int chords_minOct;
-        public int chords_maxOct;
+        public int chords_minOct0;
+        public int chords_maxOct0;
+        public int chords_minOct1;
+        public int chords_maxOct1;
 
         public int chords_minImpulses0;
         public int chords_maxImpulses0;
@@ -50,7 +68,7 @@ namespace ProcMu.ScriptableObjects
 
         public ChordMode chordMode;
 
-        public GSynthConfig chordsSynthConfig;
+        public GSynthConfig chords_synthconfig;
 
         #endregion
     }

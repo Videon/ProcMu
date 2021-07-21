@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
-  m_Name: gsc_start 2
+  m_Name: gsc_chordtest
   m_EditorClassIdentifier: 
-  velocity: 0.4
-  wavetable: 2
-  noise: 0.04
-  ffreq: 914.83
-  fres: 0.5
-  fenv_amt: 2000
-  fenv_att: 0.10000000149011612
+  velocity: 0.1
+  wavetable: 3
+  noise: 0.0020000000949949026
+  ffreq: 0
+  fres: 10.369999885559082
+  fenv_amt: 10467
+  fenv_att: 0.17000000178813934
   fenv_dec: 0
-  fenv_sus: 0
-  fenv_rel: 0.20000000298023224
-  aenv_att: 0.10000000149011612
+  fenv_sus: 0.8930000066757202
+  fenv_rel: 7.090000152587891
+  aenv_att: 1
   aenv_dec: 0.4
-  aenv_sus: 0
-  aenv_rel: 0.4000000059604645
-  width: 0.8
+  aenv_sus: 1
+  aenv_rel: 6.440000057220459
+  width: 1
