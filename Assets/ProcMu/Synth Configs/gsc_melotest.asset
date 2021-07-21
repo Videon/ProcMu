@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
   m_Name: gsc_melotest
   m_EditorClassIdentifier: 
-  velocity: 0.4
-  wavetable: 2
-  noise: 0
-  ffreq: 14637
-  fres: 0.5
-  fenv_amt: 0
-  fenv_att: 0.10000000149011612
-  fenv_dec: 0.4000000059604645
+  velocity: 0.5
+  wavetable: 1
+  noise: 0.026000000536441803
+  ffreq: 765
+  fres: 1.590000033378601
+  fenv_amt: 5644
+  fenv_att: 0.0010000000474974513
+  fenv_dec: 0.10000000149011612
   fenv_sus: 0
   fenv_rel: 0
-  aenv_att: 0.10000000149011612
-  aenv_dec: 0.4000000059604645
+  aenv_att: 0.009999999776482582
+  aenv_dec: 0.02500000037252903
   aenv_sus: 0
   aenv_rel: 0
   width: 0.8

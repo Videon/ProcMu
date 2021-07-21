@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
   m_Name: gsc_chordtest
   m_EditorClassIdentifier: 
-  velocity: 0.1
-  wavetable: 3
+  velocity: 0.09000000357627869
+  wavetable: 1
   noise: 0.0020000000949949026
   ffreq: 0
-  fres: 10.369999885559082
-  fenv_amt: 10467
+  fres: 6.489999771118164
+  fenv_amt: 4163
   fenv_att: 0.17000000178813934
   fenv_dec: 0
   fenv_sus: 0.8930000066757202

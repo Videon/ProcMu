@@ -57,16 +57,16 @@ instr CLOCK
     gkbpm chnget "gBpm" ;TODO implement smoothing for handling external value changes
 
     gkcurrentbar init 0 ;setting to -1 as it will be set to 1 on first gkstep
-    kstep init 0
+    gkstep init 0
 
     kpulses = 4 ;pulses per beat
 
     gktrig metro gkbpm*kpulses/60
 
     if gktrig == 1 then
-      kstep = (kstep + 1) % giSteps  ;perform modulo operation to clamp step index
+      gkstep = (gkstep + 1) % giSteps  ;perform modulo operation to clamp step index
 
-      if kstep == 0 then
+      if gkstep == 0 then
         gkcurrentbar = (gkcurrentbar+1) % giBars
         tabw(1,0,803) ;
       endif
@@ -137,13 +137,9 @@ endin
 
 //Steps through the grid and triggers sounds accordingly
 instr EUC_STEP
-    //
-    kstep init 0 ;current sequencer step
-    //
-
     if gktrig == 1 then
         //Fill grid on start of a new bar
-        if kstep == 0 then
+        if gkstep == 0 then
           //EUC_FILL for all instruments
 
           //EUCRTH
@@ -165,7 +161,7 @@ instr EUC_STEP
           klayer = 0
           while klayer < giEuclayers do ;iterate through all percussion layers
             if tab:k(0 * giBars + gkcurrentbar, 802) > 0 then ;only play if current bar is active
-              if tab:k(klayer * 16 + kstep, 811) > -1 then
+              if tab:k(klayer * 16 + gkstep, 811) > -1 then
                   event "i", "SMPLR_UNITY", 0, 2, tab:k(klayer*2, 810)
               endif
             endif
@@ -175,19 +171,11 @@ instr EUC_STEP
 
         //CHORDS
         if tab:k(1 * giBars + gkcurrentbar, 802) > 0 then ;only play if current bar is active, x * giBars to skip bars indices for other instruments
-          if tab:k(kstep, 833) > -1 then
+          if tab:k(gkstep, 833) > -1 then
             event "i", "CHORDS", 0, 1
           endif
         endif
 
-        //SNHMEL
-        if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
-          if tab:k(kstep, 833) > -1 then
-            ;event "i", "SNHMEL", 0, 1
-          endif
-        endif
-
-        kstep = (kstep + 1) % giSteps  ;increase step index and perform modulo operation to total number of steps
     endif
 endin
 
@@ -245,7 +233,11 @@ instr SNHMEL
   printks "KNOTE: %d", 0.5, knote
 
   if gktrig == 1 then
-    event "i", "GSYNTH", 0, 1, knote, tab_i(5,821), tab_i(6,821), tab_i(7,821), tab_i(8,821), tab_i(9,821), tab_i(10,821), tab_i(11,821), tab_i(12,821), tab_i(13,821), tab_i(14,821), tab_i(15,821), tab_i(16,821), tab_i(17,821), tab_i(18,821), tab_i(19,821)
+    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
+      if tab:k(gkstep, 822) > -1 then
+        event "i", "GSYNTH", 0, 1, knote, tab:k(5,821), tab:k(6,821), tab:k(7,821), tab:k(8,821), tab:k(9,821), tab:k(10,821), tab:k(11,821), tab:k(12,821), tab:k(13,821), tab:k(14,821), tab:k(15,821), tab:k(16,821), tab:k(17,821), tab:k(18,821), tab:k(19,821)
+      endif
+    endif
   endif
 
 endin

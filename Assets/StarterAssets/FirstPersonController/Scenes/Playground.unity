@@ -542,23 +542,23 @@ MonoBehaviour:
     running.\r\ninstr CLOCK\r\n    gkbpm init 110 ;beats per minute\r\n    ;gkbpm
     portk chnget(\"gBpm\"), 0.5\r\n    gkbpm chnget \"gBpm\" ;TODO implement smoothing
     for handling external value changes\r\n\r\n    gkcurrentbar init 0 ;setting to
-    -1 as it will be set to 1 on first gkstep\r\n    kstep init 0\r\n\r\n    kpulses
+    -1 as it will be set to 1 on first gkstep\r\n    gkstep init 0\r\n\r\n    kpulses
     = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n    if gktrig
-    == 1 then\r\n      kstep = (kstep + 1) % giSteps  ;perform modulo operation to
-    clamp step index\r\n\r\n      if kstep == 0 then\r\n        gkcurrentbar = (gkcurrentbar+1)
-    % giBars\r\n        tabw(1,0,803) ;\r\n      endif\r\n    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler
-    instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
-    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n\r\n   
-    ifn   =  chnget(sprintf(\"sampletable%d\", 900+p4))\r\n    ;prints \"giTable
-    p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n    ;prints \"actual
-    numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
-    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
-    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
-    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
-    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n\r\n   
-    arevL, arevR freeverb atab, atab, 0.5, 0.6\r\n\r\n    outs atab*0.1+arevL*0.1,
-    atab*0.1+arevR*0.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\"  TODO use chnmix
-    to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
+    == 1 then\r\n      gkstep = (gkstep + 1) % giSteps  ;perform modulo operation
+    to clamp step index\r\n\r\n      if gkstep == 0 then\r\n        gkcurrentbar
+    = (gkcurrentbar+1) % giBars\r\n        tabw(1,0,803) ;\r\n      endif\r\n   
+    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler instrument for use with
+    audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr SMPLR_UNITY
+    ; play audio from function table using flooper2 opcode\r\n\r\n    ifn   =  chnget(sprintf(\"sampletable%d\",
+    900+p4))\r\n    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen 
+    =  nsamp(ifn)\r\n    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n   
+    itrns =  1\t; no transposition\r\n    ilps  =  0\t; loop starts at index 0\r\n   
+    ilpe  =  ilen\t; ends at value returned by nsamp above\r\n    imode =  1\t; loops
+    forward\r\n    istrt =  0\t; commence playback at index 0 samples\r\n    ; lphasor
+    provides index into f1\r\n    alphs lphasor itrns, ilps, ilpe, imode, istrt\r\n   
+    atab  tablei  alphs, ifn\r\n\r\n    arevL, arevR freeverb atab, atab, 0.5, 0.6\r\n\r\n   
+    outs atab*0.1+arevL*0.1, atab*0.1+arevR*0.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\" 
+    TODO use chnmix to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
     RHYTHMS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//Fills
     the grid. Triggered at the start of a new bar.\r\ninstr EUC_FILL\r\n    ipulses
     = p4\r\n    irotation = p5  ;TODO rotation currently not implemented\r\n    itabn
@@ -571,30 +571,25 @@ MonoBehaviour:
     ;-1 = no impulse on grid position\r\n        endif\r\n\r\n        //gkgrid[ilayer][kstep+
     giSteps] = gkgrid[ilayer][istep] ;copying current value to offset position (for
     rotation support)\r\n\r\n        kstep += 1\r\n    od\r\nendin\r\n\r\n//Steps
-    through the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    //\r\n   
-    kstep init 0 ;current sequencer step\r\n    //\r\n\r\n    if gktrig == 1 then\r\n       
-    //Fill grid on start of a new bar\r\n        if kstep == 0 then\r\n         
-    //EUC_FILL for all instruments\r\n\r\n          //EUCRTH\r\n          klayer
-    = 0\r\n          while klayer < giEuclayers do\r\n            event \"i\", \"EUC_FILL\",
-    0, 1, tab:k(klayer*2+1, 810), 0, 811, klayer\r\n            klayer += 1\r\n         
-    od\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,830), 0, 833, 0 
-    //CHORDS\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,820), 0, 822,
-    0  //SNHMEL\r\n\r\n        endif\r\n\r\n        //PLAY ALL INSTRUMENTS ACCORDING
-    TO GRID AND ACTIVE BAR INFORMATION\r\n        //EUCRTH\r\n\r\n          klayer
-    = 0\r\n          while klayer < giEuclayers do ;iterate through all percussion
+    through the grid and triggers sounds accordingly\r\ninstr EUC_STEP\r\n    if
+    gktrig == 1 then\r\n        //Fill grid on start of a new bar\r\n        if gkstep
+    == 0 then\r\n          //EUC_FILL for all instruments\r\n\r\n          //EUCRTH\r\n         
+    klayer = 0\r\n          while klayer < giEuclayers do\r\n            event \"i\",
+    \"EUC_FILL\", 0, 1, tab:k(klayer*2+1, 810), 0, 811, klayer\r\n            klayer
+    += 1\r\n          od\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,830),
+    0, 833, 0  //CHORDS\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,820),
+    0, 822, 0  //SNHMEL\r\n\r\n        endif\r\n\r\n        //PLAY ALL INSTRUMENTS
+    ACCORDING TO GRID AND ACTIVE BAR INFORMATION\r\n        //EUCRTH\r\n\r\n         
+    klayer = 0\r\n          while klayer < giEuclayers do ;iterate through all percussion
     layers\r\n            if tab:k(0 * giBars + gkcurrentbar, 802) > 0 then ;only
-    play if current bar is active\r\n              if tab:k(klayer * 16 + kstep,
+    play if current bar is active\r\n              if tab:k(klayer * 16 + gkstep,
     811) > -1 then\r\n                  event \"i\", \"SMPLR_UNITY\", 0, 2, tab:k(klayer*2,
     810)\r\n              endif\r\n            endif\r\n            klayer += 1\r\n         
     od\r\n\r\n\r\n        //CHORDS\r\n        if tab:k(1 * giBars + gkcurrentbar,
     802) > 0 then ;only play if current bar is active, x * giBars to skip bars indices
-    for other instruments\r\n          if tab:k(kstep, 833) > -1 then\r\n           
-    event \"i\", \"CHORDS\", 0, 1\r\n          endif\r\n        endif\r\n\r\n       
-    //SNHMEL\r\n        if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n         
-    if tab:k(kstep, 833) > -1 then\r\n            ;event \"i\", \"SNHMEL\", 0, 1\r\n         
-    endif\r\n        endif\r\n\r\n        kstep = (kstep + 1) % giSteps  ;increase
-    step index and perform modulo operation to total number of steps\r\n    endif\r\nendin\r\n\r\n//EUCLIDEAN
-    RHYTHMS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//SAMPLE
+    for other instruments\r\n          if tab:k(gkstep, 833) > -1 then\r\n           
+    event \"i\", \"CHORDS\", 0, 1\r\n          endif\r\n        endif\r\n\r\n   
+    endif\r\nendin\r\n\r\n//EUCLIDEAN RHYTHMS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//SAMPLE
     AND HOLD MELODY\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//TODO
     Maybe SNHMEL could use a morphable wavetable for sound generation??\r\ninstr
     SNHMEL\r\n  ;kmaxnote = tab:k(127, 801)\r\n  kminnote init 0\r\n  kmaxnote init
@@ -612,10 +607,12 @@ MonoBehaviour:
     / (1 - -1) //scale lfo from -1...1 to min,max note indices\r\n\r\n  printks \"KRES:
     %d\", 0.5, kscaled\r\n\r\n  knote = limit(kscaled,kminnote,kmaxnote)\r\n  knote
     = tab:k(kscaled,801)\r\n\r\n  printks \"KNOTE: %d\", 0.5, knote\r\n\r\n  if gktrig
-    == 1 then\r\n    event \"i\", \"GSYNTH\", 0, 1, knote, tab_i(5,821), tab_i(6,821),
-    tab_i(7,821), tab_i(8,821), tab_i(9,821), tab_i(10,821), tab_i(11,821), tab_i(12,821),
-    tab_i(13,821), tab_i(14,821), tab_i(15,821), tab_i(16,821), tab_i(17,821), tab_i(18,821),
-    tab_i(19,821)\r\n  endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
+    == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n      if
+    tab:k(gkstep, 822) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
+    tab:k(5,821), tab:k(6,821), tab:k(7,821), tab:k(8,821), tab:k(9,821), tab:k(10,821),
+    tab:k(11,821), tab:k(12,821), tab:k(13,821), tab:k(14,821), tab:k(15,821), tab:k(16,821),
+    tab:k(17,821), tab:k(18,821), tab:k(19,821)\r\n      endif\r\n    endif\r\n 
+    endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
     notes from note ftable (#831)\r\ninstr CHORDS\r\n  kCnt init 0\r\n\r\n  while
     kCnt < 16 do\r\n    kval = tab:k(kCnt,831)  ;kval is also note as midi number\r\n\r\n   
     if kval > -1 then\r\n      event \"i\", \"GSYNTH\", 0, 1, kval, tab_i(5,832),
