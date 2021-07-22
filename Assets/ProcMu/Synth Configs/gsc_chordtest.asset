@@ -12,18 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
   m_Name: gsc_chordtest
   m_EditorClassIdentifier: 
-  velocity: 0.09000000357627869
-  wavetable: 1
-  noise: 0.0020000000949949026
-  ffreq: 0
-  fres: 6.489999771118164
-  fenv_amt: 4163
-  fenv_att: 0.17000000178813934
-  fenv_dec: 0
-  fenv_sus: 0.8930000066757202
-  fenv_rel: 7.090000152587891
-  aenv_att: 1
-  aenv_dec: 0.4
-  aenv_sus: 1
-  aenv_rel: 6.440000057220459
-  width: 1
+  config:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0.4000000059604645
+  - 2
+  - 0
+  - 20000
+  - 0.5
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0.009999999776482582
+  - 1
+  - 0
+  - 0
+  - 0.6000000238418579
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0

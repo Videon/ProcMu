@@ -521,17 +521,17 @@ MonoBehaviour:
     ;Global table containing active bar information, read: 4 * # of layers, including
     individual eucrth layers\r\ngiComm ftgen 803, 0, 4, -2, 0                      
     ;Communication table for providing Unity with Csound state information, Params:
-    0 = update\r\n\r\n;EucRth config tables - #810-819\r\ngiEucRthConfig ftgen 810,
-    0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses, for layers
-    0-3\r\ngiEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table.
-    Length is steps * layers.\r\n\r\n\r\n;SnhMel config tables - #820-829\r\ngiSnhMelConfig
+    0 = update, 1 = currentbar, 2 = currentstep\r\n\r\n;EucRth config tables - #810-819\r\ngiEucRthConfig
+    ftgen 810, 0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses,
+    for layers 0-3\r\ngiEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth
+    grid as table. Length is steps * layers.\r\n\r\n\r\n;SnhMel config tables - #820-829\r\ngiSnhMelConfig
     ftgen 820, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 =
-    minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode\r\ngiSnhMelInstr
-    ftgen 821, 0, 32, -2, 0               ;GSYNTH Instrument config table\r\ngiSnhMelGrid 
+    minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode\r\ngiSnhMelGsyn ftgen
+    821, 0, 32, -2, 0                ;GSYNTH Instrument config table\r\ngiSnhMelGrid 
     ftgen 822, 0, giSteps, -2, -1         ;SNHMEL steps grid\r\n\r\n;Chords config
     tables - #830-839\r\ngiChordsConfig ftgen 830, 0, 8, -2, 0               ;Params:
     0 = pulses\r\ngiChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0
-    = note0, 1 = note1...16 = note16\r\ngiChordsInstr ftgen 832, 0, 32, -2, 0              
+    = note0, 1 = note1...16 = note16\r\ngiChordsGsyn ftgen 832, 0, 32, -2, 0               
     ;GSYNTH Instrument config table\r\ngiChordsGrid ftgen 833, 0, giSteps, -2, -1         
     ;CHORDS steps grid\r\n\r\n;Waveforms\r\ngisine   ftgen 700, 0, 16384, 10, 1\t                                                 
     ; Sine wave\r\ngisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14,
@@ -545,20 +545,23 @@ MonoBehaviour:
     -1 as it will be set to 1 on first gkstep\r\n    gkstep init 0\r\n\r\n    kpulses
     = 4 ;pulses per beat\r\n\r\n    gktrig metro gkbpm*kpulses/60\r\n\r\n    if gktrig
     == 1 then\r\n      gkstep = (gkstep + 1) % giSteps  ;perform modulo operation
-    to clamp step index\r\n\r\n      if gkstep == 0 then\r\n        gkcurrentbar
-    = (gkcurrentbar+1) % giBars\r\n        tabw(1,0,803) ;\r\n      endif\r\n   
-    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler instrument for use with
-    audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr SMPLR_UNITY
-    ; play audio from function table using flooper2 opcode\r\n\r\n    ifn   =  chnget(sprintf(\"sampletable%d\",
-    900+p4))\r\n    ;prints \"giTable p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen 
-    =  nsamp(ifn)\r\n    ;prints \"actual numbers of samples = %d\\n\", ilen\r\n   
-    itrns =  1\t; no transposition\r\n    ilps  =  0\t; loop starts at index 0\r\n   
-    ilpe  =  ilen\t; ends at value returned by nsamp above\r\n    imode =  1\t; loops
-    forward\r\n    istrt =  0\t; commence playback at index 0 samples\r\n    ; lphasor
-    provides index into f1\r\n    alphs lphasor itrns, ilps, ilpe, imode, istrt\r\n   
-    atab  tablei  alphs, ifn\r\n\r\n    arevL, arevR freeverb atab, atab, 0.5, 0.6\r\n\r\n   
-    outs atab*0.1+arevL*0.1, atab*0.1+arevR*0.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\" 
-    TODO use chnmix to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
+    to clamp step index\r\n      tabw(gkstep,2,803)  ;set comm table index 2 to current
+    step index\r\n\r\n      if gkstep == 0 then\r\n        gkcurrentbar = (gkcurrentbar+1)
+    % giBars\r\n        tabw(1,0,803) ;sets table index=0 to 1 to signify update
+    to Unity\r\n        tabw(gkcurrentbar,1,803)  ;set comm table index 1 to current
+    bar index\r\n      endif\r\n    endif\r\n\r\nendin\r\n\r\n//INSTRUMENTS\r\n\r\n//Sampler
+    instrument for use with audioclips from Unity\r\n//i, start, dur, pitch, file_index\r\ninstr
+    SMPLR_UNITY ; play audio from function table using flooper2 opcode\r\n\r\n   
+    ifn   =  chnget(sprintf(\"sampletable%d\", 900+p4))\r\n    ;prints \"giTable
+    p4 = %d, ifn = %d\\n\", p4, ifn\r\n    ilen  =  nsamp(ifn)\r\n    ;prints \"actual
+    numbers of samples = %d\\n\", ilen\r\n    itrns =  1\t; no transposition\r\n   
+    ilps  =  0\t; loop starts at index 0\r\n    ilpe  =  ilen\t; ends at value returned
+    by nsamp above\r\n    imode =  1\t; loops forward\r\n    istrt =  0\t; commence
+    playback at index 0 samples\r\n    ; lphasor provides index into f1\r\n    alphs
+    lphasor itrns, ilps, ilpe, imode, istrt\r\n    atab  tablei  alphs, ifn\r\n\r\n   
+    arevL, arevR freeverb atab, atab, 0.5, 0.6\r\n\r\n    outs atab*0.1+arevL*0.1,
+    atab*0.1+arevR*0.1\r\n\r\n\r\n    ;chnmix atab, \"eucrth_l\"  TODO use chnmix
+    to sum sound of all sampler instances\r\n    ;chnmix atab, \"eucrth_r\"\r\n\r\nendin\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//EUCLIDEAN
     RHYTHMS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//Fills
     the grid. Triggered at the start of a new bar.\r\ninstr EUC_FILL\r\n    ipulses
     = p4\r\n    irotation = p5  ;TODO rotation currently not implemented\r\n    itabn
@@ -599,52 +602,51 @@ MonoBehaviour:
     oct settings have changed\r\n  if changed(kminoct) == 1 then\r\n    kcnt = 0\r\n   
     while kcnt < 127 do\r\n      if tab:k(kcnt, 801) >= kminoct then\r\n        kminnote
     = kcnt\r\n        kcnt=127\r\n      endif\r\n      kcnt +=1\r\n    od\r\n   
-    printks \"MINNOTE: %d\", 0, kminnote\r\n  endif\r\n\r\n  if changed(kmaxoct)
+    ;printks \"MINNOTE: %d\", 0, kminnote\r\n  endif\r\n\r\n  if changed(kmaxoct)
     == 1 then\r\n    kcnt = 0\r\n    while kcnt < 127 do\r\n      kmaxnote = kcnt\r\n     
     if tab:k(kcnt, 801) >= kmaxoct then\r\n        kcnt=127\r\n      endif\r\n     
-    kcnt +=1\r\n    od\r\n    printks \"MAXNOTE: %d\", 0, kmaxnote\r\n  endif\r\n\r\n\r\n 
+    kcnt +=1\r\n    od\r\n    ;printks \"MAXNOTE: %d\", 0, kmaxnote\r\n  endif\r\n\r\n\r\n 
     klfo lfo 1, 1.2, 5\r\n  kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1)
-    / (1 - -1) //scale lfo from -1...1 to min,max note indices\r\n\r\n  printks \"KRES:
-    %d\", 0.5, kscaled\r\n\r\n  knote = limit(kscaled,kminnote,kmaxnote)\r\n  knote
-    = tab:k(kscaled,801)\r\n\r\n  printks \"KNOTE: %d\", 0.5, knote\r\n\r\n  if gktrig
-    == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n      if
-    tab:k(gkstep, 822) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
-    tab:k(5,821), tab:k(6,821), tab:k(7,821), tab:k(8,821), tab:k(9,821), tab:k(10,821),
-    tab:k(11,821), tab:k(12,821), tab:k(13,821), tab:k(14,821), tab:k(15,821), tab:k(16,821),
-    tab:k(17,821), tab:k(18,821), tab:k(19,821)\r\n      endif\r\n    endif\r\n 
-    endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
+    / (1 - -1) //scale lfo from -1...1 to min,max note indices\r\n\r\n  ;printks
+    \"KRES: %d\", 0.5, kscaled\r\n\r\n  knote = limit(kscaled,kminnote,kmaxnote)\r\n 
+    knote = tab:k(kscaled,801)\r\n\r\n  ;printks \"KNOTE: %d\", 0.5, knote\r\n\r\n 
+    if gktrig == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n     
+    if tab:k(gkstep, 822) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
+    821\r\n      endif\r\n    endif\r\n  endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD
+    MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
     notes from note ftable (#831)\r\ninstr CHORDS\r\n  kCnt init 0\r\n\r\n  while
     kCnt < 16 do\r\n    kval = tab:k(kCnt,831)  ;kval is also note as midi number\r\n\r\n   
-    if kval > -1 then\r\n      event \"i\", \"GSYNTH\", 0, 1, kval, tab_i(5,832),
-    tab_i(6,832), tab_i(7,832), tab_i(8,832), tab_i(9,832), tab_i(10,832), tab_i(11,832),
-    tab_i(12,832), tab_i(13,832), tab_i(14,832), tab_i(15,832), tab_i(16,832), tab_i(17,832),
-    tab_i(18,832), tab_i(19,832)\r\n    endif\r\n\r\n    kCnt += 1\r\n  od\r\nendin\r\n\r\n//CHORDS
-    END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//GAME
+    if kval > -1 then\r\n      event \"i\", \"GSYNTH\", 0, 1, kval, 832\r\n    endif\r\n\r\n   
+    kCnt += 1\r\n  od\r\nendin\r\n\r\n//CHORDS END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//GAME
     SYNTH\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n//Wavetable
     numbers: sine = 710, square = 711, saw = 712, pulse = 713\r\n\r\ngisyntrig init
     0\r\n\r\n//i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform
     0:sin 1:sqr 2:saw] [p7 = noise amp]\r\n//  [p8 = filter frequency] [p9 = filter
     resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18
-    = amp A,D,S,R]\r\n//  [p19 = stereo width]\r\ninstr GSYNTH\r\n\r\n;pX = lfo waveform\r\n\r\n//Input/midi
-    variables\r\nifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted
-    to frequency (Hz) TODO TEST IF MTOF WORKS AFTER ALL\r\nivel = p5 ;note velocity
-    value\r\n\r\nifn = 700+p6  ;waveform\r\n\r\ninoise = p7 ;noise amount\r\n\r\n//Filter
-    parameters\r\niffreq = p8 ;lowpass filter frequency\r\nifres = p9  ;lowpass filter
-    resonance\r\nifenv_amt = p10 ;lowpass filter env amount\r\n\r\nifenv_att = p11
-    ;filter attack\r\nifenv_dec = p12 ;filter decay\r\nifenv_sus = p13 ;filter sustain\r\nifenv_rel
-    = p14 ;filter release\r\n\r\n//Amp parameters\r\niaenv_att = p15 ;amp attack\r\niaenv_dec
-    = p16 ;amp decay\r\niaenv_sus = p17 ;amp sustain\r\niaenv_rel = p18 ;amp release\r\n\r\n//Additional
-    parameters\r\niwidth = p19  ;stereo width\r\n\r\n//Perform alternating execution
-    when a note is played\r\nif gisyntrig == 1 then\r\n  kpan = 0.5 + iwidth / 2
-    ;set note panning r\r\n  gisyntrig = 0\r\n  else\r\n    kpan = 0.5 - iwidth /
-    2\r\n    gisyntrig = 1\r\nendif\r\n\r\n//LFOs\r\nklfo1 lfo 1, 1\r\n\r\n\r\n//OSCs\r\naosc1
-    poscil ivel, ifreq, ifn\r\n\r\nanoise rand limit(inoise,0,1)\r\n\r\nabus = aosc1
-    + anoise\r\n\r\n//Filters\r\nkfenv madsr ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel 
-    ;filter envelope\r\n\r\n\r\nalp zdf_2pole abus, iffreq+kfenv*ifenv_amt, ifres
-    ;filter signal\r\n\r\n\r\n//Amp\r\naaenv madsr iaenv_att, iaenv_dec, iaenv_sus,
-    iaenv_rel  ;amplitude envelope\r\n\r\nabus = alp*aaenv\r\n\r\nabusL, abusR pan2
-    abus, kpan  ;pan signal\r\n\r\naoutL, aoutR freeverb abusL, abusR, 0.5, 0.6\r\n\r\nouts
-    aoutL, aoutR\r\n\r\nendin\r\n\r\n//GAME SYNTH END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
+    = amp A,D,S,R]\r\n//  [p19 = stereo width] [p20,21,22 = reverb amount, room size,
+    damp]\r\ninstr GSYNTH\r\n\r\n;pX = lfo waveform\r\n\r\n//Input/midi variables\r\nifreq
+    = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)\r\n\r\nifn
+    = p5\r\n\r\nivel = tab_i(5,ifn) ;note velocity value\r\n\r\niwf = 700+tab_i(6,ifn) 
+    ;waveform\r\n\r\ninoise = tab_i(7,ifn) ;noise amount\r\n\r\n//Filter parameters\r\niffreq
+    = tab_i(8,ifn) ;lowpass filter frequency\r\nifres = tab_i(9,ifn)  ;lowpass filter
+    resonance\r\nifenv_amt = tab_i(10,ifn) ;lowpass filter env amount\r\n\r\nifenv_att
+    = tab_i(11,ifn) ;filter attack\r\nifenv_dec = tab_i(12,ifn) ;filter decay\r\nifenv_sus
+    = tab_i(13,ifn) ;filter sustain\r\nifenv_rel = tab_i(14,ifn) ;filter release\r\n\r\n//Amp
+    parameters\r\niaenv_att = tab_i(15,ifn) ;amp attack\r\niaenv_dec = tab_i(16,ifn)
+    ;amp decay\r\niaenv_sus = tab_i(17,ifn) ;amp sustain\r\niaenv_rel = tab_i(18,ifn)
+    ;amp release\r\n\r\n//Additional parameters\r\niwidth = tab_i(19,ifn)  ;stereo
+    width\r\n\r\n//FX\r\nirev_amt = tab_i(20,ifn)\r\nirev_roomsize = tab_i(21,ifn)\r\nirev_damp
+    = tab_i(22,ifn)\r\n\r\n//Perform alternating execution when a note is played\r\nif
+    gisyntrig == 1 then\r\n  kpan = 0.5 + iwidth / 2 ;set note panning r\r\n  gisyntrig
+    = 0\r\n  else\r\n    kpan = 0.5 - iwidth / 2\r\n    gisyntrig = 1\r\nendif\r\n\r\n//LFOs\r\nklfo1
+    lfo 1, 1\r\n\r\n\r\n//OSCs\r\naosc1 poscil ivel, ifreq, iwf\r\n\r\nanoise rand
+    limit(inoise,0,1)\r\n\r\nabus = aosc1 + anoise\r\n\r\n//Filters\r\nkfenv madsr
+    ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel  ;filter envelope\r\n\r\n\r\nalp zdf_2pole
+    abus, iffreq+kfenv*ifenv_amt, ifres ;filter signal\r\n\r\n\r\n//Amp\r\naaenv
+    madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope\r\n\r\nabus
+    = alp*aaenv\r\n\r\nabusL, abusR pan2 abus, kpan  ;pan signal\r\n\r\narevL, arevR
+    freeverb abusL, abusR, irev_roomsize, irev_damp\r\n\r\nouts abusL+arevL*irev_amt,
+    abusR+arevR*irev_amt\r\n\r\nendin\r\n\r\n//GAME SYNTH END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
     0 z\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\" 2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
   _csoundFileName: eucrth_unity.csd
   _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
@@ -1804,7 +1806,7 @@ MonoBehaviour:
   csoundUnity: {fileID: 364543699}
   bpm: 80
   intensity: 0
-  mc: {fileID: 11400000, guid: 86f591569dc56423aa224721c18d9d40, type: 2}
+  mc: {fileID: 11400000, guid: 933e9c63088bd4951b35845f913dd94a, type: 2}
 --- !u!4 &1424407682
 Transform:
   m_ObjectHideFlags: 0
@@ -1827,7 +1829,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1424407680}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd54764a377c64595933d14b358a3ea4, type: 3}
   m_Name: 

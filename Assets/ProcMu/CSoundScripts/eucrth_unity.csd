@@ -24,7 +24,7 @@ giEuclayers init 4  ;Number of euclidean rhythm percussion layers. Only 4 are su
 giScale ftgen 800, 0, 128, -2, -1                   ;Global scale table
 giNotes ftgen 801, 0, 128, -2, -1                   ;Global table containing midi note numbers of all active notes in scale, last index(127) contains number of active notes, i.e. highest index containing a valid note
 giActivebars ftgen 802, 0, 64, -2, -1               ;Global table containing active bar information, read: 4 * # of layers, including individual eucrth layers
-giComm ftgen 803, 0, 4, -2, 0                       ;Communication table for providing Unity with Csound state information, Params: 0 = update
+giComm ftgen 803, 0, 4, -2, 0                       ;Communication table for providing Unity with Csound state information, Params: 0 = update, 1 = currentbar, 2 = currentstep
 
 ;EucRth config tables - #810-819
 giEucRthConfig ftgen 810, 0, 8, -2, 0               ;Params: 0 = sample table#, 1 = pulses, for layers 0-3
@@ -33,13 +33,13 @@ giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Lengt
 
 ;SnhMel config tables - #820-829
 giSnhMelConfig ftgen 820, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
-giSnhMelInstr ftgen 821, 0, 32, -2, 0               ;GSYNTH Instrument config table
+giSnhMelGsyn ftgen 821, 0, 32, -2, 0                ;GSYNTH Instrument config table
 giSnhMelGrid  ftgen 822, 0, giSteps, -2, -1         ;SNHMEL steps grid
 
 ;Chords config tables - #830-839
 giChordsConfig ftgen 830, 0, 8, -2, 0               ;Params: 0 = pulses
 giChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0 = note0, 1 = note1...16 = note16
-giChordsInstr ftgen 832, 0, 32, -2, 0               ;GSYNTH Instrument config table
+giChordsGsyn ftgen 832, 0, 32, -2, 0                ;GSYNTH Instrument config table
 giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;CHORDS steps grid
 
 ;Waveforms
@@ -65,10 +65,12 @@ instr CLOCK
 
     if gktrig == 1 then
       gkstep = (gkstep + 1) % giSteps  ;perform modulo operation to clamp step index
+      tabw(gkstep,2,803)  ;set comm table index 2 to current step index
 
       if gkstep == 0 then
         gkcurrentbar = (gkcurrentbar+1) % giBars
-        tabw(1,0,803) ;
+        tabw(1,0,803) ;sets table index=0 to 1 to signify update to Unity
+        tabw(gkcurrentbar,1,803)  ;set comm table index 1 to current bar index
       endif
     endif
 
@@ -206,7 +208,7 @@ instr SNHMEL
       endif
       kcnt +=1
     od
-    printks "MINNOTE: %d", 0, kminnote
+    ;printks "MINNOTE: %d", 0, kminnote
   endif
 
   if changed(kmaxoct) == 1 then
@@ -218,24 +220,24 @@ instr SNHMEL
       endif
       kcnt +=1
     od
-    printks "MAXNOTE: %d", 0, kmaxnote
+    ;printks "MAXNOTE: %d", 0, kmaxnote
   endif
 
 
   klfo lfo 1, 1.2, 5
   kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max note indices
 
-  printks "KRES: %d", 0.5, kscaled
+  ;printks "KRES: %d", 0.5, kscaled
 
   knote = limit(kscaled,kminnote,kmaxnote)
   knote = tab:k(kscaled,801)
 
-  printks "KNOTE: %d", 0.5, knote
+  ;printks "KNOTE: %d", 0.5, knote
 
   if gktrig == 1 then
     if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
       if tab:k(gkstep, 822) > -1 then
-        event "i", "GSYNTH", 0, 1, knote, tab:k(5,821), tab:k(6,821), tab:k(7,821), tab:k(8,821), tab:k(9,821), tab:k(10,821), tab:k(11,821), tab:k(12,821), tab:k(13,821), tab:k(14,821), tab:k(15,821), tab:k(16,821), tab:k(17,821), tab:k(18,821), tab:k(19,821)
+        event "i", "GSYNTH", 0, 1, knote, 821
       endif
     endif
   endif
@@ -259,7 +261,7 @@ instr CHORDS
     kval = tab:k(kCnt,831)  ;kval is also note as midi number
 
     if kval > -1 then
-      event "i", "GSYNTH", 0, 1, kval, tab_i(5,832), tab_i(6,832), tab_i(7,832), tab_i(8,832), tab_i(9,832), tab_i(10,832), tab_i(11,832), tab_i(12,832), tab_i(13,832), tab_i(14,832), tab_i(15,832), tab_i(16,832), tab_i(17,832), tab_i(18,832), tab_i(19,832)
+      event "i", "GSYNTH", 0, 1, kval, 832
     endif
 
     kCnt += 1
@@ -279,37 +281,45 @@ gisyntrig init 0
 
 //i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
 //  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
-//  [p19 = stereo width]
+//  [p19 = stereo width] [p20,21,22 = reverb amount, room size, damp]
 instr GSYNTH
 
 ;pX = lfo waveform
 
 //Input/midi variables
-ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz) TODO TEST IF MTOF WORKS AFTER ALL
-ivel = p5 ;note velocity value
+ifreq = pow(2,(p4-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)
 
-ifn = 700+p6  ;waveform
+ifn = p5
 
-inoise = p7 ;noise amount
+ivel = tab_i(5,ifn) ;note velocity value
+
+iwf = 700+tab_i(6,ifn)  ;waveform
+
+inoise = tab_i(7,ifn) ;noise amount
 
 //Filter parameters
-iffreq = p8 ;lowpass filter frequency
-ifres = p9  ;lowpass filter resonance
-ifenv_amt = p10 ;lowpass filter env amount
+iffreq = tab_i(8,ifn) ;lowpass filter frequency
+ifres = tab_i(9,ifn)  ;lowpass filter resonance
+ifenv_amt = tab_i(10,ifn) ;lowpass filter env amount
 
-ifenv_att = p11 ;filter attack
-ifenv_dec = p12 ;filter decay
-ifenv_sus = p13 ;filter sustain
-ifenv_rel = p14 ;filter release
+ifenv_att = tab_i(11,ifn) ;filter attack
+ifenv_dec = tab_i(12,ifn) ;filter decay
+ifenv_sus = tab_i(13,ifn) ;filter sustain
+ifenv_rel = tab_i(14,ifn) ;filter release
 
 //Amp parameters
-iaenv_att = p15 ;amp attack
-iaenv_dec = p16 ;amp decay
-iaenv_sus = p17 ;amp sustain
-iaenv_rel = p18 ;amp release
+iaenv_att = tab_i(15,ifn) ;amp attack
+iaenv_dec = tab_i(16,ifn) ;amp decay
+iaenv_sus = tab_i(17,ifn) ;amp sustain
+iaenv_rel = tab_i(18,ifn) ;amp release
 
 //Additional parameters
-iwidth = p19  ;stereo width
+iwidth = tab_i(19,ifn)  ;stereo width
+
+//FX
+irev_amt = tab_i(20,ifn)
+irev_roomsize = tab_i(21,ifn)
+irev_damp = tab_i(22,ifn)
 
 //Perform alternating execution when a note is played
 if gisyntrig == 1 then
@@ -325,7 +335,7 @@ klfo1 lfo 1, 1
 
 
 //OSCs
-aosc1 poscil ivel, ifreq, ifn
+aosc1 poscil ivel, ifreq, iwf
 
 anoise rand limit(inoise,0,1)
 
@@ -345,9 +355,9 @@ abus = alp*aaenv
 
 abusL, abusR pan2 abus, kpan  ;pan signal
 
-aoutL, aoutR freeverb abusL, abusR, 0.5, 0.6
+arevL, arevR freeverb abusL, abusR, irev_roomsize, irev_damp
 
-outs aoutL, aoutR
+outs abusL+arevL*irev_amt, abusR+arevR*irev_amt
 
 endin
 

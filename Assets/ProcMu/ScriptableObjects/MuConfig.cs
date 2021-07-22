@@ -7,15 +7,20 @@ namespace ProcMu.ScriptableObjects
     [CreateAssetMenu(fileName = "muc_", menuName = "ProcMu/Music configuration", order = 1)]
     public class MuConfig : ScriptableObject
     {
+#if UNITY_EDITOR
+        /// <summary> Copy of Csound to Unity communication table, set by ProcMuMaster. Only needed for editor visualization.
+        /// Parameters: 0 = update, 1 = active bar, 2 = active step</summary>
+        public double[] comm = new double[4];
+#endif
+
         #region Global parameters
 
         [SerializeField] public double bpm = 120;
         public MuScale Scale;
 
         /// <summary> Contains active bar information for all instruments. 4 indices reserved per layer. </summary>
-        public double[] activeBars = new double[128];
-
         public bool[] activeBars0 = new bool[64];
+
         public bool[] activeBars1 = new bool[64];
 
         #endregion

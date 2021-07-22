@@ -27,8 +27,11 @@ namespace ProcMu.UnityScripts
 
         #region private variables
 
-        private readonly Collider[] _colliders = new Collider[16];
+        private readonly Collider[] _colliders = new Collider[16]; //Pre-allocated memory for found music zone colliders
+
         private Vector3 _playerPos;
+
+        private MuConfig _muConfig;
 
         [SerializeField]
         private readonly McDist[] _mcs = new McDist[16]; //List of music configurations with attached distance value.
@@ -48,6 +51,7 @@ namespace ProcMu.UnityScripts
 
         private void Awake()
         {
+            _muConfig = procMuMaster.mc;
         }
 
         // Start is called before the first frame update
@@ -58,8 +62,6 @@ namespace ProcMu.UnityScripts
         // Update is called once per frame
         void Update()
         {
-            return; //TODO REMOVE WHEN NOT DEVELOPING
-
             elapsedTime += Time.deltaTime;
 
             if (elapsedTime < 1f / cps) return; //Only proceed if interval has passed.
@@ -68,9 +70,16 @@ namespace ProcMu.UnityScripts
 
             FindAndSortMusicZones();
 
-            MuConfig mc = GetMusicZoneConfigWeighted();
+            //Generate distances array from sorted McDist objects in list
+            float[] distances = new float[maxZones];
+            for (int i = 0; i < maxZones; i++)
+            {
+                if (_mcs[i].Mc == null) break;
+                
+                distances[i] = _mcs[i].Dist;
+            }
 
-            if (mc != null) procMuMaster.mc = mc;
+            procMuMaster.mc.chords_synthconfig.config = Interpolate(distances, CumulateConfigs());
         }
 
         private void FindAndSortMusicZones()
@@ -90,12 +99,12 @@ namespace ProcMu.UnityScripts
                 _mcs[i] = new McDist(_colliders[i].GetComponent<MusicZone>().Config, dist);
             }
 
-            Array.Sort(_mcs, ProcMuUtils.CompareMcDistsInverse); //Sort objects according to distance.
+            Array.Sort(_mcs, ProcMuUtils.CompareMcDists); //Sort objects according to distance.
 
             distanceSum = 0f; //Reset cumulated distances to 0
 
-            //EDITOR FUNCTION: LIST MUSIC ZONE DISTANCES
-#if UNITY_EDITOR
+
+#if UNITY_EDITOR //EDITOR FUNCTION: LIST MUSIC ZONE DISTANCES
             for (int i = 0; i < _mcs.Length; i++)
             {
                 if (_mcs[i].Mc == null) break;
@@ -110,8 +119,7 @@ namespace ProcMu.UnityScripts
         //TODO: NEEDS MORE FEATURES. CREATE A NEW MUSIC CONFIG FROM WEIGHTED INTERPOLATIONS/RANDOMIZATIONS BETWEEN MULTIPLE MUSIC ZONES!
         /// <summary> Chooses one of multiple MusicZone configurations, with probabilities dependent on their distance to the player. </summary>
         /// <returns> Returns a configuration if found, null if no Music Zone could be determined. </returns>
-        private MuConfig
-            GetMusicZoneConfigWeighted()
+        private MuConfig GetMusicZoneConfigWeighted()
         {
             float step = 0;
             float rand = Random.Range(0, distanceSum);
@@ -122,6 +130,19 @@ namespace ProcMu.UnityScripts
             }
 
             return null;
+        }
+
+        private double[][] CumulateConfigs()
+        {
+            double[][] output = new double[maxZones][];
+            for (int i = 0; i < output.Length; i++)
+            {
+                if (_mcs[i].Mc == null) break;
+                
+                output[i] = _mcs[i].Mc.chords_synthconfig.config;
+            }
+
+            return output;
         }
 
         /// <summary> Performs weighted interpolation of values between multiple arrays. </summary>
