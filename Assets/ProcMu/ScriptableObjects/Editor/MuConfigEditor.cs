@@ -56,6 +56,7 @@ namespace ProcMu.ScriptableObjects.Editor
             DrawEucRth();
             DrawChords();
             DrawSnhMel();
+            DrawSnhBas();
 
             EditorUtility.SetDirty(_muConfig); //TODO SET ONLY DIRTY WHEN A CHANGE WAS MADE
         }
@@ -364,6 +365,111 @@ namespace ProcMu.ScriptableObjects.Editor
 
         private void DrawSnhBas()
         {
+            GUI.contentColor = instrColors[3];
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.Space(20f);
+            EditorGUILayout.LabelField("Sample And Hold Bass Settings");
+
+            #region Snhmel dynamic settings
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("", GUILayout.Width(100f));
+            EditorGUILayout.LabelField("Intensity = 0 settings", GUILayout.Width(160f));
+            EditorGUILayout.LabelField("", GUILayout.Width(10f));
+            EditorGUILayout.LabelField("Intensity = 1 settings", GUILayout.Width(160f));
+            EditorGUILayout.EndHorizontal();
+
+            //Draw labels
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("", GUILayout.Width(100f));
+            EditorGUILayout.LabelField("min", GUILayout.Width(80f));
+            EditorGUILayout.LabelField("max", GUILayout.Width(80f));
+            EditorGUILayout.LabelField("", GUILayout.Width(10f));
+            EditorGUILayout.LabelField("min", GUILayout.Width(80f));
+            EditorGUILayout.LabelField("max", GUILayout.Width(80f));
+            EditorGUILayout.EndHorizontal();
+
+            #region trigger settings
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
+            _muConfig.snhbas_minImpulses0 =
+                EditorGUILayout.IntField(_muConfig.snhbas_minImpulses0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxImpulses0 =
+                EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(10f));
+            _muConfig.snhbas_minImpulses1 =
+                EditorGUILayout.IntField(_muConfig.snhbas_minImpulses1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxImpulses1 =
+                EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.EndHorizontal();
+
+            #endregion
+
+            #region occurence settings
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("OCCURENCE", GUILayout.Width(100f));
+            _muConfig.snhbas_minOccurence0 =
+                EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxOccurence0 =
+                EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(10f));
+            _muConfig.snhbas_minOccurence1 =
+                EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxOccurence1 =
+                EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.EndHorizontal();
+
+            #endregion
+
+            #region octave settings
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("OCTAVE", GUILayout.Width(100f));
+            _muConfig.snhbas_minOct0 = EditorGUILayout.IntField(_muConfig.snhbas_minOct0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxOct0 = EditorGUILayout.IntField(_muConfig.snhbas_maxOct0, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(10f));
+            _muConfig.snhbas_minOct1 = EditorGUILayout.IntField(_muConfig.snhbas_minOct1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            _muConfig.snhbas_maxOct1 = EditorGUILayout.IntField(_muConfig.snhbas_maxOct1, GUILayout.Width(40f));
+            EditorGUILayout.LabelField("", GUILayout.Width(40f));
+            EditorGUILayout.EndHorizontal();
+
+            #endregion
+
+            #endregion
+
+            EditorGUILayout.Space(20f);
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Melody curve", GUILayout.Width(100f));
+            _muConfig.snhbas_melodycurve =
+                (MelodyCurve) EditorGUILayout.EnumPopup(_muConfig.snhbas_melodycurve, GUILayout.Width(120f));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Melody mode", GUILayout.Width(100f));
+            _muConfig.snhbas_melodymode =
+                (MelodyMode) EditorGUILayout.EnumPopup(_muConfig.snhbas_melodymode, GUILayout.Width(120f));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(20f);
+            _muConfig.snhbas_synthconfig = (GSynthConfig) EditorGUILayout.ObjectField("Synth config",
+                _muConfig.snhbas_synthconfig, typeof(GSynthConfig), false);
+
+            EditorGUILayout.EndVertical();
+            GUI.contentColor = defaultColor;
         }
     }
 }

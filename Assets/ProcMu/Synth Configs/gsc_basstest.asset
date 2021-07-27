@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
+  m_Name: gsc_basstest
+  m_EditorClassIdentifier: 
+  config:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0.5
+  - 20000
+  - 0.5
+  - 0
+  - 0.009999999776482582
+  - 1
+  - 0
+  - 0
+  - 0.009999999776482582
+  - 0.30000001192092896
+  - 0
+  - 0
+  - 0.5799999833106995
+  - 0.6880000233650208
+  - 0.8560000061988831
+  - 0.37599998712539673
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0

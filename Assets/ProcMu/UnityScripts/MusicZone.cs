@@ -5,21 +5,10 @@ namespace ProcMu.UnityScripts
 {
     public class MusicZone : MonoBehaviour
     {
-        [SerializeField] private float radiusInner = 10f;
+        [field: SerializeField] public float RadiusInner { get; } = 10f;
         [SerializeField] private float radiusOuter = 40f;
 
-
         public MuConfig Config;
-
-        // Start is called before the first frame update
-        void Start()
-        {
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        }
 
         private void OnDrawGizmos()
         {
@@ -27,7 +16,7 @@ namespace ProcMu.UnityScripts
             Gizmos.DrawSphere(transform.position, 0.5f);
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, radiusInner);
+            Gizmos.DrawWireSphere(transform.position, RadiusInner);
 
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, radiusOuter);

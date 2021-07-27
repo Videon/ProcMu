@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logCsoundOutput: 1
+  logCsoundOutput: 0
   mute: 0
   processClipAudio: 0
   loudVolumeWarning: 1
@@ -528,7 +528,12 @@ MonoBehaviour:
     0 = pulses\r\ngiChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0
     = note0, 1 = note1...16 = note16\r\ngiChordsGsyn ftgen 832, 0, 32, -2, 0               
     ;GSYNTH Instrument config table\r\ngiChordsGrid ftgen 833, 0, giSteps, -2, -1         
-    ;CHORDS steps grid\r\n\r\n;Waveforms\r\ngisine   ftgen 700, 0, 16384, 10, 1\t                                                 
+    ;CHORDS steps grid\r\n\r\n;SnhBas config tables - #840-849\r\ngiSnhMelConfig
+    ftgen 840, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 =
+    minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode\r\ngiSnhMelGsyn ftgen
+    841, 0, 32, -2, 0                ;GSYNTH Instrument config table\r\ngiSnhMelGrid 
+    ftgen 842, 0, giSteps, -2, -1         ;SNHBAS steps grid\r\n\r\n;Waveforms\r\ngisine  
+    ftgen 700, 0, 16384, 10, 1\t                                                 
     ; Sine wave\r\ngisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14,
     0, .111                 ; Square\r\ngisaw    ftgen 702, 0, 16384, 10, 1, 0.5,
     0.3, 0.25, 0.2, 0.167, 0.14, 0.125, .111    ; Sawtooth\r\ngipulse  ftgen 703,
@@ -607,7 +612,26 @@ MonoBehaviour:
     knote = tab:k(kscaled,801)\r\n\r\n  ;printks \"KNOTE: %d\", 0.5, knote\r\n\r\n 
     if gktrig == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n     
     if tab:k(gkstep, 822) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
-    821\r\n      endif\r\n    endif\r\n  endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD
+    821\r\n      endif\r\n    endif\r\n  endif\r\n\r\nendin\r\n\r\n//TODO Currently
+    SNHBAS is identical with SNHMEL. Using two different instruments for allowing
+    individual features later on\r\ninstr SNHBAS\r\n  ;kmaxnote = tab:k(127, 801)\r\n 
+    kminnote init 0\r\n  kmaxnote init 0\r\n\r\n  koccurence = tab:k(1, 840)\r\n 
+    kminoct = tab:k(2,840)*12 //multiply octave values by 12 to get octaves as midi-style
+    notes\r\n  kmaxoct = tab:k(3,840)*(12+11)  //add 11 to include last note of octave\r\n\r\n 
+    //Find min note index whenever oct settings have changed\r\n  if changed(kminoct)
+    == 1 then\r\n    kcnt = 0\r\n    while kcnt < 127 do\r\n      if tab:k(kcnt,
+    801) >= kminoct then\r\n        kminnote = kcnt\r\n        kcnt=127\r\n     
+    endif\r\n      kcnt +=1\r\n    od\r\n    ;printks \"MINNOTE: %d\", 0, kminnote\r\n 
+    endif\r\n\r\n  if changed(kmaxoct) == 1 then\r\n    kcnt = 0\r\n    while kcnt
+    < 127 do\r\n      kmaxnote = kcnt\r\n      if tab:k(kcnt, 801) >= kmaxoct then\r\n       
+    kcnt=127\r\n      endif\r\n      kcnt +=1\r\n    od\r\n    ;printks \"MAXNOTE:
+    %d\", 0, kmaxnote\r\n  endif\r\n\r\n\r\n  klfo lfo 1, 1.2, 5\r\n  kscaled = kminnote
+    + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max
+    note indices\r\n\r\n  ;printks \"KRES: %d\", 0.5, kscaled\r\n\r\n  knote = limit(kscaled,kminnote,kmaxnote)\r\n 
+    knote = tab:k(kscaled,801)\r\n\r\n  ;printks \"KNOTE: %d\", 0.5, knote\r\n\r\n 
+    if gktrig == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n     
+    if tab:k(gkstep, 842) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
+    841\r\n      endif\r\n    endif\r\n  endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD
     MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
     notes from note ftable (#831)\r\ninstr CHORDS\r\n  kCnt init 0\r\n\r\n  while
     kCnt < 16 do\r\n    kval = tab:k(kCnt,831)  ;kval is also note as midi number\r\n\r\n   
@@ -642,7 +666,8 @@ MonoBehaviour:
     = alp*aaenv\r\n\r\nabusL, abusR pan2 abus, kpan  ;pan signal\r\n\r\narevL, arevR
     freeverb abusL, abusR, irev_roomsize, irev_damp\r\n\r\nouts abusL+arevL*irev_amt,
     abusR+arevR*irev_amt\r\n\r\nendin\r\n\r\n//GAME SYNTH END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n</CsInstruments>\r\n<CsScore>\r\nf
-    0 z\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\" 2 -1\r\ni \"SNHMEL\" 2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
+    0 z\r\ni \"CLOCK\" 2 -1\r\ni \"EUC_STEP\" 2 -1\r\ni \"SNHMEL\" 2 -1\r\ni \"SNHBAS\"
+    2 -1\r\n</CsScore>\r\n</CsoundSynthesizer>\r\n"
   _csoundFileName: eucrth_unity.csd
   _csoundAsset: {fileID: 102900000, guid: 2c354fc75e3af46ba9fdaf755c10c0c9, type: 3}
   _channels: []
@@ -1585,7 +1610,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3c0bb03461b450f92b7dc7cea6a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusInner: 20
   radiusOuter: 40
   Config: {fileID: 11400000, guid: 52f3e5c2febb24f47b4d19dff0c16b09, type: 2}
 --- !u!4 &1047722899
@@ -1672,7 +1696,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3c0bb03461b450f92b7dc7cea6a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusInner: 20
   radiusOuter: 40
   Config: {fileID: 11400000, guid: 86f591569dc56423aa224721c18d9d40, type: 2}
 --- !u!4 &1224878708
@@ -1749,7 +1772,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3c0bb03461b450f92b7dc7cea6a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusInner: 20
   radiusOuter: 40
   Config: {fileID: 11400000, guid: 2bba926e40bdb4d0ba219c87c9ec3826, type: 2}
 --- !u!4 &1345296274
@@ -1835,23 +1857,6 @@ MonoBehaviour:
   maxDistance: 128
   maxZones: 16
   cps: 2
-  distances:
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
 --- !u!4 &1617735272 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8345070699079395522, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}
@@ -2122,7 +2127,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3c0bb03461b450f92b7dc7cea6a4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusInner: 20
   radiusOuter: 40
   Config: {fileID: 11400000, guid: bb3ec30c2fc88495f9dd6cfd2ca8f58f, type: 2}
 --- !u!4 &1670474232

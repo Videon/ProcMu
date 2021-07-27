@@ -1,3 +1,6 @@
+using ProcMu.ScriptableObjects;
+using UnityEngine.iOS;
+
 namespace ProcMu.UnityScripts.Utilities
 {
     public static class ProcMuUtils
@@ -37,7 +40,8 @@ namespace ProcMu.UnityScripts.Utilities
                 output[i] = -1;
             }
 
-            output[output.Length - 1] = index;  //Last index indicates number of active notes. Needed for certain features in csound, e.g. lfo range to select notes.
+            output[output.Length - 1] =
+                index; //Last index indicates number of active notes. Needed for certain features in csound, e.g. lfo range to select notes.
 
             return output;
         }
@@ -155,7 +159,69 @@ namespace ProcMu.UnityScripts.Utilities
 
             return -1;
         }
-        
-        
+
+        /// <summary> Copies contents of one MuConfig to another. </summary>
+        /// <param name="from"> Origin MuConfig. </param>
+        /// <param name="to">Target MuConfig. </param>
+        public static void CopyMuConfig(MuConfig from, MuConfig to)
+        {
+            //GLOBAL
+            to.bpm = from.bpm;
+            to.Scale = from.Scale;
+            to.activeBars0 = from.activeBars0;
+            to.activeBars1 = from.activeBars1;
+
+            //EUCRTH
+            to.sampleSelection = from.sampleSelection;
+            to.eucrth_minImpulses0 = from.eucrth_minImpulses0;
+            to.eucrth_maxImpulses0 = from.eucrth_maxImpulses0;
+            to.eucrth_minImpulses1 = from.eucrth_minImpulses1;
+            to.eucrth_maxImpulses1 = from.eucrth_maxImpulses1;
+
+            //CHORDS
+            to.chords_minOct0 = from.chords_minOct0;
+            to.chords_maxOct0 = from.chords_maxOct0;
+            to.chords_minOct1 = from.chords_minOct1;
+            to.chords_maxOct1 = from.chords_maxOct1;
+
+            to.chords_minImpulses0 = from.chords_minImpulses0;
+            to.chords_maxImpulses0 = from.chords_maxImpulses0;
+            to.chords_minImpulses1 = from.chords_minImpulses1;
+            to.chords_maxImpulses1 = from.chords_maxImpulses1;
+
+            to.chordMode = from.chordMode;
+            CopyGSynthConfig(from.chords_synthconfig, to.chords_synthconfig);
+
+            //SNHMEL
+            to.snhmel_minImpulses0 = from.snhmel_minImpulses0;
+            to.snhmel_maxImpulses0 = from.snhmel_maxImpulses0;
+            to.snhmel_minImpulses1 = from.snhmel_minImpulses1;
+            to.snhmel_maxImpulses1 = from.snhmel_maxImpulses1;
+
+            to.snhmel_minOccurence0 = from.snhmel_minOccurence0;
+            to.snhmel_maxOccurence0 = from.snhmel_maxOccurence0;
+            to.snhmel_minOccurence1 = from.snhmel_minOccurence1;
+            to.snhmel_maxOccurence1 = from.snhmel_maxOccurence1;
+
+            to.snhmel_melodycurve = from.snhmel_melodycurve;
+            to.snhmel_melodymode = from.snhmel_melodymode;
+
+            CopyGSynthConfig(from.snhmel_synthconfig, to.snhmel_synthconfig);
+        }
+
+        /// <summary> Copies contents of one GSynthConfig to another. </summary>
+        /// <param name="from"> Origin GSynthConfig. </param>
+        /// <param name="to">Target GSynthConfig. </param>
+        public static void CopyGSynthConfig(GSynthConfig from, GSynthConfig to)
+        {
+            to.config = from.config;
+        }
+
+        public static void CopyScale(MuScale from, MuScale to)
+        {
+            to.Scale = from.Scale;
+            to.ScaleNotes = from.ScaleNotes;
+            to.tonic = from.tonic;
+        }
     }
 }

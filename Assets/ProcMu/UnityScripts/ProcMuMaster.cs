@@ -151,6 +151,9 @@ namespace ProcMu.UnityScripts
             csoundUnity.CopyTableIn(830, FtableConverter.ChordsGenerateConfig(mc, intensity)); //Chords dynamics config
             csoundUnity.CopyTableIn(831, FtableConverter.ChordsGenerateNotes(mc, intensity)); //Chords notes
             csoundUnity.CopyTableIn(832, mc.chords_synthconfig.config); //GSynth config (Chords)
+
+            csoundUnity.CopyTableIn(840, FtableConverter.SnhBasGenerateConfig(mc, intensity)); //SnhBas dynamics config
+            csoundUnity.CopyTableIn(841, mc.snhbas_synthconfig.config); //GSynth config (SnhBas)
         }
     }
 }

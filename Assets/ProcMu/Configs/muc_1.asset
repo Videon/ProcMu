@@ -22,10 +22,20 @@ MonoBehaviour:
   activeBars0: 01010101010001000101010100000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   activeBars1: 01010101010001000101010100000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   sampleSelection: 01000000020000000400000000000000
-  eucrth_minImpulses0: 04000000020000000100000002000000
-  eucrth_maxImpulses0: 05000000020000000100000002000000
-  eucrth_minImpulses1: 080000000e0000000600000002000000
-  eucrth_maxImpulses1: 09000000100000000600000004000000
+  eucrth_minImpulses0: 01000000010000000100000001000000
+  eucrth_maxImpulses0: 01000000010000000100000001000000
+  eucrth_minImpulses1: 01000000010000000100000001000000
+  eucrth_maxImpulses1: 01000000010000000100000001000000
+  chords_minOct0: 4
+  chords_maxOct0: 4
+  chords_minOct1: 6
+  chords_maxOct1: 6
+  chords_minImpulses0: 1
+  chords_maxImpulses0: 1
+  chords_minImpulses1: 1
+  chords_maxImpulses1: 2
+  chordMode: 4
+  chords_synthconfig: {fileID: 11400000, guid: da94afd83affc4cf0bd99e3fc81526e4, type: 2}
   snhmel_minImpulses0: 8
   snhmel_maxImpulses0: 10
   snhmel_minImpulses1: 12
@@ -41,13 +51,18 @@ MonoBehaviour:
   snhmel_melodycurve: 0
   snhmel_melodymode: 0
   snhmel_synthconfig: {fileID: 11400000, guid: be31be1cb1de94c66bd1d94629cf2b67, type: 2}
-  chords_minOct0: 4
-  chords_maxOct0: 4
-  chords_minOct1: 6
-  chords_maxOct1: 6
-  chords_minImpulses0: 1
-  chords_maxImpulses0: 1
-  chords_minImpulses1: 1
-  chords_maxImpulses1: 2
-  chordMode: 4
-  chords_synthconfig: {fileID: 11400000, guid: da94afd83affc4cf0bd99e3fc81526e4, type: 2}
+  snhbas_minImpulses0: 0
+  snhbas_maxImpulses0: 0
+  snhbas_minImpulses1: 0
+  snhbas_maxImpulses1: 0
+  snhbas_minOccurence0: 0
+  snhbas_maxOccurence0: 0
+  snhbas_minOccurence1: 0
+  snhbas_maxOccurence1: 0
+  snhbas_minOct0: 0
+  snhbas_maxOct0: 10
+  snhbas_minOct1: 0
+  snhbas_maxOct1: 0
+  snhbas_melodycurve: 0
+  snhbas_melodymode: 0
+  snhbas_synthconfig: {fileID: 0}

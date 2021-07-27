@@ -97,6 +97,31 @@ namespace ProcMu.UnityScripts.Utilities
             return output;
         }
 
+        public static double[] SnhBasGenerateConfig(MuConfig mc, float intensity)
+        {
+            double[] output = new double[8];
+
+            //pulses
+            output[0] = Mathf.RoundToInt(Random.Range(
+                (float) Mathf.RoundToInt(Mathf.Lerp(mc.snhbas_minImpulses0, mc.snhbas_minImpulses1, intensity)),
+                (float) Mathf.RoundToInt(Mathf.Lerp(mc.snhbas_maxImpulses0, mc.snhbas_maxImpulses1, intensity))
+            ));
+
+            //occurence
+            output[1] = Random.Range(
+                Mathf.Lerp(mc.snhbas_minOccurence0, mc.snhbas_minOccurence1, intensity),
+                Mathf.Lerp(mc.snhbas_maxOccurence0, mc.snhbas_maxOccurence1, intensity)
+            );
+
+            output[2] = Mathf.RoundToInt(Mathf.Lerp(mc.snhbas_minOct0, mc.snhbas_minOct1, intensity)); //min oct
+            output[3] = Mathf.RoundToInt(Mathf.Lerp(mc.snhbas_maxOct0, mc.snhbas_maxOct1, intensity)); //max oct
+
+            output[4] = (int) mc.snhbas_melodycurve; //melody (lfo) curve
+            output[5] = (int) mc.snhbas_melodymode; //melody mode
+
+            return output;
+        }
+
         public static double[] GSynthGenerateConfig(GSynthConfig config)
         {
             double[] output = new double[32];

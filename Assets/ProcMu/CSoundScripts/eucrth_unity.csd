@@ -42,6 +42,11 @@ giChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0 = note0, 1 = note
 giChordsGsyn ftgen 832, 0, 32, -2, 0                ;GSYNTH Instrument config table
 giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;CHORDS steps grid
 
+;SnhBas config tables - #840-849
+giSnhMelConfig ftgen 840, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
+giSnhMelGsyn ftgen 841, 0, 32, -2, 0                ;GSYNTH Instrument config table
+giSnhMelGrid  ftgen 842, 0, giSteps, -2, -1         ;SNHBAS steps grid
+
 ;Waveforms
 gisine   ftgen 700, 0, 16384, 10, 1	                                                  ; Sine wave
 gisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14, 0, .111                 ; Square
@@ -244,6 +249,62 @@ instr SNHMEL
 
 endin
 
+//TODO Currently SNHBAS is identical with SNHMEL. Using two different instruments for allowing individual features later on
+instr SNHBAS
+  ;kmaxnote = tab:k(127, 801)
+  kminnote init 0
+  kmaxnote init 0
+
+  koccurence = tab:k(1, 840)
+  kminoct = tab:k(2,840)*12 //multiply octave values by 12 to get octaves as midi-style notes
+  kmaxoct = tab:k(3,840)*(12+11)  //add 11 to include last note of octave
+
+  //Find min note index whenever oct settings have changed
+  if changed(kminoct) == 1 then
+    kcnt = 0
+    while kcnt < 127 do
+      if tab:k(kcnt, 801) >= kminoct then
+        kminnote = kcnt
+        kcnt=127
+      endif
+      kcnt +=1
+    od
+    ;printks "MINNOTE: %d", 0, kminnote
+  endif
+
+  if changed(kmaxoct) == 1 then
+    kcnt = 0
+    while kcnt < 127 do
+      kmaxnote = kcnt
+      if tab:k(kcnt, 801) >= kmaxoct then
+        kcnt=127
+      endif
+      kcnt +=1
+    od
+    ;printks "MAXNOTE: %d", 0, kmaxnote
+  endif
+
+
+  klfo lfo 1, 1.2, 5
+  kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max note indices
+
+  ;printks "KRES: %d", 0.5, kscaled
+
+  knote = limit(kscaled,kminnote,kmaxnote)
+  knote = tab:k(kscaled,801)
+
+  ;printks "KNOTE: %d", 0.5, knote
+
+  if gktrig == 1 then
+    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
+      if tab:k(gkstep, 842) > -1 then
+        event "i", "GSYNTH", 0, 1, knote, 841
+      endif
+    endif
+  endif
+
+endin
+
 //SAMPLE AND HOLD MELODY END
 //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -370,5 +431,6 @@ f 0 z
 i "CLOCK" 2 -1
 i "EUC_STEP" 2 -1
 i "SNHMEL" 2 -1
+i "SNHBAS" 2 -1
 </CsScore>
 </CsoundSynthesizer>
