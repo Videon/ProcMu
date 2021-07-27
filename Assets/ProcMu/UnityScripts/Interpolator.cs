@@ -33,7 +33,6 @@ namespace ProcMu.UnityScripts
 
         private MuConfig _muConfig;
 
-        [SerializeField]
         private readonly McDist[] _mcs = new McDist[16]; //List of music configurations with attached distance value.
 
         private float elapsedTime = 0f;
@@ -54,11 +53,6 @@ namespace ProcMu.UnityScripts
             _muConfig = procMuMaster.mc;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -68,21 +62,23 @@ namespace ProcMu.UnityScripts
 
             elapsedTime = 0f;
 
-            FindAndSortMusicZones();
+            int top = FindAndSortMusicZones();
 
             //Generate distances array from sorted McDist objects in list
-            float[] distances = new float[maxZones];
-            for (int i = 0; i < maxZones; i++)
+            float[] distances = new float[top];
+            for (int i = 0; i < top; i++)
             {
                 if (_mcs[i].Mc == null) break;
-                
+
                 distances[i] = _mcs[i].Dist;
             }
 
-            procMuMaster.mc.chords_synthconfig.config = Interpolate(distances, CumulateConfigs());
+            InterpolateAll(distances, top);
         }
 
-        private void FindAndSortMusicZones()
+        /// <summary> Finds all music zones within range and puts them in McDist array. </summary>
+        /// <returns> Number of found music zones. </returns>
+        private int FindAndSortMusicZones()
         {
             Array.Clear(distances, 0, distances.Length);
             Array.Clear(_mcs, 0, _mcs.Length); //Clear list before filling it again with data.
@@ -114,6 +110,8 @@ namespace ProcMu.UnityScripts
                 distances[i] = _mcs[i].Dist.ToString();
             }
 #endif
+
+            return top;
         }
 
         //TODO: NEEDS MORE FEATURES. CREATE A NEW MUSIC CONFIG FROM WEIGHTED INTERPOLATIONS/RANDOMIZATIONS BETWEEN MULTIPLE MUSIC ZONES!
@@ -132,33 +130,60 @@ namespace ProcMu.UnityScripts
             return null;
         }
 
-        private double[][] CumulateConfigs()
+        /// <summary> Collects all configuration parameters of one type into one jagged array. </summary>
+        /// <param name="amount">Number of configs to cumulate. This should correspond with number of Music Zones in reach.</param>
+        /// <returns>The specified amount of configurations in one jagged array.</returns>
+        private double[][] CumulateConfigs(int amount, Instrument instrument)
         {
-            double[][] output = new double[maxZones][];
+            double[][] output = new double[amount][];
             for (int i = 0; i < output.Length; i++)
             {
                 if (_mcs[i].Mc == null) break;
-                
-                output[i] = _mcs[i].Mc.chords_synthconfig.config;
+
+                switch (instrument)
+                {
+                    case Instrument.EucRth:
+                        throw new NotImplementedException();
+                        break;
+                    case Instrument.Chords:
+                        output[i] = _mcs[i].Mc.chords_synthconfig.config;
+                        break;
+                    case Instrument.SnhMel:
+                        output[i] = _mcs[i].Mc.snhmel_synthconfig.config;
+                        break;
+                    case Instrument.SnhBass:
+                        throw new NotImplementedException();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(instrument), instrument, null);
+                }
             }
 
             return output;
         }
 
-        /// <summary> Performs weighted interpolation of values between multiple arrays. </summary>
+        private void InterpolateAll(float[] distances, int top)
+        {
+            procMuMaster.mc.chords_synthconfig.config =
+                InterpolateGsynthConfigs(distances, CumulateConfigs(top, Instrument.Chords));
+            procMuMaster.mc.snhmel_synthconfig.config =
+                InterpolateGsynthConfigs(distances, CumulateConfigs(top, Instrument.SnhMel));
+        }
+
+        /// <summary> Performs weighted interpolation of multiple arrays of config values. </summary>
         /// <param name="distances"> Weight per array. Values must be in order of input arrays. </param>
         /// <param name="inputs"> Input arrays. Must all be the same length. </param>
         /// <returns> Array of interpolated values. </returns>
-        private double[] Interpolate(float[] distances, double[][] inputs)
+        private double[] InterpolateGsynthConfigs(float[] distances, double[][] inputs)
         {
-            double[] output = new double[inputs.Length];
+            double[] output = new double[inputs[0].Length];
 
-            for (int i = 0; i < inputs.Length; i++)
+            for (int i = 0; i < inputs[0].Length; i++)
             {
-                double[] values = new double[inputs[0].Length];
-                for (int j = 0; j < values.Length; j++)
+                double[] values = new double[inputs.Length];
+                for (int j = 0; j < inputs.Length; j++)
                 {
-                    values[j] = inputs[i][j];
+                    values[j] = inputs[j][i];
                 }
 
                 output[i] = Interpolate(distances, values);
@@ -185,6 +210,18 @@ namespace ProcMu.UnityScripts
             }
 
             return sumWz / sumW;
+        }
+
+        private double ClosestValue(float[] distances, double[] values)
+        {
+            int closestIndex = 0;
+            for (int i = 0; i < distances.Length; i++)
+            {
+                if (distances[i] < distances[closestIndex])
+                    closestIndex = i;
+            }
+
+            return values[closestIndex];
         }
     }
 }

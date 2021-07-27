@@ -24,7 +24,7 @@ public class MuSampleDbEditor : Editor
         for (int i = 0; i < _muSampleDb.audioClips.Length; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("#" + 900 + i);
+            EditorGUILayout.LabelField("#" + (900 + i));
             EditorGUILayout.LabelField(_muSampleDb.audioClipNames[i]);
             EditorGUILayout.EndHorizontal();
         }

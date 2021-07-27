@@ -1,3 +1,4 @@
+using System;
 using ProcMu.ScriptableObjects;
 using UnityEditor;
 using UnityEngine;
@@ -5,7 +6,11 @@ using UnityEngine;
 
 public class SampleDbWindow : EditorWindow
 {
+    private string assetPath = "/ProcMu/";
+
     private MuSampleDb _sampleDb;
+
+    private bool _dbInit;
 
     [MenuItem("ProcMu/Sample DB Manager")]
     public static void ShowWindow()
@@ -13,14 +18,31 @@ public class SampleDbWindow : EditorWindow
         EditorWindow.GetWindow(typeof(SampleDbWindow));
     }
 
+    private void OnEnable()
+    {
+        _sampleDb = Resources.Load<MuSampleDb>("procmu_sampledb");
+        _dbInit = _sampleDb != null;
+    }
+
     private void OnGUI()
     {
-        _sampleDb = MuSampleDb.instance;
+        if (!_dbInit) DrawEmptyDb();
 
-        DrawSampleList();
+        else
+        {
+            DrawSampleList();
 
-        if (GUILayout.Button("Register Samples"))
-            RegisterAssets();
+            if (GUILayout.Button("Register Samples"))
+                RegisterAssets();
+        }
+    }
+
+    private void DrawEmptyDb()
+    {
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("No sample database exists. Create new database?");
+        if (GUILayout.Button("Create sample database")) CreateDbObject();
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawSampleList()
@@ -58,8 +80,14 @@ public class SampleDbWindow : EditorWindow
 
         _sampleDb.FillDb(audioClips);
 
-        _sampleDb.SaveAsset();
-
         Debug.Log("Registered " + audioClips.Length + " audio assets!");
+    }
+
+    private void CreateDbObject()
+    {
+        AssetDatabase.CreateAsset(MuSampleDb.CreateInstance(typeof(MuSampleDb)),
+            "Assets/ProcMu/Resources/procmu_sampledb.asset");
+        _sampleDb = Resources.Load<MuSampleDb>("procmu_sampledb");
+        _dbInit = _sampleDb != null;
     }
 }

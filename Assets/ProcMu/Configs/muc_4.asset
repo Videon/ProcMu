@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a868a37e677a4ffd9772fbe11c32c38, type: 3}
-  m_Name: muc_default
+  m_Name: muc_4
   m_EditorClassIdentifier: 
   comm:
   - 0
-  - 1
-  - 11
+  - 0
+  - 0
   - 0
   bpm: 120
   Scale: {fileID: 11400000, guid: fae5bb984cd2d4632a8daebfbb585c66, type: 2}
@@ -27,7 +27,7 @@ MonoBehaviour:
   eucrth_minImpulses1: 080000000e0000000600000002000000
   eucrth_maxImpulses1: 09000000100000000600000004000000
   snhmel_minImpulses0: 8
-  snhmel_maxImpulses0: 9
+  snhmel_maxImpulses0: 10
   snhmel_minImpulses1: 12
   snhmel_maxImpulses1: 16
   snhmel_minOccurence0: 1
@@ -35,14 +35,14 @@ MonoBehaviour:
   snhmel_minOccurence1: 1
   snhmel_maxOccurence1: 1
   snhmel_minOct0: 2
-  snhmel_maxOct0: 2
-  snhmel_minOct1: 3
-  snhmel_maxOct1: 4
+  snhmel_maxOct0: 3
+  snhmel_minOct1: 4
+  snhmel_maxOct1: 5
   snhmel_melodycurve: 0
   snhmel_melodymode: 0
-  snhmel_synthconfig: {fileID: 11400000, guid: 20f0c2029b2184bce9a0356005f774bb, type: 2}
+  snhmel_synthconfig: {fileID: 11400000, guid: be31be1cb1de94c66bd1d94629cf2b67, type: 2}
   chords_minOct0: 4
-  chords_maxOct0: 6
+  chords_maxOct0: 4
   chords_minOct1: 6
   chords_maxOct1: 6
   chords_minImpulses0: 1
@@ -50,4 +50,4 @@ MonoBehaviour:
   chords_minImpulses1: 1
   chords_maxImpulses1: 2
   chordMode: 4
-  chords_synthconfig: {fileID: 11400000, guid: 7d40d10bde67e400695a954be2e40153, type: 2}
+  chords_synthconfig: {fileID: 11400000, guid: 4852ccfc4386342d6b135409b8728f67, type: 2}

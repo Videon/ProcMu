@@ -43,6 +43,7 @@ namespace ProcMu.UnityScripts
         private double[] comm = new double[4]; //Allocate space for communication information with Csound
 
         private AudioClip[] audioClips;
+        private MuSampleDb sampleDb;
 
         //Test variables
         [SerializeField, Range(0, 1000)] private double bpm = 120;
@@ -52,7 +53,8 @@ namespace ProcMu.UnityScripts
 
         private void Awake()
         {
-            audioClips = MuSampleDb.instance.audioClips; //Fetch audio clips from sample db
+            sampleDb = Resources.Load<MuSampleDb>("procmu_sampledb");
+            audioClips = sampleDb.audioClips; //Fetch audio clips from sample db
             //Assign CsoundUnity component
             if (!csoundUnity) Debug.LogError("Can't find CsoundUnity component!");
         }

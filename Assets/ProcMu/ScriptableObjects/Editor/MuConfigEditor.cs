@@ -8,6 +8,7 @@ namespace ProcMu.ScriptableObjects.Editor
     public class MuConfigEditor : UnityEditor.Editor
     {
         private MuConfig _muConfig;
+        MuSampleDb _sampledb;
 
         #region GUI styles
 
@@ -24,6 +25,8 @@ namespace ProcMu.ScriptableObjects.Editor
 
         private void OnEnable()
         {
+            _sampledb = Resources.Load<MuSampleDb>("procmu_sampledb");
+
             defaultColor = GUI.color;
             instrColors = new Color[]
             {
@@ -144,7 +147,7 @@ namespace ProcMu.ScriptableObjects.Editor
             {
                 EditorGUILayout.BeginHorizontal();
                 _muConfig.sampleSelection[i] =
-                    EditorGUILayout.Popup(_muConfig.sampleSelection[i], MuSampleDb.instance.audioClipNames,
+                    EditorGUILayout.Popup(_muConfig.sampleSelection[i], _sampledb.audioClipNames,
                         GUILayout.Width(100f));
                 EditorGUILayout.LabelField("", GUILayout.Width(10f));
 
@@ -201,14 +204,18 @@ namespace ProcMu.ScriptableObjects.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
-            _muConfig.chords_minImpulses0 = EditorGUILayout.IntField(_muConfig.chords_minImpulses0, GUILayout.Width(40f));
+            _muConfig.chords_minImpulses0 =
+                EditorGUILayout.IntField(_muConfig.chords_minImpulses0, GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.chords_maxImpulses0 = EditorGUILayout.IntField(_muConfig.chords_maxImpulses0, GUILayout.Width(40f));
+            _muConfig.chords_maxImpulses0 =
+                EditorGUILayout.IntField(_muConfig.chords_maxImpulses0, GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.chords_minImpulses1 = EditorGUILayout.IntField(_muConfig.chords_minImpulses1, GUILayout.Width(40f));
+            _muConfig.chords_minImpulses1 =
+                EditorGUILayout.IntField(_muConfig.chords_minImpulses1, GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.chords_maxImpulses1 = EditorGUILayout.IntField(_muConfig.chords_maxImpulses1, GUILayout.Width(40f));
+            _muConfig.chords_maxImpulses1 =
+                EditorGUILayout.IntField(_muConfig.chords_maxImpulses1, GUILayout.Width(40f));
             EditorGUILayout.LabelField("", GUILayout.Width(40f));
             EditorGUILayout.EndHorizontal();
 

@@ -69,4 +69,9 @@ namespace ProcMu.UnityScripts
         Retriggered
     }
 
+    public enum InterpolationMode
+    {
+        DistanceWeighted, //Generates new value from weighted average of all input values
+        Closest //Sets new value according to closest music zone configuration
+    }
 }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace ProcMu.ScriptableObjects
 {
-    [FilePath("Assets/ProcMu/SamplesDB", FilePathAttribute.Location.ProjectFolder)]
-    public class MuSampleDb : ScriptableSingleton<MuSampleDb>
+    public class MuSampleDb : ScriptableObject
     {
         public AudioClip[] audioClips;
         public string[] audioClipNames;
         public int[] sampleIds;
 
+#if UNITY_EDITOR
         public void FillDb(AudioClip[] audioClips)
         {
             this.audioClips = audioClips;
@@ -22,11 +22,9 @@ namespace ProcMu.ScriptableObjects
                 audioClipNames[i] = audioClips[i].name;
                 sampleIds[i] = i;
             }
-        }
 
-        public void SaveAsset()
-        {
-            Save(true);
+            EditorUtility.SetDirty(this);
         }
+#endif
     }
 }
