@@ -14,55 +14,74 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comm:
   - 0
-  - 2
   - 1
+  - 12
   - 0
   bpm: 120
-  Scale: {fileID: 11400000, guid: 0c173e1cb9cbe44a29cddbaf5a0f3aa9, type: 2}
-  activeBars0: 01010101010001000001000101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  activeBars1: 01010101010001000101010100000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  sampleSelection: 01000000020000000400000000000000
-  eucrth_minImpulses0: 03000000030000000300000003000000
-  eucrth_maxImpulses0: 03000000030000000300000003000000
-  eucrth_minImpulses1: 03000000030000000300000003000000
+  Scale: {fileID: 11400000, guid: e86135a03c8e54d659d00a4046a21042, type: 2}
+  activeBars0: 01010101010001000101010100010001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  activeBars1: 01010101010101000101010101010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  eucrth_sampleSelection: 0d0000000e0000000300000009000000
+  eucrth_minImpulses0: 01000000010000000100000001000000
+  eucrth_maxImpulses0: 02000000020000000200000003000000
+  eucrth_minImpulses1: 02000000020000000200000002000000
   eucrth_maxImpulses1: 03000000030000000300000003000000
-  chords_minOct0: 4
-  chords_maxOct0: 4
-  chords_minOct1: 6
-  chords_maxOct1: 6
-  chords_minImpulses0: 1
-  chords_maxImpulses0: 1
-  chords_minImpulses1: 1
-  chords_maxImpulses1: 2
+  chords_config:
+  - 5
+  - 5
+  - 5
+  - 6
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   chordMode: 4
   chords_synthconfig: {fileID: 11400000, guid: 7d40d10bde67e400695a954be2e40153, type: 2}
-  snhmel_minImpulses0: 8
-  snhmel_maxImpulses0: 10
-  snhmel_minImpulses1: 12
-  snhmel_maxImpulses1: 16
-  snhmel_minOccurence0: 1
-  snhmel_maxOccurence0: 1
-  snhmel_minOccurence1: 1
-  snhmel_maxOccurence1: 1
-  snhmel_minOct0: 2
-  snhmel_maxOct0: 3
-  snhmel_minOct1: 4
-  snhmel_maxOct1: 5
+  snhmel_config:
+  - 2
+  - 2
+  - 2
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 4
+  - 4
+  - 5
+  - 5
+  - 0
+  - 0
+  - 0
+  - 0
   snhmel_melodycurve: 0
   snhmel_melodymode: 0
   snhmel_synthconfig: {fileID: 11400000, guid: 20f0c2029b2184bce9a0356005f774bb, type: 2}
-  snhbas_minImpulses0: 1
-  snhbas_maxImpulses0: 1
-  snhbas_minImpulses1: 0
-  snhbas_maxImpulses1: 0
-  snhbas_minOccurence0: 0
-  snhbas_maxOccurence0: 0
-  snhbas_minOccurence1: 0
-  snhbas_maxOccurence1: 0
-  snhbas_minOct0: 8
-  snhbas_maxOct0: 8
-  snhbas_minOct1: 0
-  snhbas_maxOct1: 0
+  snhbas_config:
+  - 3
+  - 3
+  - 3
+  - 6
+  - 0
+  - 0
+  - 0
+  - 0
+  - 2
+  - 2
+  - 2
+  - 2
+  - 0
+  - 0
+  - 0
+  - 0
   snhbas_melodycurve: 0
   snhbas_melodymode: 0
   snhbas_synthconfig: {fileID: 11400000, guid: df951ba28df3f4ba19398579d62199fe, type: 2}

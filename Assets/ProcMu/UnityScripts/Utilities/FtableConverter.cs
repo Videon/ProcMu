@@ -24,7 +24,7 @@ namespace ProcMu.UnityScripts.Utilities
             double[] eucrthConfig = new double[8];
             for (int i = 0; i < 4; i++)
             {
-                eucrthConfig[2 * i] = mc.sampleSelection[i];
+                eucrthConfig[2 * i] = mc.eucrth_sampleSelection[i];
                 eucrthConfig[2 * i + 1] = Mathf.RoundToInt(Random.Range(
                     (float) Mathf.RoundToInt(
                         Mathf.Lerp(mc.eucrth_minImpulses0[i], mc.eucrth_minImpulses1[i], intensity)),

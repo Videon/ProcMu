@@ -172,41 +172,28 @@ namespace ProcMu.UnityScripts.Utilities
             to.activeBars1 = from.activeBars1;
 
             //EUCRTH
-            to.sampleSelection = from.sampleSelection;
+            to.eucrth_sampleSelection = from.eucrth_sampleSelection;
             to.eucrth_minImpulses0 = from.eucrth_minImpulses0;
             to.eucrth_maxImpulses0 = from.eucrth_maxImpulses0;
             to.eucrth_minImpulses1 = from.eucrth_minImpulses1;
             to.eucrth_maxImpulses1 = from.eucrth_maxImpulses1;
 
             //CHORDS
-            to.chords_minOct0 = from.chords_minOct0;
-            to.chords_maxOct0 = from.chords_maxOct0;
-            to.chords_minOct1 = from.chords_minOct1;
-            to.chords_maxOct1 = from.chords_maxOct1;
-
-            to.chords_minImpulses0 = from.chords_minImpulses0;
-            to.chords_maxImpulses0 = from.chords_maxImpulses0;
-            to.chords_minImpulses1 = from.chords_minImpulses1;
-            to.chords_maxImpulses1 = from.chords_maxImpulses1;
-
+            to.chords_config = from.chords_config;
             to.chordMode = from.chordMode;
             CopyGSynthConfig(from.chords_synthconfig, to.chords_synthconfig);
 
             //SNHMEL
-            to.snhmel_minImpulses0 = from.snhmel_minImpulses0;
-            to.snhmel_maxImpulses0 = from.snhmel_maxImpulses0;
-            to.snhmel_minImpulses1 = from.snhmel_minImpulses1;
-            to.snhmel_maxImpulses1 = from.snhmel_maxImpulses1;
-
-            to.snhmel_minOccurence0 = from.snhmel_minOccurence0;
-            to.snhmel_maxOccurence0 = from.snhmel_maxOccurence0;
-            to.snhmel_minOccurence1 = from.snhmel_minOccurence1;
-            to.snhmel_maxOccurence1 = from.snhmel_maxOccurence1;
-
+            to.snhmel_config = from.snhmel_config;
             to.snhmel_melodycurve = from.snhmel_melodycurve;
             to.snhmel_melodymode = from.snhmel_melodymode;
-
             CopyGSynthConfig(from.snhmel_synthconfig, to.snhmel_synthconfig);
+
+            //SNHBAS
+            to.snhbas_config = from.snhbas_config;
+            to.snhbas_melodycurve = from.snhbas_melodycurve;
+            to.snhbas_melodymode = from.snhbas_melodymode;
+            CopyGSynthConfig(from.snhbas_synthconfig, to.snhbas_synthconfig);
         }
 
         /// <summary> Copies contents of one GSynthConfig to another. </summary>

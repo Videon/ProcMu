@@ -147,8 +147,8 @@ namespace ProcMu.ScriptableObjects.Editor
             for (int i = 0; i < 4; i++)
             {
                 EditorGUILayout.BeginHorizontal();
-                _muConfig.sampleSelection[i] =
-                    EditorGUILayout.Popup(_muConfig.sampleSelection[i], _sampledb.audioClipNames,
+                _muConfig.eucrth_sampleSelection[i] =
+                    EditorGUILayout.Popup(_muConfig.eucrth_sampleSelection[i], _sampledb.audioClipNames,
                         GUILayout.Width(100f));
                 EditorGUILayout.LabelField("", GUILayout.Width(10f));
 

@@ -13,15 +13,45 @@ MonoBehaviour:
   m_Name: procmu_sampledb
   m_EditorClassIdentifier: 
   audioClips:
+  - {fileID: 8300000, guid: 8e2cc1694b4b04532970343c9eac4abb, type: 3}
+  - {fileID: 8300000, guid: 61cdde02a92ba4c7896c3c7fd2ea2e67, type: 3}
+  - {fileID: 8300000, guid: 7dfe727f5d6aa4a7d9fe4ad20283ceed, type: 3}
   - {fileID: 8300000, guid: a9f595128ef004f9f85b403fdab61fea, type: 3}
+  - {fileID: 8300000, guid: da172819f87b5492ba7e06e591fd5875, type: 3}
+  - {fileID: 8300000, guid: b6faf12fbfba648999a7d303f532fa68, type: 3}
   - {fileID: 8300000, guid: 12da252042ae34ae19f1e79109f1fdf5, type: 3}
+  - {fileID: 8300000, guid: 48916d73835914a0eb1038172c099ca0, type: 3}
   - {fileID: 8300000, guid: ee9cf33c2b4724ebd8307e563b35cd2e, type: 3}
+  - {fileID: 8300000, guid: 36c41761dfc44420ea02c6f3c958453d, type: 3}
   - {fileID: 8300000, guid: fc55d4ed70373485491e0d5976f951cc, type: 3}
+  - {fileID: 8300000, guid: d34134a1ab706485daf40aa624c1f01a, type: 3}
+  - {fileID: 8300000, guid: 61d4eafc4d2e74f4ba48c91381828e69, type: 3}
+  - {fileID: 8300000, guid: 575904fb55ebc481bb5dc91290ff2041, type: 3}
+  - {fileID: 8300000, guid: 36fb4a35f645d49028c3ec901a6da8ed, type: 3}
+  - {fileID: 8300000, guid: dced3b0d02ba14d0e9619dea9b7ae1de, type: 3}
+  - {fileID: 8300000, guid: 88ab86b6b572e4110bd35b835e6f7e91, type: 3}
+  - {fileID: 8300000, guid: 034163700fa1f4034b634c5de38a923c, type: 3}
   - {fileID: 8300000, guid: e603af93d0bb14c4380b8381fd6dd34a, type: 3}
+  - {fileID: 8300000, guid: 5c0e8ac9f23bb4b03893ab29541a494c, type: 3}
   audioClipNames:
+  - BIGDRUM1
+  - BIGDRUM2
+  - BIGDRUM3
   - CLAV1
+  - CLAV2
+  - CLAV3
   - CONGA1
+  - COWBELL1
   - HIHAT1
+  - METAL1
   - SHAKER_1
+  - SHAKER_2
+  - SHAKER_3
+  - TABLA1
+  - TABLA2
+  - TABLA3
+  - TAM1
+  - TAM2
   - TOM1
-  sampleIds: 0000000001000000020000000300000004000000
+  - VARIOUS1
+  sampleIds: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000110000001200000013000000

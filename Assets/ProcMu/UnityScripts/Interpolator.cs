@@ -166,10 +166,8 @@ namespace ProcMu.UnityScripts
 
         private void InterpolateAll(float[] distances, int top)
         {
-            int[] cumulatedInt = new int[top];
             int[][] cumulatedJaggedInt = new int[top][]; //Allocating array for cumulating values across configs.
-
-            float[] cumulatedFloat = new float[top];
+            double[][] cumulatedJaggedDouble = new double[top][];
 
             #region Global parameters
 
@@ -187,8 +185,9 @@ namespace ProcMu.UnityScripts
             #region EUCRTH parameters
 
             //Sets each eucrth sound randomly, chance of selected sound depends on distance of player to zone.
-            for (int i = 0; i < procMuMaster.mc.sampleSelection.Length; i++)
-                procMuMaster.mc.sampleSelection[i] = _mcs[GetIndexWeighted(distances, top)].Mc.sampleSelection[i];
+            for (int i = 0; i < procMuMaster.mc.eucrth_sampleSelection.Length; i++)
+                procMuMaster.mc.eucrth_sampleSelection[i] =
+                    _mcs[GetIndexWeighted(distances, top)].Mc.eucrth_sampleSelection[i];
 
             for (int i = 0; i < cumulatedJaggedInt.Length; i++)
                 cumulatedJaggedInt[i] = _mcs[i].Mc.eucrth_minImpulses0;
@@ -214,47 +213,12 @@ namespace ProcMu.UnityScripts
 
             #region CHORDS parameters
 
-            //Octaves
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_minOct0;
+            for (int i = 0; i < cumulatedJaggedDouble.Length; i++)
+            {
+                cumulatedJaggedDouble[i] = _mcs[i].Mc.chords_config;
+            }
 
-            procMuMaster.mc.chords_minOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_maxOct0;
-
-            procMuMaster.mc.chords_maxOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_minOct1;
-
-            procMuMaster.mc.chords_minOct1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_maxOct1;
-
-            procMuMaster.mc.chords_maxOct1 = Interpolate(distances, cumulatedInt);
-
-            //Impulses
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_minImpulses0;
-
-            procMuMaster.mc.chords_minImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_maxImpulses0;
-
-            procMuMaster.mc.chords_maxImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_minImpulses1;
-
-            procMuMaster.mc.chords_minImpulses1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.chords_maxImpulses1;
-
-            procMuMaster.mc.chords_maxImpulses1 = Interpolate(distances, cumulatedInt);
+            procMuMaster.mc.chords_config = Interpolate(distances, cumulatedJaggedDouble);
 
             procMuMaster.mc.chordMode = _mcs[0].Mc.chordMode;
 
@@ -265,68 +229,12 @@ namespace ProcMu.UnityScripts
 
             #region SNHMEL parameters
 
-            //Impulses
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_minImpulses0;
+            for (int i = 0; i < cumulatedJaggedDouble.Length; i++)
+            {
+                cumulatedJaggedDouble[i] = _mcs[i].Mc.snhmel_config;
+            }
 
-            procMuMaster.mc.snhmel_minImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_maxImpulses0;
-
-            procMuMaster.mc.snhmel_maxImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_minImpulses1;
-
-            procMuMaster.mc.snhmel_minImpulses1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_maxImpulses1;
-
-            procMuMaster.mc.snhmel_maxImpulses1 = Interpolate(distances, cumulatedInt);
-
-            //Occurence
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhmel_minOccurence0;
-
-            procMuMaster.mc.snhmel_minOccurence0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhmel_maxOccurence0;
-
-            procMuMaster.mc.snhmel_maxOccurence0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhmel_minOccurence1;
-
-            procMuMaster.mc.snhmel_minOccurence1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhmel_maxOccurence1;
-
-            procMuMaster.mc.snhmel_maxOccurence1 = Interpolate(distances, cumulatedInt);
-
-            //Octave
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_minOct0;
-
-            procMuMaster.mc.snhmel_minOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_maxOct0;
-
-            procMuMaster.mc.snhmel_maxOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_minOct1;
-
-            procMuMaster.mc.snhmel_minOct1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhmel_maxOct1;
-
-            procMuMaster.mc.snhmel_maxOct1 = Interpolate(distances, cumulatedInt);
+            procMuMaster.mc.snhmel_config = Interpolate(distances, cumulatedJaggedDouble);
 
             //Misc
 
@@ -337,71 +245,15 @@ namespace ProcMu.UnityScripts
                 Interpolate(distances, CumulateConfigs(top, Instrument.SnhMel));
 
             #endregion
-            
+
             #region SNHBAS parameters
 
-            //Impulses
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_minImpulses0;
+            for (int i = 0; i < cumulatedJaggedDouble.Length; i++)
+            {
+                cumulatedJaggedDouble[i] = _mcs[i].Mc.snhbas_config;
+            }
 
-            procMuMaster.mc.snhbas_minImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_maxImpulses0;
-
-            procMuMaster.mc.snhbas_maxImpulses0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_minImpulses1;
-
-            procMuMaster.mc.snhbas_minImpulses1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_maxImpulses1;
-
-            procMuMaster.mc.snhbas_maxImpulses1 = Interpolate(distances, cumulatedInt);
-
-            //Occurence
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhbas_minOccurence0;
-
-            procMuMaster.mc.snhbas_minOccurence0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhbas_maxOccurence0;
-
-            procMuMaster.mc.snhbas_maxOccurence0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhbas_minOccurence1;
-
-            procMuMaster.mc.snhbas_minOccurence1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedFloat.Length; i++)
-                cumulatedFloat[i] = _mcs[i].Mc.snhbas_maxOccurence1;
-
-            procMuMaster.mc.snhbas_maxOccurence1 = Interpolate(distances, cumulatedInt);
-
-            //Octave
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_minOct0;
-
-            procMuMaster.mc.snhbas_minOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_maxOct0;
-
-            procMuMaster.mc.snhbas_maxOct0 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_minOct1;
-
-            procMuMaster.mc.snhbas_minOct1 = Interpolate(distances, cumulatedInt);
-
-            for (int i = 0; i < cumulatedInt.Length; i++)
-                cumulatedInt[i] = _mcs[i].Mc.snhbas_maxOct1;
-
-            procMuMaster.mc.snhbas_maxOct1 = Interpolate(distances, cumulatedInt);
+            procMuMaster.mc.snhbas_config = Interpolate(distances, cumulatedJaggedDouble);
 
             //Misc
 

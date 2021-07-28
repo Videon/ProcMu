@@ -43,9 +43,9 @@ giChordsGsyn ftgen 832, 0, 32, -2, 0                ;GSYNTH Instrument config ta
 giChordsGrid ftgen 833, 0, giSteps, -2, -1          ;CHORDS steps grid
 
 ;SnhBas config tables - #840-849
-giSnhMelConfig ftgen 840, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
-giSnhMelGsyn ftgen 841, 0, 32, -2, 0                ;GSYNTH Instrument config table
-giSnhMelGrid  ftgen 842, 0, giSteps, -2, -1         ;SNHBAS steps grid
+giSnhBasConfig ftgen 840, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
+giSnhBasGsyn ftgen 841, 0, 32, -2, 0                ;GSYNTH Instrument config table
+giSnhBasGrid  ftgen 842, 0, giSteps, -2, -1         ;SNHBAS steps grid
 
 ;Waveforms
 gisine   ftgen 700, 0, 16384, 10, 1	                                                  ; Sine wave
@@ -159,6 +159,8 @@ instr EUC_STEP
           event "i", "EUC_FILL", 0, 1, tab:k(0,830), 0, 833, 0  //CHORDS
 
           event "i", "EUC_FILL", 0, 1, tab:k(0,820), 0, 822, 0  //SNHMEL
+
+          event "i", "EUC_FILL", 0, 1, tab:k(0,840), 0, 842, 0  //SNHBAS
 
         endif
 
@@ -296,7 +298,7 @@ instr SNHBAS
   ;printks "KNOTE: %d", 0.5, knote
 
   if gktrig == 1 then
-    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
+    if tab:k(3 * giBars + gkcurrentbar, 802) > 0 then
       if tab:k(gkstep, 842) > -1 then
         event "i", "GSYNTH", 0, 1, knote, 841
       endif

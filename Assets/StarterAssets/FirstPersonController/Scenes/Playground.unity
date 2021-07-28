@@ -302,7 +302,7 @@ Transform:
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1054432326}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &300749779
 Light:
@@ -400,7 +400,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: -5.9947004}
   m_Children: []
   m_Father: {fileID: 1617735272}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 270, y: 0, z: 0}
 --- !u!108 &319231857
 Light:
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d20258c641c94f0ea3dc32cfe3de904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logCsoundOutput: 0
+  logCsoundOutput: 1
   mute: 0
   processClipAudio: 0
   loudVolumeWarning: 1
@@ -528,10 +528,10 @@ MonoBehaviour:
     0 = pulses\r\ngiChordsNotes ftgen 831, 0, 16, -2, 0               ;Params: 0
     = note0, 1 = note1...16 = note16\r\ngiChordsGsyn ftgen 832, 0, 32, -2, 0               
     ;GSYNTH Instrument config table\r\ngiChordsGrid ftgen 833, 0, giSteps, -2, -1         
-    ;CHORDS steps grid\r\n\r\n;SnhBas config tables - #840-849\r\ngiSnhMelConfig
+    ;CHORDS steps grid\r\n\r\n;SnhBas config tables - #840-849\r\ngiSnhBasConfig
     ftgen 840, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 =
-    minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode\r\ngiSnhMelGsyn ftgen
-    841, 0, 32, -2, 0                ;GSYNTH Instrument config table\r\ngiSnhMelGrid 
+    minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode\r\ngiSnhBasGsyn ftgen
+    841, 0, 32, -2, 0                ;GSYNTH Instrument config table\r\ngiSnhBasGrid 
     ftgen 842, 0, giSteps, -2, -1         ;SNHBAS steps grid\r\n\r\n;Waveforms\r\ngisine  
     ftgen 700, 0, 16384, 10, 1\t                                                 
     ; Sine wave\r\ngisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14,
@@ -581,7 +581,8 @@ MonoBehaviour:
     \"EUC_FILL\", 0, 1, tab:k(klayer*2+1, 810), 0, 811, klayer\r\n            klayer
     += 1\r\n          od\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,830),
     0, 833, 0  //CHORDS\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,820),
-    0, 822, 0  //SNHMEL\r\n\r\n        endif\r\n\r\n        //PLAY ALL INSTRUMENTS
+    0, 822, 0  //SNHMEL\r\n\r\n          event \"i\", \"EUC_FILL\", 0, 1, tab:k(0,840),
+    0, 842, 0  //SNHBAS\r\n\r\n        endif\r\n\r\n        //PLAY ALL INSTRUMENTS
     ACCORDING TO GRID AND ACTIVE BAR INFORMATION\r\n        //EUCRTH\r\n\r\n         
     klayer = 0\r\n          while klayer < giEuclayers do ;iterate through all percussion
     layers\r\n            if tab:k(0 * giBars + gkcurrentbar, 802) > 0 then ;only
@@ -629,7 +630,7 @@ MonoBehaviour:
     + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max
     note indices\r\n\r\n  ;printks \"KRES: %d\", 0.5, kscaled\r\n\r\n  knote = limit(kscaled,kminnote,kmaxnote)\r\n 
     knote = tab:k(kscaled,801)\r\n\r\n  ;printks \"KNOTE: %d\", 0.5, knote\r\n\r\n 
-    if gktrig == 1 then\r\n    if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then\r\n     
+    if gktrig == 1 then\r\n    if tab:k(3 * giBars + gkcurrentbar, 802) > 0 then\r\n     
     if tab:k(gkstep, 842) > -1 then\r\n        event \"i\", \"GSYNTH\", 0, 1, knote,
     841\r\n      endif\r\n    endif\r\n  endif\r\n\r\nendin\r\n\r\n//SAMPLE AND HOLD
     MELODY END\r\n//-----------------------------------------------------------------------------------------------------------------------------\r\n\r\n\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n//CHORDS\r\n///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n\r\n\r\n//Fetches
@@ -818,7 +819,7 @@ Transform:
   m_LocalScale: {x: -1, y: 1, z: -1}
   m_Children: []
   m_Father: {fileID: 99595893}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 90}
 --- !u!108 &455624603
 Light:
@@ -1563,7 +1564,7 @@ GameObject:
   - component: {fileID: 1047722897}
   - component: {fileID: 1047722896}
   m_Layer: 6
-  m_Name: MusicZone_4
+  m_Name: MusicZone_4 (red)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1611,7 +1612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: 52f3e5c2febb24f47b4d19dff0c16b09, type: 2}
+  Config: {fileID: 11400000, guid: a741f60a78c104cbba50a71b6dcc3a40, type: 2}
 --- !u!4 &1047722899
 Transform:
   m_ObjectHideFlags: 0
@@ -1620,11 +1621,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1047722895}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.4, y: 0, z: -13.3}
+  m_LocalPosition: {x: 45.100002, y: 0, z: -45.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1617735272}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1054432326 stripped
 Transform:
@@ -1649,7 +1650,7 @@ GameObject:
   - component: {fileID: 1224878706}
   - component: {fileID: 1224878705}
   m_Layer: 6
-  m_Name: MusicZone_1
+  m_Name: MusicZone_1 (yellow)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1706,11 +1707,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224878704}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4, y: 0, z: -14}
+  m_LocalPosition: {x: -45.9, y: 0, z: -45.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 99595893}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1345296270
 GameObject:
@@ -1725,7 +1726,7 @@ GameObject:
   - component: {fileID: 1345296272}
   - component: {fileID: 1345296271}
   m_Layer: 6
-  m_Name: MusicZone_2
+  m_Name: MusicZone_2 (blue)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1782,11 +1783,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1345296270}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.2, y: 0, z: 12.8}
+  m_LocalPosition: {x: -45.4, y: 0, z: 44.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1054432326}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1424407680
 GameObject:
@@ -2080,7 +2081,7 @@ GameObject:
   - component: {fileID: 1670474230}
   - component: {fileID: 1670474229}
   m_Layer: 6
-  m_Name: MusicZone_3
+  m_Name: MusicZone_3 (green)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2128,7 +2129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radiusOuter: 40
-  Config: {fileID: 11400000, guid: bb3ec30c2fc88495f9dd6cfd2ca8f58f, type: 2}
+  Config: {fileID: 11400000, guid: 2ff1c1ec2ead946edbbb066614bb0892, type: 2}
 --- !u!4 &1670474232
 Transform:
   m_ObjectHideFlags: 0
@@ -2137,11 +2138,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1670474228}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.3, y: 0, z: 12.6}
+  m_LocalPosition: {x: 45.2, y: 0, z: 44.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 318032073}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1764214107
 GameObject:
@@ -2550,7 +2551,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 318032073}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &1984863618
 Light:
