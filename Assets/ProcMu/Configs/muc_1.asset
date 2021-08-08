@@ -83,5 +83,5 @@ MonoBehaviour:
   - 0
   - 0
   snhbas_melodycurve: 0
-  snhbas_melodymode: 0
+  snhbas_melodymode: 1
   snhbas_synthconfig: {fileID: 11400000, guid: 12ba0d5f10c404373af3546848a40d56, type: 2}

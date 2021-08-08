@@ -104,10 +104,6 @@ instr SMPLR_UNITY ; play audio from function table using flooper2 opcode
 
     outs atab*0.1+arevL*0.1, atab*0.1+arevR*0.1
 
-
-    ;chnmix atab, "eucrth_l"  TODO use chnmix to sum sound of all sampler instances
-    ;chnmix atab, "eucrth_r"
-
 endin
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,23 +226,44 @@ instr SNHMEL
     ;printks "MAXNOTE: %d", 0, kmaxnote
   endif
 
+  krd randomi 0.01, 8, 0.1
 
-  klfo lfo 1, 1.2, 5
+  klfo lfo 1, krd, 1
   kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max note indices
 
   ;printks "KRES: %d", 0.5, kscaled
 
-  knote = limit(kscaled,kminnote,kmaxnote)
-  knote = tab:k(kscaled,801)
+  gksnhmel_note = limit(kscaled,kminnote,kmaxnote)
+  gksnhmel_note = tab:k(kscaled,801)
 
+
+  kmode = tab:k(5,820)
   ;printks "KNOTE: %d", 0.5, knote
-
+  ;TODO check if set to discrete mode and play gsynth only in that case.
   if gktrig == 1 then
+    //if continuous
+    if kmode == 0 kgoto continuous
+      kgoto discrete  ;else
+
+    continuous:
+    if changed(kmode) == 1 then
+      event "i", "GSYNTH_CONTIN", 0, -1, 0, 821
+    endif
+
+    kgoto continue
+
+    discrete:
+    if changed(kmode) == 1 then
+      event "i", "GSYNTH_CONTIN", 0, 1, 0, 821
+    endif
+
     if tab:k(2 * giBars + gkcurrentbar, 802) > 0 then
       if tab:k(gkstep, 822) > -1 then
-        event "i", "GSYNTH", 0, 1, knote, 821
+        event "i", "GSYNTH", 0, 1, gksnhmel_note, 821
       endif
     endif
+
+    continue:
   endif
 
 endin
@@ -342,7 +359,8 @@ endin
 
 gisyntrig init 0
 
-//i GSYNTH [p3 = length] [p4 = note] [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
+//i GSYNTH [p3 = length] [p4 = note] [p5 = param table#] [p6 = panning, 0=L, 1=R]
+// TABLE VALUES: [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
 //  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
 //  [p19 = stereo width] [p20,21,22 = reverb amount, room size, damp]
 instr GSYNTH
@@ -427,6 +445,92 @@ endin
 //GAME SYNTH END
 //-----------------------------------------------------------------------------------------------------------------------------
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//GAME SYNTH SNHMEL EDITION
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Wavetable numbers: sine = 710, square = 711, saw = 712, pulse = 713
+
+//i GSYNTH [p3 = length] [p4 = note] [p5 = param table#] [p6 = panning, 0=L, 1=R]
+// TABLE VALUES: [p5 = velocity] [p6 = osc waveform 0:sin 1:sqr 2:saw] [p7 = noise amp]
+//  [p8 = filter frequency] [p9 = filter resonance] [p10 = filter env amount][p11,12,13,14 = filter A,D,S,R] [p15,16,17,18 = amp A,D,S,R]
+//  [p19 = stereo width] [p20,21,22 = reverb amount, room size, damp]
+instr GSYNTH_CONTIN
+
+;pX = lfo waveform
+
+//Input/midi variables
+kfreq = pow(2,(gksnhmel_note-69)/12)*440 ;note as midi# value, is converted to frequency (Hz)
+
+ifn = p5
+
+kvel = tab_i(5,ifn) ;note velocity value
+
+iwf = 700+tab_i(6,ifn)  ;waveform
+
+knoise = tab_i(7,ifn) ;noise amount
+
+//Filter parameters
+kffreq = tab_i(8,ifn) ;lowpass filter frequency
+kfres = tab_i(9,ifn)  ;lowpass filter resonance
+kfenv_amt = tab_i(10,ifn) ;lowpass filter env amount
+
+ifenv_att = tab_i(11,ifn) ;filter attack
+ifenv_dec = tab_i(12,ifn) ;filter decay
+ifenv_sus = tab_i(13,ifn) ;filter sustain
+ifenv_rel = tab_i(14,ifn) ;filter release
+
+//Amp parameters
+iaenv_att = tab_i(15,ifn) ;amp attack
+iaenv_dec = tab_i(16,ifn) ;amp decay
+iaenv_sus = tab_i(17,ifn) ;amp sustain
+iaenv_rel = tab_i(18,ifn) ;amp release
+
+//Additional parameters
+iwidth = tab_i(19,ifn)  ;stereo width
+
+//FX
+krev_amt = tab_i(20,ifn)
+krev_roomsize = tab_i(21,ifn)
+krev_damp = tab_i(22,ifn)
+
+//TODO Panning may be modulated by k value
+kpan = 0.5
+
+//LFOs
+klfo1 lfo 1, iwf
+krd randomi 0.01, 0.1, 0.1  ;min,max,cps
+
+//OSCs
+aosc1 poscil krd, kfreq, 702
+
+anoise rand limit(knoise,0,1)
+
+abus = aosc1 + anoise
+
+//Filters
+kfenv madsr ifenv_att, ifenv_dec, ifenv_sus, ifenv_rel  ;filter envelope
+
+
+alp zdf_2pole abus, kffreq+kfenv*kfenv_amt, kfres ;filter signal
+
+
+//Amp
+aaenv madsr iaenv_att, iaenv_dec, iaenv_sus, iaenv_rel  ;amplitude envelope
+
+;abus = alp*aaenv
+
+abusL, abusR pan2 abus, kpan  ;pan signal
+
+arevL, arevR freeverb abusL, abusR, krev_roomsize, krev_damp
+
+outs aosc1, aosc1
+;outs abusL+arevL*krev_amt, abusR+arevR*krev_amt
+
+endin
+
+//GAME SYNTH CONTINUOUS END
+//-----------------------------------------------------------------------------------------------------------------------------
 </CsInstruments>
 <CsScore>
 f 0 z
