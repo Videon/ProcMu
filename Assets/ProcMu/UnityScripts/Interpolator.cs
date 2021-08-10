@@ -14,7 +14,7 @@ namespace ProcMu.UnityScripts
         [SerializeField] private LayerMask layerMask;
 
         [SerializeField, Tooltip("Player object transform for position tracking.")]
-        private Transform playerTransform;
+        public Transform playerTransform;
 
         [SerializeField, Tooltip("The maximum distance of a music zone center away from the player to be considered.")]
         private float maxDistance;

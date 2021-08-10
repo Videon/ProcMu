@@ -10,6 +10,7 @@ public class ExperimentStarter : MonoBehaviour
     void Start()
     {
         mode = (ExperimentMode) Random.Range(0, 3);
+        ExperimentManager.Instance.experimentMode = mode;
         experiments[(int) mode].StartExperiment();
     }
 }

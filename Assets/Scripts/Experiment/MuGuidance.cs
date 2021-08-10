@@ -16,27 +16,43 @@ public class MuGuidance : MonoBehaviour
 
     private float elapsedTime = 0f;
 
+    private bool isGuiding = false;
+
     // Start is called before the first frame update
-    void Start()
+    public void StartGuidance()
     {
         if (playerTransform == null) return;
         if (guidanceTransform == null) return;
         StartCoroutine(UpdateGuidance());
     }
 
+    public void StopGuidance()
+    {
+        isGuiding = false;
+        guidanceIntensity = 0f;
+        guidanceTransform.position = new Vector3(0, 0, 0);
+    }
+
     // Update is called once per frame
     private IEnumerator UpdateGuidance()
     {
-        while (true)
+        isGuiding = true;
+        while (isGuiding)
         {
+            elapsedTime += Time.deltaTime;
+
             guidanceIntensity = Mathf.Clamp(elapsedTime, 0f, guidanceTime) / guidanceTime;
             guidanceTransform.position = Vector3.Lerp(playerTransform.position, targetPosition, guidanceIntensity);
             yield return new WaitForFixedUpdate();
         }
+
+        elapsedTime = 0f;
     }
 
+    /// <summary> Updates target position and resets guidance intensity timer. </summary>
     public void UpdateTargetPosition(Vector3 targetPos)
     {
+        elapsedTime = 0f;
         targetPosition = targetPos;
     }
 

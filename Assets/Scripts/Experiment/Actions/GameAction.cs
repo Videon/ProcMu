@@ -24,6 +24,7 @@ public class GameAction : ExperimentAction
     private float timeLimit = 300f;
 
     [SerializeField] private MuGuidance guidance; //TODO send round target and elapsedtime to guidance.
+    [SerializeField] private bool useGuidance = false;
 
 
     #region Private variables
@@ -57,7 +58,11 @@ public class GameAction : ExperimentAction
         for (currentRound = 0; currentRound < spawnIndices.Count; currentRound++)
         {
             StartRound(currentRound);
-            uiTextAnswer.text = "Round " + (currentRound + 1);
+
+            //Get current round number by checking saved rounds.
+            int currentSet = DataHandler.Instance.GetExperimentData().roundDatas.Count + 1;
+            uiTextAnswer.text = "Set " + currentSet + " - Round " + (currentRound + 1);
+
             if (showTarget)
                 uiTextQuestion.text = "Go to the " + (ZoneNames) spawnIndices[currentRound] + " area!";
             yield return StartCoroutine(WaitForFinishRound());
@@ -101,14 +106,22 @@ public class GameAction : ExperimentAction
         gameData[currentRound] = elapsedTime; //Save total round time to game data
 
         waitingForInput = false;
+
+        if (useGuidance) guidance.StopGuidance();
     }
 
     private void StartRound(int spawnIndex)
     {
         conductor.MovePlayer(playerSpawnPoint.position);
         goalObject.position = objectSpawnPoints[spawnIndices[spawnIndex]].position;
-        guidance.UpdateTargetPosition(objectSpawnPoints[spawnIndices[spawnIndex]].position);
+
         elapsedTime = 0; //Reset time counter
+
+        if (useGuidance)
+        {
+            guidance.UpdateTargetPosition(objectSpawnPoints[spawnIndices[spawnIndex]].position);
+            guidance.StartGuidance();
+        }
     }
 
     private IEnumerator WaitForFinishRound()

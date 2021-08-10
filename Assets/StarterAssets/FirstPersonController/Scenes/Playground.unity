@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &8378418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8378419}
+  m_Layer: 0
+  m_Name: Zero
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8378419
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8378418}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &23896612
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +259,7 @@ GameObject:
   - component: {fileID: 28349912}
   - component: {fileID: 28349913}
   m_Layer: 0
-  m_Name: 5_Round1Intro
+  m_Name: 5a_Set1Intro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -263,9 +293,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiText: {fileID: 810829965}
   texts:
-  - Find the object which has been placed in one of the 4 areas. You can recognize
-    it by its star shape. (PRESS ENTER)
-  - You will be told in which area the object has been placed. (PRESS ENTER)
+  - Find the STAR which has been placed randomly in one of the 4 areas. (Press ENTER)
+  - 'You will be told in which area the object has been placed.
+
+    Follow the instruction.
+    (Press ENTER)'
 --- !u!1 &47116996
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,7 +780,7 @@ GameObject:
   - component: {fileID: 181088999}
   - component: {fileID: 181089000}
   m_Layer: 0
-  m_Name: 10_ExperimentEnd
+  m_Name: 9_ExperimentEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -766,7 +798,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1460570235}
-  m_RootOrder: 12
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &181089000
 MonoBehaviour:
@@ -1664,6 +1696,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307624556}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &320168993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 320168994}
+  - component: {fileID: 320168995}
+  m_Layer: 0
+  m_Name: _SetInterpolatorTargetGuidance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &320168994
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320168993}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 19
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &320168995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320168993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae4e87b794864398a72973082a3ce91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolator: {fileID: 1424407683}
+  transformObject: {fileID: 1615347420}
 --- !u!1 &322800965
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1836,65 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322800965}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &336704443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 336704444}
+  - component: {fileID: 336704445}
+  m_Layer: 0
+  m_Name: 7b_SetRound3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &336704444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336704443}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &336704445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336704443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9399218d471bc41ca9727e05e1365980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameName: GuidedKnown_Set3
+  showTarget: 0
+  playerTransform: {fileID: 1129309905}
+  playerSpawnPoint: {fileID: 274418669}
+  cycles: 1
+  objectSpawnPoints:
+  - {fileID: 1781531539}
+  - {fileID: 985658680}
+  - {fileID: 506829126}
+  - {fileID: 1611834241}
+  goalObject: {fileID: 1567152756}
+  timeLimit: 180
+  guidance: {fileID: 1424407684}
+  useGuidance: 1
+  uiTextQuestion: {fileID: 810829965}
+  uiTextAnswer: {fileID: 256075065}
 --- !u!1 &348441685
 GameObject:
   m_ObjectHideFlags: 0
@@ -4600,6 +4736,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782443182}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &801052750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 801052751}
+  - component: {fileID: 801052752}
+  m_Layer: 0
+  m_Name: _SetInterpolatorTargetZero
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &801052751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801052750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &801052752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801052750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae4e87b794864398a72973082a3ce91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolator: {fileID: 1424407683}
+  transformObject: {fileID: 8378419}
 --- !u!1 &806411991
 GameObject:
   m_ObjectHideFlags: 0
@@ -5500,7 +5681,7 @@ GameObject:
   - component: {fileID: 976098190}
   - component: {fileID: 976098191}
   m_Layer: 0
-  m_Name: 7_Round2Intro
+  m_Name: 6a_Set2Intro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5534,9 +5715,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiText: {fileID: 810829965}
   texts:
-  - Find the star, just like before. Only this time, you will not be told where it
-    is. You may have to check each area until you find it. (PRESS ENTER)
-  - The round will end automatically if you can not find the object within 5 minutes.
+  - End of set 1. (PRESS ENTER)
+  - 'Set 2 instructions: (PRESS ENTER)'
+  - Find the star, just like before. This time, you will not be told where it is.
+    You may have to check each area until you find it. (PRESS ENTER)
+  - Pay attention to the music! Over time, it will more and more resemble the style
+    of the area where you can find the STAR. (PRESS ENTER)
+  - The round will end automatically if you can not find the object within 3 minutes.
     (PRESS ENTER)
 --- !u!1 &985658679
 GameObject:
@@ -6463,6 +6648,59 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203739818}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1223317777
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1223317778}
+  - component: {fileID: 1223317779}
+  m_Layer: 0
+  m_Name: 8a_SurveyIntro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1223317778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223317777}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1223317779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223317777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cf0d2cb184ae41b78fd25b69f90d96e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiText: {fileID: 810829965}
+  texts:
+  - End of set 3. (Press ENTER to continue)
+  - 'Next up is a short questionnaire.
+
+    (Press ENTER to continue)'
+  - Every answer has a number next to it. By pressing the corresponding number on
+    your keyboard, you will select that answer. (Press ENTER to continue)
+  - Confirm your answer by pressing the number again, or select another answer by
+    pressing a different number. (Press ENTER to continue)
 --- !u!1 &1224878704
 GameObject:
   m_ObjectHideFlags: 0
@@ -6741,7 +6979,7 @@ GameObject:
   - component: {fileID: 1245573498}
   - component: {fileID: 1245573499}
   m_Layer: 0
-  m_Name: 9a_SurveyUpload
+  m_Name: 8c_SurveyUpload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6759,7 +6997,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1460570235}
-  m_RootOrder: 11
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1245573499
 MonoBehaviour:
@@ -7545,7 +7783,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1460570235}
-  m_RootOrder: 13
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1373549357
 MonoBehaviour:
@@ -7570,7 +7808,7 @@ GameObject:
   - component: {fileID: 1406415013}
   - component: {fileID: 1406415014}
   m_Layer: 0
-  m_Name: 9_Survey
+  m_Name: 8b_Survey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7588,7 +7826,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1460570235}
-  m_RootOrder: 10
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1406415014
 MonoBehaviour:
@@ -7602,7 +7840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee8eed4f09454107a2e4430064ae2f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surveyName: GuidedKnown
+  surveyName: GuidedKnown_Survey1
   surveyQuestions:
   - {fileID: 11400000, guid: 2a51f3fbc3b4749ab82614dc932950dd, type: 2}
   - {fileID: 11400000, guid: 6f8804ff1dcd44e5d992e35fad9d4f0a, type: 2}
@@ -7707,7 +7945,52 @@ MonoBehaviour:
   guidanceTransform: {fileID: 1615347420}
   targetPosition: {x: 0, y: 0, z: 0}
   guidanceIntensity: 0
-  guidanceTime: 120
+  guidanceTime: 60
+--- !u!1 &1425709783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1425709784}
+  - component: {fileID: 1425709785}
+  m_Layer: 0
+  m_Name: _SetInterpolatorTargetPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1425709784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425709783}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1425709785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425709783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae4e87b794864398a72973082a3ce91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolator: {fileID: 1424407683}
+  transformObject: {fileID: 1129309905}
 --- !u!1 &1434483853
 GameObject:
   m_ObjectHideFlags: 0
@@ -7815,21 +8098,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1129309905}
-  timeBetweenActions: 1
+  timeBetweenActions: 0.5
   experimentActions:
+  - {fileID: 1425709785}
   - {fileID: 1632946503}
   - {fileID: 1434483855}
   - {fileID: 153273437}
   - {fileID: 2134787687}
+  - {fileID: 519228477}
   - {fileID: 1942881137}
+  - {fileID: 1632946503}
   - {fileID: 28349913}
   - {fileID: 519228477}
+  - {fileID: 320168995}
   - {fileID: 1774065502}
   - {fileID: 1632946503}
+  - {fileID: 1425709785}
   - {fileID: 976098191}
   - {fileID: 519228477}
-  - {fileID: 0}
+  - {fileID: 320168995}
+  - {fileID: 1734621826}
   - {fileID: 1632946503}
+  - {fileID: 1425709785}
+  - {fileID: 1787561854}
+  - {fileID: 519228477}
+  - {fileID: 320168995}
+  - {fileID: 336704445}
+  - {fileID: 1632946503}
+  - {fileID: 1425709785}
+  - {fileID: 1223317779}
   - {fileID: 1406415014}
   - {fileID: 1245573499}
   - {fileID: 181089000}
@@ -7855,10 +8152,16 @@ Transform:
   - {fileID: 1774065501}
   - {fileID: 976098190}
   - {fileID: 1734621825}
+  - {fileID: 1787561853}
+  - {fileID: 336704444}
+  - {fileID: 1223317778}
   - {fileID: 1406415013}
   - {fileID: 1245573498}
   - {fileID: 181088999}
   - {fileID: 1373549356}
+  - {fileID: 801052751}
+  - {fileID: 1425709784}
+  - {fileID: 320168994}
   m_Father: {fileID: 658470679}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7875,7 +8178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -9800,7 +10103,7 @@ GameObject:
   - component: {fileID: 1734621825}
   - component: {fileID: 1734621826}
   m_Layer: 0
-  m_Name: 8_GameRound2
+  m_Name: 6b_SetRound2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9832,17 +10135,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9399218d471bc41ca9727e05e1365980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameName: 
+  gameName: GuidedKnown_Set2
   showTarget: 0
-  playerTransform: {fileID: 0}
-  playerSpawnPoint: {fileID: 0}
-  cycles: 0
-  objectSpawnPoints: []
-  goalObject: {fileID: 0}
-  timeLimit: 300
-  guidance: {fileID: 0}
-  uiTextQuestion: {fileID: 0}
-  uiTextAnswer: {fileID: 0}
+  playerTransform: {fileID: 1129309905}
+  playerSpawnPoint: {fileID: 274418669}
+  cycles: 1
+  objectSpawnPoints:
+  - {fileID: 1781531539}
+  - {fileID: 985658680}
+  - {fileID: 506829126}
+  - {fileID: 1611834241}
+  goalObject: {fileID: 1567152756}
+  timeLimit: 180
+  guidance: {fileID: 1424407684}
+  useGuidance: 1
+  uiTextQuestion: {fileID: 810829965}
+  uiTextAnswer: {fileID: 256075065}
 --- !u!1 &1740996542
 GameObject:
   m_ObjectHideFlags: 0
@@ -10013,7 +10321,7 @@ GameObject:
   - component: {fileID: 1774065501}
   - component: {fileID: 1774065502}
   m_Layer: 0
-  m_Name: 6_GameRound1
+  m_Name: 5b_SetRound1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10045,7 +10353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9399218d471bc41ca9727e05e1365980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameName: Intro Game
+  gameName: GuidedKnown_Set1
   showTarget: 1
   playerTransform: {fileID: 1129309905}
   playerSpawnPoint: {fileID: 274418669}
@@ -10058,6 +10366,7 @@ MonoBehaviour:
   goalObject: {fileID: 1567152756}
   timeLimit: 180
   guidance: {fileID: 1424407684}
+  useGuidance: 1
   uiTextQuestion: {fileID: 810829965}
   uiTextAnswer: {fileID: 256075065}
 --- !u!1 &1778880926
@@ -10185,6 +10494,56 @@ Transform:
   m_Father: {fileID: 2071876857}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1787561852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1787561853}
+  - component: {fileID: 1787561854}
+  m_Layer: 0
+  m_Name: 7a_Set3Intro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1787561853
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787561852}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1460570235}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1787561854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787561852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cf0d2cb184ae41b78fd25b69f90d96e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiText: {fileID: 810829965}
+  texts:
+  - End of set 2. (PRESS ENTER)
+  - Set 3 - last set. (PRESS ENTER)
+  - This set is like the previous set. Find the star. (PRESS ENTER)
+  - The round will end automatically if you can not find the object within 3 minutes.
+    (PRESS ENTER)
 --- !u!1 &1798726838
 GameObject:
   m_ObjectHideFlags: 0
@@ -10996,7 +11355,7 @@ MonoBehaviour:
   - {fileID: 589526668}
   - {fileID: 1172069949}
   - {fileID: 1153046798}
-  areaDuration: 3
+  areaDuration: 60
 --- !u!1 &1979839822
 GameObject:
   m_ObjectHideFlags: 0
@@ -11470,18 +11829,17 @@ MonoBehaviour:
   - 'In this experiment, you have to find an object that is shaped
 
     like a star.
-
-
-    (Press
-    ENTER to continue)'
-  - 'It will be placed randomly in one of four zones. Each zone is marked by a different
-    color.
-
+    (Press ENTER to continue)'
+  - It will be placed randomly in one of four areas. Each area is marked by a different
+    color. (Press ENTER to continue)
+  - Each area has its own music style. Pay close attention to the music. (Press ENTER
+    to continue)
+  - 'You will now be placed in each zone for one minute to familiarize yourself with
+    the area and its music.
 
     (Press ENTER to continue)'
-  - 'You will now be placed in each zone for one minute to familiarize yourself with
-    the area.
-
+  - 'Try to memorize the characteristics of the music. It will help you find your
+    goal later in this experiment.
 
     (Press ENTER to continue)'
 --- !u!1 &2136723749

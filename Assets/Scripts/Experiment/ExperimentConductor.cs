@@ -57,16 +57,6 @@ public class ExperimentConductor : MonoBehaviour
         playerTransform.GetComponent<CharacterController>().enabled = true;
     }
 
-    public void SetWaitForInput(bool awaitInput)
-    {
-        this.awaitInput = awaitInput;
-    }
-
-    public void SubmitInput(int inputValue)
-    {
-        //if (!awaitInput) return;
-        activeAction.SubmitInput(inputValue);
-    }
 
     public void Quit()
     {
@@ -75,6 +65,56 @@ public class ExperimentConductor : MonoBehaviour
 #endif
         Application.Quit();
     }
+
+    #region Input handling
+
+    public void SetWaitForInput(bool awaitInput)
+    {
+        this.awaitInput = awaitInput;
+    }
+
+    private void SubmitInput(int inputValue)
+    {
+        //if (!awaitInput) return;
+        activeAction.SubmitInput(inputValue);
+    }
+
+    public void OnConfirm()
+    {
+        SubmitInput(100);
+    }
+
+    public void OnAbort()
+    {
+        SubmitInput(200);
+    }
+
+    public void OnVote1()
+    {
+        SubmitInput(0);
+    }
+
+    public void OnVote2()
+    {
+        SubmitInput(1);
+    }
+
+    public void OnVote3()
+    {
+        SubmitInput(2);
+    }
+
+    public void OnVote4()
+    {
+        SubmitInput(3);
+    }
+
+    public void OnVote5()
+    {
+        SubmitInput(4);
+    }
+
+    #endregion
 }
 
 public enum ExperimentMode

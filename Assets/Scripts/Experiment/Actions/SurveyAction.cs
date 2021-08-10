@@ -96,9 +96,10 @@ public class SurveyAction : ExperimentAction
         for (int i = 0; i < surveyQuestions[questionIndex].answers.Length; i++)
         {
             if (i == lastInput)
-                answers += "<color=yellow>" + surveyQuestions[questionIndex].answers[i] + "</color>\n";
+                answers += "<color=yellow>(" + (i + 1) + ") " + surveyQuestions[questionIndex].answers[i] +
+                           "</color>\n";
             else
-                answers += surveyQuestions[questionIndex].answers[i] + "\n";
+                answers += "(" + (i + 1) + ") " + surveyQuestions[questionIndex].answers[i] + "\n";
         }
 
         uiTextAnswer.text = answers;
@@ -117,7 +118,11 @@ public class SurveyAction : ExperimentAction
     {
         if (input >= surveyQuestions[questionIndex].answers.Length) return;
 
-        if (input != lastInput) lastInput = input; //Set last input first for "press same key twice" function
+        if (input != lastInput)
+        {
+            lastInput = input; //Set last input first for "press same key twice" function
+            DrawAnswers();
+        }
 
         else
         {

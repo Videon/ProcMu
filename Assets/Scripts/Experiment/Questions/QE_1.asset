@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   question: The music felt responsive to my movements in the environment.
   answers:
-  - (1) Strongly disagree
-  - (2) Disagree
-  - (3) Neither agree nor disagree
-  - (4) Agree
-  - (5) Strongly agree
+  - Strongly disagree
+  - Disagree
+  - Neither agree nor disagree
+  - Agree
+  - Strongly agree

@@ -43,7 +43,7 @@
                     "id": "f2924bbd-3d90-4439-8b87-1ec9cc73287e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Abort",
@@ -51,7 +51,7 @@
                     "id": "ee30f103-bef0-42da-bbe2-b50941bb6c1d",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Vote1",
@@ -59,7 +59,7 @@
                     "id": "aee0e71e-072e-4f63-9e6f-2071f6c0c6a3",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Vote2",
@@ -67,7 +67,7 @@
                     "id": "8541a08b-75cc-435d-9dd6-ad923d86c29f",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Vote3",
@@ -75,7 +75,7 @@
                     "id": "0101b0ba-48d3-46d5-82d2-9b479f528481",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Vote4",
@@ -83,7 +83,7 @@
                     "id": "69a1dbb1-9a9b-449b-8873-04418ba3a3f4",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Vote5",
@@ -91,7 +91,7 @@
                     "id": "8de3e8c5-11af-47bc-81a3-20d1fa1917ca",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
