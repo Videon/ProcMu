@@ -5,8 +5,8 @@ namespace ProcMu.UnityScripts
 {
     public class MusicZone : MonoBehaviour
     {
-        [field: SerializeField] public float RadiusInner { get; } = 10f;
-        [SerializeField] private float radiusOuter = 40f;
+        [SerializeField] public float RadiusInner = 10f;
+        [SerializeField] public float radiusOuter = 40f;
 
         public MuConfig Config;
 

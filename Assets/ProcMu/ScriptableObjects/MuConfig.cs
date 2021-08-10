@@ -1,6 +1,5 @@
 using ProcMu.UnityScripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ProcMu.ScriptableObjects
 {

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b32142009a3ca4abba4334b667281d32, type: 3}
+  m_Name: PROMPT_DATACOLLECTION
+  m_EditorClassIdentifier: 
+  question: "In this experiment, your gameplay data and survey will be collected
+    and analyzed. Data collection is anonymous.\nPlease agree to continue with the
+    experiment.\t"
+  answers:
+  - AGREE (PRESS ENTER)
+  - DISAGREE (PRESS Q)
