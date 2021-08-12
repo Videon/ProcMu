@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
-  m_Name: gsc_chordtest 2
+  m_Name: gsc_chords_green
   m_EditorClassIdentifier: 
   config:
   - 0
@@ -18,20 +18,20 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - 0.4000000059604645
-  - 1
-  - 0.05999999865889549
+  - 0.10000000149011612
+  - 3
+  - 0.004999999888241291
   - 0
-  - 0.8399999737739563
+  - 1.7999999523162842
   - 3875
   - 1
-  - 4
+  - 1
   - 0
-  - 4
+  - 1
   - 0.10000000149011612
-  - 4
+  - 1
   - 0
-  - 4
+  - 1
   - 0.6019999980926514
   - 0.6650000214576721
   - 0.43700000643730164

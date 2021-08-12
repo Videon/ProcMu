@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
-  m_Name: gsc_basstest
+  m_Name: gsc_bass_yellow
   m_EditorClassIdentifier: 
   config:
   - 0
@@ -18,9 +18,9 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - 1
-  - 1
-  - 0.5
+  - 0.4000000059604645
+  - 3
+  - 0
   - 20000
   - 0.5
   - 0

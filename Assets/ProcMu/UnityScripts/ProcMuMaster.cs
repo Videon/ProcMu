@@ -59,13 +59,17 @@ namespace ProcMu.UnityScripts
             if (!csoundUnity) Debug.LogError("Can't find CsoundUnity component!");
         }
 
-
         // Start is called before the first frame update
         IEnumerator Start()
         {
             _isInitialized = false;
             yield return StartCoroutine(Initialize());
             _isInitialized = true;
+        }
+
+        public void SetIntensity(float intensity)
+        {
+            this.intensity = intensity;
         }
 
         IEnumerator Initialize()

@@ -3,11 +3,16 @@ using UnityEngine.Events;
 
 public class ColliderEvent : MonoBehaviour
 {
-    [SerializeField] private UnityEvent targetEvent;
+    [SerializeField] private GameObject gameActionObject;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-            targetEvent.Invoke();
+            gameActionObject.SendMessage("FinishRound");
+    }
+
+    public void SetMessageTarget(GameObject go)
+    {
+        gameActionObject = go;
     }
 }

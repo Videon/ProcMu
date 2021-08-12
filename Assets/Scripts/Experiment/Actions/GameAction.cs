@@ -53,6 +53,8 @@ public class GameAction : ExperimentAction
     {
         gameData = new float[objectSpawnPoints.Length * cycles];
 
+        goalObject.GetComponent<ColliderEvent>().SetMessageTarget(gameObject);
+
         GenerateSpawnOrder();
 
         for (currentRound = 0; currentRound < spawnIndices.Count; currentRound++)

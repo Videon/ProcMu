@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8fc679d2aa44edf9d867fad469e7cd1, type: 3}
-  m_Name: gsc_chordtest
+  m_Name: gsc_chords_yellow
   m_EditorClassIdentifier: 
   config:
   - 0
@@ -18,11 +18,11 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - 0.4000000059604645
-  - 3
-  - 0.05999999865889549
+  - 0.15000000596046448
+  - 2
+  - 0.019999999552965164
   - 0
-  - 0.8399999737739563
+  - 1.7000000476837158
   - 3875
   - 1
   - 4
