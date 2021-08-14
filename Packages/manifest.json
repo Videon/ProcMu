@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "com.csound.csoundunity": "https://github.com/rorywalsh/CsoundUnity.git#develop",
-    "com.unity.cinemachine": "2.6.5",
+    "com.github.superunitybuild.buildactions": "https://github.com/superunitybuild/buildactions.git",
+    "com.github.superunitybuild.buildtool": "https://github.com/superunitybuild/buildtool.git",
+    "com.unity.cinemachine": "2.6.9",
     "com.unity.ide.rider": "3.0.7",
     "com.unity.ide.vscode": "1.2.3",
     "com.unity.inputsystem": "1.0.2",

@@ -32,8 +32,9 @@ public class AzureTester : MonoBehaviour
 
     IEnumerator TestUpload()
     {
-        string filename = "test_" + Guid.NewGuid().ToString("N");
-        yield return StartCoroutine(azure.UploadJson(DataHandler.Instance.GetExperimentData(), filename + ".json"));
+        string filename = DataUploaderAction.GetUserId() + "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") +
+                          "_test.json";
+        yield return StartCoroutine(azure.UploadJson(DataHandler.Instance.GetExperimentData(), filename));
     }
 
     public void ClearData()

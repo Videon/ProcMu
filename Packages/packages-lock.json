@@ -7,8 +7,24 @@
       "dependencies": {},
       "hash": "aea101cb0e9ee05889da2224f520c96660714a2a"
     },
+    "com.github.superunitybuild.buildactions": {
+      "version": "https://github.com/superunitybuild/buildactions.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.github.superunitybuild.buildtool": "2.0.0"
+      },
+      "hash": "5e587b6aa5a759cc6bf068931fe7a5562c269d26"
+    },
+    "com.github.superunitybuild.buildtool": {
+      "version": "https://github.com/superunitybuild/buildtool.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5c1e4a9f8e3820f4a37033ae833e50ba70784085"
+    },
     "com.unity.cinemachine": {
-      "version": "2.6.5",
+      "version": "2.6.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

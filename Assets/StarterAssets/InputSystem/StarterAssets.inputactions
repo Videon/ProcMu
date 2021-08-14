@@ -92,6 +92,30 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "Vote6",
+                    "type": "Button",
+                    "id": "f40726a8-dcf0-47b1-861f-f3867cb391d4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Vote7",
+                    "type": "Button",
+                    "id": "caaf4db0-ecfc-4136-a27d-feffb02ee250",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Vote8",
+                    "type": "Button",
+                    "id": "ee2f67dd-7ba6-4c11-b9a6-e5b34ce98a19",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -345,6 +369,39 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Vote5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3773d3a3-e68e-4841-bd10-f11191dfdd31",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Vote6",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97a23659-d22b-4fd6-a5aa-e0507b6853f6",
+                    "path": "<Keyboard>/7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Vote7",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7de59f8a-e56f-4c96-897b-340543d8c3ea",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Vote8",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

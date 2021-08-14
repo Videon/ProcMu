@@ -114,6 +114,21 @@ public class ExperimentConductor : MonoBehaviour
         SubmitInput(4);
     }
 
+    public void OnVote6()
+    {
+        SubmitInput(5);
+    }
+
+    public void OnVote7()
+    {
+        SubmitInput(6);
+    }
+
+    public void OnVote8()
+    {
+        SubmitInput(7);
+    }
+
     #endregion
 }
 

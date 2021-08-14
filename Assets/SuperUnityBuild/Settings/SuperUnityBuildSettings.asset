@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7375543755884235600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2786f6b2301a94f4288672ff5305244c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabled: 1
+  distributionList:
+    distributions: []
+  architectures:
+  - target: 5
+    name: Windows x86
+    enabled: 0
+    binaryNameFormat: '{0}.exe'
+  - target: 19
+    name: Windows x64
+    enabled: 1
+    binaryNameFormat: '{0}.exe'
+  variants: []
+  platformName: PC
+  dataDirNameFormat: '{0}_Data'
+  targetGroup: 1
+--- !u!114 &-4415375026351892922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d962d142a259c394da2bdb301b72eeb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabled: 1
+  distributionList:
+    distributions: []
+  architectures:
+  - target: 2
+    name: macOS
+    enabled: 1
+    binaryNameFormat: '{0}.app'
+  variants:
+  - variantName: macOS Architecture
+    selectedIndex: 0
+    values:
+    - Intelx64
+    - Apple Silicon
+    - Universal
+  platformName: macOS
+  dataDirNameFormat: '{0}.app/Contents'
+  targetGroup: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5886119a5c7b34d8872ab527ca3e1b, type: 3}
+  m_Name: SuperUnityBuildSettings
+  m_EditorClassIdentifier: 
+  _basicSettings:
+    baseBuildFolder: Builds
+    buildPath: $VERSION.$BUILD/$RELEASE_TYPE/$PLATFORM/$ARCHITECTURE/$DISTRIBUTION
+    openFolderPostBuild: 1
+  _productParameters:
+    buildCounter: 0
+    buildVersion: 
+    versionTemplate: 1.0.0.$BUILD
+    autoGenerate: 1
+    syncWithPlayerSettings: 0
+  _releaseTypeList:
+    releaseTypes:
+    - typeName: Experiment
+      bundleIdentifier: com.ZolarSystems.MAThesis
+      companyName: ZolarSystems
+      productName: MA Thesis
+      buildOptions: 0
+      customDefines: 
+      sceneList:
+        enabledScenes: []
+  _platformList:
+    platforms:
+    - {fileID: -7375543755884235600}
+    - {fileID: -4415375026351892922}
+  _projectConfigurations:
+    configSet:
+      _Buckets: ffffffff00000000ffffffffffffffff040000000100000002000000
+      _HashCodes: 031cd365ddd00f69ba5f535d51eb7c79410f34760000000000000000
+      _Next: ffffffffffffffffffffffffffffffff030000000000000000000000
+      _Count: 5
+      _Version: 5
+      _FreeList: -1
+      _FreeCount: 0
+      _Keys:
+      - Experiment/PC/Windows x64
+      - Experiment/PC
+      - Experiment/macOS/macOS (Intelx64)
+      - Experiment/macOS
+      - Experiment
+      - 
+      - 
+      _Values:
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - Experiment/PC/Windows x64
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - Experiment/macOS/macOS (Intelx64)
+      - enabled: 1
+        childKeys:
+        - Experiment/PC
+        - Experiment/macOS
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys: []
+    showViewOptions: 0
+    showConfigs: 0
+    showBuildInfo: 0
+    hideDisabled: 0
+    treeView: 0
+    selectedKeyChain: 
+  _preBuildActions:
+    buildActions: []
+  _postBuildActions:
+    buildActions:
+    - {fileID: 1282334917952826254}
+--- !u!114 &1282334917952826254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97d88f7d353534a4fbdeb11196057db7, type: 3}
+  m_Name: UploadItch
+  m_EditorClassIdentifier: 
+  actionType: 1
+  actionName: UploadItch
+  note: 
+  actionEnabled: 1
+  filter:
+    condition: 0
+    clauses: []
+  pathToButlerExe: /Users/vadimnickel/Library/Application Support/itch/apps/butler/butler
+  nameOfItchUser: secretstage
+  nameOfItchGame: procmuex
+  useGeneratedBuildVersion: 1
+  channelName: $PLATFORM-$ARCHITECTURE
+  showUploadProgress: 1
+  itchChannelOverride: 

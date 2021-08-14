@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ExperimentStarter : MonoBehaviour
 {
+    [SerializeField] private JsonAzureTool azure;
     [SerializeField] private float probability1, probability2, probability3;
 
     [SerializeField] private ExperimentMode mode;
@@ -19,5 +22,10 @@ public class ExperimentStarter : MonoBehaviour
 
         ExperimentManager.Instance.experimentMode = mode;
         experiments[(int) mode].StartExperiment();
+    }
+
+    private void LoadProbabilities()
+    {
+        //float[] probabilities = azure.LoadData("probabilities");
     }
 }

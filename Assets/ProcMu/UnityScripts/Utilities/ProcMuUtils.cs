@@ -166,7 +166,7 @@ namespace ProcMu.UnityScripts.Utilities
         {
             //GLOBAL
             to.bpm = from.bpm;
-            to.Scale = from.Scale;
+            CopyScale(from.Scale, to.Scale);
             to.activeBars0 = from.activeBars0;
             to.activeBars1 = from.activeBars1;
 
@@ -203,6 +203,9 @@ namespace ProcMu.UnityScripts.Utilities
             to.config = from.config;
         }
 
+        /// <summary> Copies values from one scale object to another. </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         public static void CopyScale(MuScale from, MuScale to)
         {
             to.Scale = from.Scale;

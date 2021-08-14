@@ -96,7 +96,7 @@ public class SurveyAction : ExperimentAction
         for (int i = 0; i < surveyQuestions[questionIndex].answers.Length; i++)
         {
             if (i == lastInput)
-                answers += "<color=yellow>(" + (i + 1) + ") " + surveyQuestions[questionIndex].answers[i] +
+                answers += "<color=magenta>(" + (i + 1) + ") " + surveyQuestions[questionIndex].answers[i] +
                            "</color>\n";
             else
                 answers += "(" + (i + 1) + ") " + surveyQuestions[questionIndex].answers[i] + "\n";

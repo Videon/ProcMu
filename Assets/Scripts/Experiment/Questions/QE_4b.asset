@@ -10,12 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b32142009a3ca4abba4334b667281d32, type: 3}
-  m_Name: QE_3
+  m_Name: QE_4b
   m_EditorClassIdentifier: 
-  question: The music in ROUND 2 urged me to find the object faster.
+  question: Select the emotion which most closely describes what you felt during
+    ROUND 3.
   answers:
-  - Strongly disagree
-  - Disagree
-  - Neither agree nor disagree
-  - Agree
-  - Strongly agree
+  - Serenity
+  - Acceptance
+  - Apprehension
+  - Distraction
+  - Pensiveness
+  - Boredom
+  - Annoyance
+  - Interest
