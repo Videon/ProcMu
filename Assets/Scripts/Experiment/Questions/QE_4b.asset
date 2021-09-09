@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: QE_4b
   m_EditorClassIdentifier: 
   question: Select the emotion which most closely describes what you felt during
-    ROUND 3.
+    SET 3.
   answers:
   - Serenity
   - Acceptance

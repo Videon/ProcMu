@@ -153,11 +153,11 @@ PlayerSettings:
   applicationIdentifier:
     Standalone: com.DefaultCompany.MAThesis
   buildNumber:
-    Standalone: 2
-    iPhone: 2
+    Standalone: 5
+    iPhone: 5
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 3
+  AndroidBundleVersionCode: 6
   AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1

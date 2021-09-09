@@ -32,7 +32,7 @@ giEucGrid ftgen 811, 0, giEuclayers*giSteps, -2, -1 ;EucRth grid as table. Lengt
 
 
 ;SnhMel config tables - #820-829
-giSnhMelConfig ftgen 820, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody (lfo) curve, 5 = melody mode
+giSnhMelConfig ftgen 820, 0, 8, -2, 0               ;Params: 0 = pulses, 1 = occurence, 2 = minOct, 3 = maxOct, 4 = melody curve, 5 = melody mode
 giSnhMelGsyn ftgen 821, 0, 32, -2, 0                ;GSYNTH Instrument config table
 giSnhMelGrid  ftgen 822, 0, giSteps, -2, -1         ;SNHMEL steps grid
 
@@ -52,6 +52,7 @@ gisine   ftgen 700, 0, 16384, 10, 1	                                            
 gisquare ftgen 701, 0, 16384, 10, 1, 0, 0.3, 0, 0.2, 0, 0.14, 0, .111                 ; Square
 gisaw    ftgen 702, 0, 16384, 10, 1, 0.5, 0.3, 0.25, 0.2, 0.167, 0.14, 0.125, .111    ; Sawtooth
 gipulse  ftgen 703, 0, 16384, 10, 1, 1, 1, 1, 0.7, 0.5, 0.3, 0.1                      ; Pulse
+
 
 //SYSTEM INSTRUMENTS
 
@@ -228,7 +229,8 @@ instr SNHMEL
 
   krd randomi 0.01, 8, 0.1
 
-  klfo lfo 1, krd, 1
+  klfo poscil 1, krd, 700+tab:k(4,820)  //
+
   kscaled = kminnote + (kmaxnote-kminnote) * (klfo - -1) / (1 - -1) //scale lfo from -1...1 to min,max note indices
 
   ;printks "KRES: %d", 0.5, kscaled

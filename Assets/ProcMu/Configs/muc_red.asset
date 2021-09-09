@@ -62,7 +62,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  snhmel_melodycurve: 0
+  snhmel_melodycurve: 2
   snhmel_melodymode: 1
   snhmel_synthconfig: {fileID: 11400000, guid: d71b16a983a784995b7cb930b169575d, type: 2}
   snhbas_config:

@@ -17,7 +17,7 @@ public class ExperimentStarter : MonoBehaviour
         float sum = probability1 + probability2 + probability3;
         float rnd = Random.Range(0, sum);
         if (rnd <= probability1) mode = (ExperimentMode) 0;
-        else if (rnd <= probability2) mode = (ExperimentMode) 1;
+        else if (rnd <= probability1 + probability2) mode = (ExperimentMode) 1;
         else mode = (ExperimentMode) 2;
 
         ExperimentManager.Instance.experimentMode = mode;
