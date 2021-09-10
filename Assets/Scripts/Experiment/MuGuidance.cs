@@ -9,9 +9,9 @@ public class MuGuidance : MonoBehaviour
 
     [SerializeField] private Vector3 targetPosition;
 
-    [SerializeField] float guidanceIntensity;
+    [SerializeField] float guidanceStrength;
 
-    [SerializeField, Tooltip("The time in seconds it takes the guidance system to go from 0 to 1 intensity.")]
+    [SerializeField, Tooltip("The time in seconds it takes the guidance system to go from 0 to 1 strength.")]
     private float guidanceTime = 120f;
 
     private float elapsedTime = 0f;
@@ -29,7 +29,7 @@ public class MuGuidance : MonoBehaviour
     public void StopGuidance()
     {
         isGuiding = false;
-        guidanceIntensity = 0f;
+        guidanceStrength = 0f;
         guidanceTransform.position = new Vector3(0, 0, 0);
     }
 
@@ -41,8 +41,8 @@ public class MuGuidance : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
 
-            guidanceIntensity = Mathf.Clamp(elapsedTime, 0f, guidanceTime) / guidanceTime;
-            guidanceTransform.position = Vector3.Lerp(playerTransform.position, targetPosition, guidanceIntensity);
+            guidanceStrength = Mathf.Clamp(elapsedTime, 0f, guidanceTime) / guidanceTime;
+            guidanceTransform.position = Vector3.Lerp(playerTransform.position, targetPosition, guidanceStrength);
             yield return new WaitForFixedUpdate();
         }
 

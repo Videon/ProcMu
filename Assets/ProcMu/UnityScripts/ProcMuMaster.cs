@@ -44,8 +44,7 @@ namespace ProcMu.UnityScripts
 
         private AudioClip[] audioClips;
         private MuSampleDb sampleDb;
-
-        //Test variables
+        
         [SerializeField, Range(0, 1000)] private double bpm = 120;
         [SerializeField, Range(0f, 1f)] private float intensity = 1;
 
@@ -67,6 +66,11 @@ namespace ProcMu.UnityScripts
             _isInitialized = true;
         }
 
+        public void SetBpm(double bpm)
+        {
+            this.bpm = bpm;
+        }
+        
         public void SetIntensity(float intensity)
         {
             this.intensity = intensity;

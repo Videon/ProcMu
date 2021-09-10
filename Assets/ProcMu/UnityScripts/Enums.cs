@@ -56,11 +56,9 @@ namespace ProcMu.UnityScripts
     public enum MelodyCurve
     {
         Sine,
-        Triangle,
-        SquareBipolar,
-        SquareUnipolar,
-        Sawtooth,
-        SawtoothInverse
+        Square,
+        Saw,
+        Pulse
     }
 
     public enum MelodyMode
@@ -73,5 +71,11 @@ namespace ProcMu.UnityScripts
     {
         DistanceWeighted, //Generates new value from weighted average of all input values
         Closest //Sets new value according to closest music zone configuration
+    }
+
+    public enum BpmMode
+    {
+        Global, //Uses value defined in ProcMu master
+        Local //Uses interpolated value
     }
 }

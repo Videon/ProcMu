@@ -282,43 +282,49 @@ namespace ProcMu.ScriptableObjects.Editor
 
             #region trigger settings
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
-            _muConfig.snhmel_minImpulses0 =
-                EditorGUILayout.IntField(_muConfig.snhmel_minImpulses0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhmel_maxImpulses0 =
-                EditorGUILayout.IntField(_muConfig.snhmel_maxImpulses0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.snhmel_minImpulses1 =
-                EditorGUILayout.IntField(_muConfig.snhmel_minImpulses1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhmel_maxImpulses1 =
-                EditorGUILayout.IntField(_muConfig.snhmel_maxImpulses1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.EndHorizontal();
+            if (_muConfig.snhmel_melodymode == MelodyMode.Retriggered)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
+                _muConfig.snhmel_minImpulses0 =
+                    EditorGUILayout.IntField(_muConfig.snhmel_minImpulses0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhmel_maxImpulses0 =
+                    EditorGUILayout.IntField(_muConfig.snhmel_maxImpulses0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(10f));
+                _muConfig.snhmel_minImpulses1 =
+                    EditorGUILayout.IntField(_muConfig.snhmel_minImpulses1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhmel_maxImpulses1 =
+                    EditorGUILayout.IntField(_muConfig.snhmel_maxImpulses1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.EndHorizontal();
+            }
 
             #endregion
 
             #region occurence settings
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("OCCURENCE", GUILayout.Width(100f));
-            _muConfig.snhmel_minOccurence0 =
-                EditorGUILayout.FloatField(_muConfig.snhmel_minOccurence0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhmel_maxOccurence0 =
-                EditorGUILayout.FloatField(_muConfig.snhmel_maxOccurence0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.snhmel_minOccurence1 =
-                EditorGUILayout.FloatField(_muConfig.snhmel_minOccurence1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhmel_maxOccurence1 =
-                EditorGUILayout.FloatField(_muConfig.snhmel_maxOccurence1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.EndHorizontal();
+            if (_muConfig.snhmel_melodymode == MelodyMode.Continuous)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("OCCURENCE", GUILayout.Width(100f));
+                _muConfig.snhmel_minOccurence0 =
+                    EditorGUILayout.FloatField(_muConfig.snhmel_minOccurence0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhmel_maxOccurence0 =
+                    EditorGUILayout.FloatField(_muConfig.snhmel_maxOccurence0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(10f));
+                _muConfig.snhmel_minOccurence1 =
+                    EditorGUILayout.FloatField(_muConfig.snhmel_minOccurence1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhmel_maxOccurence1 =
+                    EditorGUILayout.FloatField(_muConfig.snhmel_maxOccurence1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.EndHorizontal();
+            }
 
             #endregion
 
@@ -391,43 +397,49 @@ namespace ProcMu.ScriptableObjects.Editor
 
             #region trigger settings
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
-            _muConfig.snhbas_minImpulses0 =
-                EditorGUILayout.IntField(_muConfig.snhbas_minImpulses0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhbas_maxImpulses0 =
-                EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.snhbas_minImpulses1 =
-                EditorGUILayout.IntField(_muConfig.snhbas_minImpulses1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhbas_maxImpulses1 =
-                EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.EndHorizontal();
+            if (_muConfig.snhbas_melodymode == MelodyMode.Retriggered)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("TRIGGER", GUILayout.Width(100f));
+                _muConfig.snhbas_minImpulses0 =
+                    EditorGUILayout.IntField(_muConfig.snhbas_minImpulses0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhbas_maxImpulses0 =
+                    EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(10f));
+                _muConfig.snhbas_minImpulses1 =
+                    EditorGUILayout.IntField(_muConfig.snhbas_minImpulses1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhbas_maxImpulses1 =
+                    EditorGUILayout.IntField(_muConfig.snhbas_maxImpulses1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.EndHorizontal();
+            }
 
             #endregion
 
             #region occurence settings
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("OCCURENCE", GUILayout.Width(100f));
-            _muConfig.snhbas_minOccurence0 =
-                EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhbas_maxOccurence0 =
-                EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence0, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(10f));
-            _muConfig.snhbas_minOccurence1 =
-                EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            _muConfig.snhbas_maxOccurence1 =
-                EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence1, GUILayout.Width(40f));
-            EditorGUILayout.LabelField("", GUILayout.Width(40f));
-            EditorGUILayout.EndHorizontal();
+            if (_muConfig.snhbas_melodymode == MelodyMode.Continuous)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("OCCURENCE", GUILayout.Width(100f));
+                _muConfig.snhbas_minOccurence0 =
+                    EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhbas_maxOccurence0 =
+                    EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence0, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(10f));
+                _muConfig.snhbas_minOccurence1 =
+                    EditorGUILayout.FloatField(_muConfig.snhbas_minOccurence1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                _muConfig.snhbas_maxOccurence1 =
+                    EditorGUILayout.FloatField(_muConfig.snhbas_maxOccurence1, GUILayout.Width(40f));
+                EditorGUILayout.LabelField("", GUILayout.Width(40f));
+                EditorGUILayout.EndHorizontal();
+            }
 
             #endregion
 

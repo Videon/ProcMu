@@ -16,6 +16,11 @@ namespace ProcMu.UnityScripts
         [SerializeField, Tooltip("Player object transform for position tracking.")]
         public Transform playerTransform;
 
+        [SerializeField]
+        [Tooltip(
+            "How music speed is determined. Global: Uses bpm value set in ProcMu Master. Local: Uses interpolated bpm value.")]
+        private BpmMode bpmMode;
+
         [SerializeField, Tooltip("The maximum distance of a music zone center away from the player to be considered.")]
         private float maxDistance;
 
@@ -166,13 +171,20 @@ namespace ProcMu.UnityScripts
 
         private void InterpolateAll(float[] distances, int top)
         {
+            double[] cumulatedDouble = new double[top];
             int[][] cumulatedJaggedInt = new int[top][]; //Allocating array for cumulating values across configs.
             double[][] cumulatedJaggedDouble = new double[top][];
 
+
             #region Global parameters
 
-            //TODO EVALUATE WHETHER BPM SHOULD ALSO BE INTERPOLATED
-            //procMuMaster.mc.bpm = _mcs[0].Mc.bpm
+            for (int i = 0; i < cumulatedDouble.Length; i++)
+            {
+                cumulatedDouble[i] = _mcs[i].Mc.bpm;
+            }
+
+            if (bpmMode == BpmMode.Local)
+                procMuMaster.SetBpm(Interpolate(distances, cumulatedDouble));
 
             //Getting scale from closest music zone, which is at index = 0 as _mcs array is sorted by distance.
             ProcMuUtils.CopyScale(_mcs[0].Mc.Scale, procMuMaster.mc.Scale);
@@ -341,7 +353,7 @@ namespace ProcMu.UnityScripts
             return Mathf.RoundToInt(sumWz / sumW);
         }
 
-        /// <summary> Performs weighted interpolation between multiple float values. </summary>
+        /// <summary> Performs weighted interpolation between multiple double values. </summary>
         /// <param name="distances"> Weight per value. Weights must be in order of inputs. </param>
         /// <param name="values"> Input values. </param>
         /// <returns> Interpolated value. </returns>
